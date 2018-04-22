@@ -10,7 +10,7 @@ import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
 @WebService
-public class CentralBank implements ICentralBankRegister {
+public class CentralBank implements ICentralBankRegister, ICentralBankTransaction {
 
     private final List<BankConnectionInfo> bankConnectionInfos = new ArrayList<>();
 
@@ -41,6 +41,11 @@ public class CentralBank implements ICentralBankRegister {
     @Override
     public boolean unregisterBank() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean executeTransaction() {
+        return false;
     }
 
     private IBankForCentralBank getBankConnection(String bankURL) {
