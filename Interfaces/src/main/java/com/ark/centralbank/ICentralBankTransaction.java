@@ -4,5 +4,5 @@ import javax.jws.WebService;
 
 @WebService
 public interface ICentralBankTransaction {
-    boolean executeTransaction();
+    boolean executeTransaction(Transaction transaction);
 }
