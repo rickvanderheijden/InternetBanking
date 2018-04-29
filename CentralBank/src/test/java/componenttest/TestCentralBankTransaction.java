@@ -1,6 +1,5 @@
 package componenttest;
 
-import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
 import com.ark.centralbank.Transaction;
 import org.junit.AfterClass;
@@ -11,7 +10,6 @@ import utilities.CentralBankUtilities;
 import java.io.IOException;
 import java.util.Date;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 public class TestCentralBankTransaction {
@@ -28,7 +26,6 @@ public class TestCentralBankTransaction {
     public static void tearDownClass() {
         utilities.stopCentralBank();
     }
-
 
     @Test
     public void testExecuteTransactionNull() {

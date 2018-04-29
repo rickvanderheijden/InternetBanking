@@ -7,6 +7,7 @@ import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -52,14 +53,13 @@ public class CentralBankConnector implements IBankForCentralBank {
         URL wsdlURL;
         try {
             wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
-        } catch (MalformedURLException e) {
+            QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
+            Service service = Service.create(wsdlURL, qname);
+            QName qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
+
+            return service.getPort(qnamePort, ICentralBankRegister.class);
+        } catch (MalformedURLException | WebServiceException e) {
             return null;
         }
-
-        QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
-        Service service = Service.create(wsdlURL, qname);
-        QName qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
-
-        return service.getPort(qnamePort, ICentralBankRegister.class);
     }
 }

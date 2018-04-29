@@ -45,18 +45,13 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
 
     @Override
     public boolean executeTransaction(Transaction transaction) {
-        if ((transaction == null)
-                || (transaction.getDate() == null)
-                || (transaction.getAccountFrom() == null)
-                || (transaction.getAccountTo() == null)
-                || (transaction.getAmount() <= 0.0)
-                || (transaction.getDate() == null)
-                || (transaction.getDescription() == null))
-        {
-            return false;
-        }
-
-        return true;
+        return ((transaction != null)
+                && (transaction.getDate() != null)
+                && (transaction.getAccountFrom() != null)
+                && (transaction.getAccountTo() != null)
+                && (!(transaction.getAmount() <= 0.0))
+                && (transaction.getDate() != null)
+                && (transaction.getDescription() != null));
     }
 
     private IBankForCentralBank getBankConnection(String bankURL) {
