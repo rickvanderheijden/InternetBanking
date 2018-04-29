@@ -5,5 +5,5 @@ import javax.jws.WebService;
 @WebService
 public interface ICentralBankRegister {
     boolean registerBank(BankConnectionInfo bankConnectionInfo);
-    boolean unregisterBank(); 
+    boolean unregisterBank(String bankId);
 }

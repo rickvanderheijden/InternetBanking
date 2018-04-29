@@ -61,4 +61,19 @@ public class TestCentralBankRegister {
         boolean result = centralBank.registerBank(bankConnectionInfo);
         assertFalse(result);
     }
+
+    @Test
+    public void testUnregisterBankNotRegistered() {
+        boolean result = centralBank.unregisterBank("BANK3");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testUnregisterBankRegistered() {
+        BankConnectionInfo bankConnectionInfo = new BankConnectionInfo("BANK4", "http://localhost:1200/");
+        centralBank.registerBank(bankConnectionInfo);
+
+        boolean result = centralBank.unregisterBank(bankConnectionInfo.getBankId());
+        assertTrue(result);
+    }
 }

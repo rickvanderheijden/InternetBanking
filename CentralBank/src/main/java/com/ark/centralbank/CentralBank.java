@@ -39,8 +39,16 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
     }
 
     @Override
-    public boolean unregisterBank() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean unregisterBank(String bankId) {
+        for (BankConnectionInfo info : bankConnectionInfos) {
+            if (info.getBankId().equals(bankId)) {
+                bankConnectionInfos.remove(info);
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     @Override
