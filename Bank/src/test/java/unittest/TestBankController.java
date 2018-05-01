@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,7 +51,7 @@ public class TestBankController {
         Customer owner = new Customer("TestUser", "TestPassword", "TestResidence");
         BankAccount result = bankController.createBankAccount(owner);
         assertThat(result.getNumber(), startsWith(BankIdInternal));
-        assertTrue(result.getNumber().length() == 14);
+        assertEquals(14, result.getNumber().length());
         assertEquals(100.0, result.getCreditLimit(), 0.0);
         assertEquals(owner, result.getOwner());
     }
