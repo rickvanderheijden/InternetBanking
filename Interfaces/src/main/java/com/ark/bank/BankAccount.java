@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class BankAccount implements Serializable {
 
     private static long nextNumber = 1000000000;
-    private String number;
-    private double balance = 0.00;
+    private final String number;
+    private final double balance = 0.00;
     private double creditLimit = 100.00;
-    private Customer owner;
+    private final Customer owner;
 
     public BankAccount(Customer owner, String bankId) {
         this.owner = owner;

@@ -1,25 +1,17 @@
 package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
-
-import java.rmi.RemoteException;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class BankController {
-    private final long startBankAccountNumber = 1000000000L;
-    private final long endBankAccountNumber = 9999999999L;
-    private final GUIConnector guiConnector;
-    private String bankId;
-    private final Random random = new Random();
+    private final String bankId;
     private final Set<BankAccount> bankAccounts = new HashSet<>();
+    private final Set<Customer> customers = new HashSet<>();
 
-    public BankController(String bankId, String URLBase) throws RemoteException {
+    public BankController(String bankId) {
         this.bankId = bankId;
-        CentralBankConnector centralBankConnector = new CentralBankConnector(this, bankId, URLBase);
-        guiConnector = new GUIConnector(this);
     }
 
     public boolean executeTransaction(Transaction transaction) {
@@ -30,6 +22,8 @@ public class BankController {
                 && (!(transaction.getAmount() <= 0.0))
                 && (transaction.getDate() != null)
                 && (transaction.getDescription() != null));
+
+        //TODO: Handle correctly
     }
 
     public BankAccount createBankAccount(Customer owner) {
@@ -43,13 +37,35 @@ public class BankController {
         return bankAccount;
     }
 
-    private String getRandomBankAccountNumber() {
-        long range = endBankAccountNumber - startBankAccountNumber + 1;
-        long fraction = (long)(range * random.nextDouble());
-        long randomNumber = fraction + startBankAccountNumber;
+    public Customer createCustomer(String name, String residence, String password) {
+        //TODO: Override equals
+        if ((name == null) || name.isEmpty()
+                || (password == null) || password.isEmpty()
+                || (residence == null) || residence.isEmpty()) {
+            return null;
+        }
 
-        return Long.toString(randomNumber);
+        for (Customer customer : customers) {
+            if ((customer.getName().equals(name))
+                    && customer.getResidence().equals(residence)) {
+                return null;
+            }
+        }
+
+        Customer customer = new Customer(name, password, residence);
+        customers.add(customer);
+
+        return customer;
     }
 
-    //TODO: Use BankAccoutnt object instead of Strings
+    public Customer getCustomer(String name, String residence) {
+        for (Customer customer : customers) {
+            if ((customer.getName().equals(name))
+                    && customer.getResidence().equals(residence)) {
+                return customer;
+            }
+        }
+
+        return null;
+    }
 }

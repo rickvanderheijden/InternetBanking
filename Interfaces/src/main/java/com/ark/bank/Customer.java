@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Customer implements Serializable {
 
-    private String name;
-    private String password;
-    private String residence;
+    private final String name;
+    private final String password;
+    private final String residence;
 
     public Customer(String name, String password, String residence) {
         this.name = name;
@@ -20,5 +20,9 @@ public class Customer implements Serializable {
 
     public String getResidence() {
         return residence;
+    }
+
+    public boolean isPasswordValid(String password) {
+        return this.password.equals(password);
     }
 }

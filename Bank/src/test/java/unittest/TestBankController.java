@@ -28,8 +28,8 @@ public class TestBankController {
     private BankController bankController;
 
     @Before
-    public void setUp() throws RemoteException {
-        bankController = new BankController(BankIdInternal, null);
+    public void setUp() {
+        bankController = new BankController(BankIdInternal);
     }
 
     @After
@@ -39,6 +39,7 @@ public class TestBankController {
 
 
     //TODO: Test BankAccount variations. but where?
+    //TODO: Need stubs to check for scenario's (other banks, etc)
 
     @Test
     public void testCreateBankAccountOwnerNull() {
@@ -102,5 +103,76 @@ public class TestBankController {
         Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789", new Date());
         boolean result = bankController.executeTransaction(transaction);
         assertTrue(result);
+    }
+
+    @Test
+    public void testCreateCustomerAllValuesNull() {
+        Customer result = bankController.createCustomer(null, null, null);
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerAllValuesEmpty() {
+        Customer result = bankController.createCustomer("", "", "");
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerNameNull() {
+        Customer result = bankController.createCustomer(null, "Password", "Residence");
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerNameEmpty() {
+        Customer result = bankController.createCustomer("", "Residence", "Password");
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerPasswordNull() {
+        Customer result = bankController.createCustomer("Name", "Residence", null);
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerPasswordEmpty() {
+        Customer result = bankController.createCustomer("Name", "Residence", "");
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerResidenceNull() {
+        Customer result = bankController.createCustomer("Name", null, "Password");
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerResidenceEmpty() {
+        Customer result = bankController.createCustomer("Name", "", "Password");
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateCustomerValidValues() {
+        String name = "Name";
+        String password = "Password";
+        String residence = "Residence";
+        Customer result = bankController.createCustomer(name, residence, password);
+        assertNotNull(result);
+        assertEquals(name, result.getName());
+        assertEquals(residence, result.getResidence());
+        assertTrue(result.isPasswordValid(password));
+    }
+
+    @Test
+    public void testCreateCustomerAlreadyExists() {
+        String name = "Name";
+        String password = "Password";
+        String residence = "Residence";
+        Customer result = bankController.createCustomer(name, residence, password);
+        assertNotNull(result);
+        result = bankController.createCustomer(name, residence, password);
+        assertNull(result);
     }
 }
