@@ -1,5 +1,7 @@
 package com.ark.centralbank;
 
+import com.ark.bank.IBankForCentralBank;
+
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -53,6 +55,8 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
 
     @Override
     public boolean executeTransaction(Transaction transaction) {
+
+        //TODO: Do we want to do the check here, or leave it to the bank itself?
         return ((transaction != null)
                 && (transaction.getDate() != null)
                 && (transaction.getAccountFrom() != null)

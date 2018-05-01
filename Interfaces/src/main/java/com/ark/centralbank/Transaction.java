@@ -1,10 +1,11 @@
 package com.ark.centralbank;
 
 import javax.jws.WebService;
+import java.io.Serializable;
 import java.util.Date;
 
 @WebService
-public class Transaction {
+public class Transaction implements Serializable {
     private double amount;
     private String description;
     private String accountFrom;

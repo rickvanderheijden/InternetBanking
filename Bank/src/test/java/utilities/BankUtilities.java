@@ -1,12 +1,21 @@
 package utilities;
 
-import com.ark.centralbank.IBankForCentralBank;
+import com.ark.bank.IBankForCentralBank;
+import com.ark.bank.IBankForClient;
+import fontyspublisher.IRemotePublisherForListener;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+
+import static java.lang.Thread.sleep;
 
 public class BankUtilities {
 
@@ -15,10 +24,39 @@ public class BankUtilities {
     private Process processBank;
     private Service service;
     private QName qnamePort;
+    private IRemotePublisherForListener remotePublisher;
 
     public IBankForCentralBank startBankForCentralBank() throws IOException {
         startBank();
-        return service.getPort(qnamePort, IBankForCentralBank.class);
+
+        URL wsdlURL = null;
+        try {
+            wsdlURL = new URL("http://localhost:1200/RABOService?wsdl");
+        } catch (MalformedURLException e) {
+        }
+
+        waitForConnection();
+
+        QName qname = new QName("http://bank.ark.com/", "BankService");
+        service = Service.create(wsdlURL, qname);
+        qnamePort = new QName("http://bank.ark.com/", "BankPort");
+
+        if (service != null) {
+            return service.getPort(qnamePort, IBankForCentralBank.class);
+        }
+
+        return null;
+    }
+
+    public IBankForClient startBankForClient() throws IOException, NotBoundException {
+        startBank();
+
+        waitForConnection();
+
+        Registry registry = LocateRegistry.getRegistry("localhost",1099);
+        remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher");
+        //remotePublisher.subscribeRemoteListener(this, "fondsen");
+        return (IBankForClient) registry.lookup("bank");
     }
 
     public void stopBank() {
@@ -29,18 +67,21 @@ public class BankUtilities {
 
     private void startBank() throws IOException {
 
-        String cmd = "C:\\Program Files\\Java\\jdk1.8.0_162\\bin\\java.exe -jar " + JARPATH + JARFILE;
+        /*String cmd = "cmd /c \"C:\\Program Files\\Java\\jdk1.8.0_162\\bin\\java.exe\" -jar " + JARPATH + JARFILE;
+        processBank = Runtime.getRuntime().exec(cmd); */
 
-        processBank = Runtime.getRuntime().exec(cmd);
+        processBank = new ProcessBuilder("C:\\Program Files\\Java\\jdk1.8.0_162\\bin\\java.exe", "-jar", JARPATH + JARFILE).start();
+    }
 
-        URL wsdlURL = null;
+    private boolean waitForConnection() {
+
+        //TODO: Replace sleep with valid check.
         try {
-            wsdlURL = new URL("http://localhost:8080/Bank?wsdl");
-        } catch (MalformedURLException e) {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        QName qname = new QName("http://bank.ark.com/", "BankService");
-        service = Service.create(wsdlURL, qname);
-        qnamePort = new QName("http://bank.ark.com/", "BankPort");
+        return true;
     }
 }

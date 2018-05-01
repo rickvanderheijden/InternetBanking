@@ -1,8 +1,9 @@
 package com.ark.bank;
 
 import com.ark.centralbank.BankConnectionInfo;
-import com.ark.centralbank.IBankForCentralBank;
 import com.ark.centralbank.ICentralBankRegister;
+import com.ark.centralbank.Transaction;
+
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
@@ -14,20 +15,25 @@ import java.net.URL;
 @WebService(serviceName = "BankService", portName = "BankPort")
 public class CentralBankConnector implements IBankForCentralBank {
     private ICentralBankRegister centralBank = null;
+    private BankController bankController;
     private String bankId;
     private String URLBase;
-    private boolean registered = false;
 
     public CentralBankConnector() {
     }
 
-    public CentralBankConnector(String bankId, String URLBase) {
+    public CentralBankConnector(BankController bankController, String bankId, String URLBase) {
+        this.bankController = bankController;
         this.bankId = bankId;
         this.URLBase = URLBase;
 
-        centralBank = getCentralBankConnection();
-        createBankConnection();
-        registerBank();
+        if ((URLBase != null) && (!URLBase.isEmpty())
+                && (bankId) != null && (!bankId.isEmpty())) {
+
+            centralBank = getCentralBankConnection();
+            createBankConnection();
+            registerBank();
+        }
     }
 
     private boolean registerBank() {
@@ -35,14 +41,17 @@ public class CentralBankConnector implements IBankForCentralBank {
             return false;
         }
 
-        boolean result = false;
         BankConnectionInfo bankConnectionInfo = new BankConnectionInfo(bankId, URLBase + bankId);
         return centralBank.registerBank(bankConnectionInfo);
     }
 
     @Override
-    public void doSomething() {
-        registered = true;
+    public boolean executeTransaction(Transaction transaction) {
+        if (bankController == null) {
+            return false;
+        }
+
+        return bankController.executeTransaction(transaction);
     }
 
     private void createBankConnection() {

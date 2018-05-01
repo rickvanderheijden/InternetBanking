@@ -1,12 +1,14 @@
 package com.ark.bank;
 
+import java.rmi.RemoteException;
+
 @SuppressWarnings("SpellCheckingInspection")
 class BankHost {
 
-    static private String BankId = "ABNA";
-    private static String URLBase = "http://localhost:1234/";
+    static private String BankId = "RABO";
+    private static String URLBase = "http://localhost:1200/";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
 
         // Welcome message
         System.out.println("Bank is running");

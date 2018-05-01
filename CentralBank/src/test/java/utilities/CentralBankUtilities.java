@@ -9,6 +9,8 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import static java.lang.Thread.sleep;
+
 public class CentralBankUtilities {
 
     private static final String JARPATH = "..\\out\\artifacts\\CentralBank_jar\\";
@@ -39,6 +41,8 @@ public class CentralBankUtilities {
 
         processCentralBank = Runtime.getRuntime().exec(cmd);
 
+        waitForConnection();
+
         URL wsdlURL = null;
         try {
             wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
@@ -48,5 +52,17 @@ public class CentralBankUtilities {
         QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
         service = Service.create(wsdlURL, qname);
         qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
+    }
+
+    private boolean waitForConnection() {
+
+        //TODO: Replace sleep with valid check.
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 }
