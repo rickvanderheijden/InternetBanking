@@ -7,6 +7,9 @@ import fontyspublisher.IRemotePublisherForListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -64,11 +67,9 @@ public class BankUtilities {
     }
 
     private void startBank() throws IOException {
-
-        /*String cmd = "cmd /c \"C:\\Program Files\\Java\\jdk1.8.0_162\\bin\\java.exe\" -jar " + JARPATH + JARFILE;
-        processBank = Runtime.getRuntime().exec(cmd); */
-
-        processBank = new ProcessBuilder("C:\\Program Files\\Java\\jdk1.8.0_162\\bin\\java.exe", "-jar", JARPATH + JARFILE).start();
+        String jrePath = System.getProperty("java.home");
+        String javaPath = jrePath + "\\bin\\java.exe";
+        processBank = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE).start();
     }
 
     private boolean waitForConnection() {

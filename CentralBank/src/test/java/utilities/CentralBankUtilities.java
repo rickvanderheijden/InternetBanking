@@ -37,9 +37,9 @@ public class CentralBankUtilities {
 
     private void startCentralBank() throws IOException {
 
-        String cmd = "C:\\Program Files\\Java\\jdk1.8.0_162\\bin\\java.exe -jar " + JARPATH + JARFILE;
-
-        processCentralBank = Runtime.getRuntime().exec(cmd);
+        String jrePath = System.getProperty("java.home");
+        String javaPath = jrePath + "\\bin\\java.exe";
+        processCentralBank = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE).start();
 
         waitForConnection();
 
