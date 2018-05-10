@@ -2,7 +2,6 @@ package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
 
-import javax.xml.crypto.dsig.TransformService;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -61,7 +60,4 @@ public interface IBankForClientSession extends Remote {
     BankAccount getBankAccount(String bankAccountNumber) throws RemoteException;
     List<Transaction> getTransactions(String bankAccountNumber) throws RemoteException;
     boolean executeTransaction(Transaction transaction) throws RemoteException;
-
-    //TODO: Move to ILogin or ISession or something
-    int login(String name, String residence, String password) throws RemoteException;
 }

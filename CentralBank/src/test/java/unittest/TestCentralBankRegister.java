@@ -1,30 +1,29 @@
-package componenttest;
+package unittest;
 
+import com.ark.centralbank.BankConnectionInfo;
+import com.ark.centralbank.CentralBank;
 import com.ark.centralbank.ICentralBankRegister;
-import java.io.IOException;
 import org.junit.AfterClass;
-import utilities.CentralBankUtilities;
 import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class TestCentralBankRegister {
+
     private static ICentralBankRegister centralBank;
-    private static CentralBankUtilities utilities;
 
     @BeforeClass
-    public static void setUpClass() throws IOException {
-        utilities = new CentralBankUtilities();
-        centralBank = utilities.startCentralBankRegister();
+    public static void setUpClass() {
+        centralBank = new CentralBank();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        utilities.stopCentralBank();
+        centralBank = null;
     }
 
-
-    //TODO: done in unittest
-
-    /*
     @Test
     public void testRegisterBankConnectionInfoNull() {
         boolean result = centralBank.registerBank(null);
@@ -75,5 +74,4 @@ public class TestCentralBankRegister {
         boolean result = centralBank.unregisterBank(bankConnectionInfo.getBankId());
         assertTrue(result);
     }
-    */
 }

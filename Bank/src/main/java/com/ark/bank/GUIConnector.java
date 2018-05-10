@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession {
+public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin {
 
-    private Random random = new Random();
+    private final Random random = new Random();
     private RemotePublisher remotePublisher;
     private BankController bankController;
     private Set<Integer> sessionIds = new HashSet<>();

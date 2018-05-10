@@ -1,34 +1,25 @@
-package componenttest;
+package unittest;
 
-import com.ark.centralbank.ICentralBankTransaction;
-import com.ark.centralbank.Transaction;
+import com.ark.centralbank.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import utilities.CentralBankUtilities;
-
-import java.io.IOException;
-import java.util.Date;
-
 import static org.junit.Assert.assertFalse;
 
 public class TestCentralBankTransaction {
+
     private static ICentralBankTransaction centralBank;
-    private static CentralBankUtilities utilities;
 
     @BeforeClass
-    public static void setUpClass() throws IOException {
-        utilities = new CentralBankUtilities();
-        centralBank = utilities.startCentralBankTransaction();
+    public static void setUpClass() {
+        centralBank = new CentralBank();
     }
 
     @AfterClass
     public static void tearDownClass() {
-        utilities.stopCentralBank();
+        centralBank = null;
     }
 
-    //TODO: Done in unittest
-    /*
     @Test
     public void testExecuteTransactionNull() {
         boolean result = centralBank.executeTransaction(null);
@@ -71,5 +62,4 @@ public class TestCentralBankTransaction {
 
         //TODO: Make stub etc
     }
-  */
 }

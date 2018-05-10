@@ -8,9 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.rmi.RemoteException;
-import java.util.Date;
-
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;

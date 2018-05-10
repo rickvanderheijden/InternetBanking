@@ -1,7 +1,6 @@
 package componenttest;
 
 import java.io.IOException;
-import java.util.Date;
 
 import com.ark.bank.IBankForCentralBank;
 import com.ark.centralbank.Transaction;
