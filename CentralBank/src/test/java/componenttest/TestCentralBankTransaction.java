@@ -35,42 +35,35 @@ public class TestCentralBankTransaction {
 
     @Test
     public void testExecuteTransactionAllValuesNull() {
-        Transaction transaction = new Transaction(.00, null, null, null, null);
-        boolean result = centralBank.executeTransaction(transaction);
-        assertFalse(result);
-    }
-
-    @Test
-    public void testExecuteTransactionDateNull() {
-        Transaction transaction = new Transaction(22.95, "Description", "AccountFrom", "AccountTo", null);
+        Transaction transaction = new Transaction(.00, null, null, null);
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAccountToNull() {
-        Transaction transaction = new Transaction(22.95, "Description", "AccountFrom", null, new Date());
+        Transaction transaction = new Transaction(22.95, "Description", "AccountFrom", null);
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionDescriptionNull() {
-        Transaction transaction = new Transaction(22.95, null, "AccountFrom", "AccountTo", new Date());
+        Transaction transaction = new Transaction(22.95, null, "AccountFrom", "AccountTo");
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAmountNull() {
-        Transaction transaction = new Transaction(0.0, "Description", "AccountFrom", "AccountTo", new Date());
+        Transaction transaction = new Transaction(0.0, "Description", "AccountFrom", "AccountTo");
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionValidValues() {
-        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789", new Date());
+        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
 

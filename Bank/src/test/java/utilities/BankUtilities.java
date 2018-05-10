@@ -1,15 +1,12 @@
 package utilities;
 
 import com.ark.bank.IBankForCentralBank;
-import com.ark.bank.IBankForClient;
+import com.ark.bank.IBankForClientSession;
 import fontyspublisher.IRemotePublisherForListener;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -49,7 +46,7 @@ public class BankUtilities {
         return null;
     }
 
-    public IBankForClient startBankForClient() throws IOException, NotBoundException {
+    public IBankForClientSession startBankForClient() throws IOException, NotBoundException {
         startBank();
 
         waitForConnection();
@@ -57,7 +54,7 @@ public class BankUtilities {
         Registry registry = LocateRegistry.getRegistry("localhost",1099);
         remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher");
         //remotePublisher.subscribeRemoteListener(this, "fondsen");
-        return (IBankForClient) registry.lookup("bank");
+        return (IBankForClientSession) registry.lookup("bank");
     }
 
     public void stopBank() {

@@ -24,13 +24,13 @@ public class Transaction implements Serializable {
         this.date = new Date();
     }
 
-    public Transaction(double amount, String description, String accountFrom, String accountTo, Date date) {
+   /* public Transaction(double amount, String description, String accountFrom, String accountTo, Date date) {
         this.amount = amount;
         this.description = description;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = date;
-    }
+    }*/
 
     public double getAmount() {
         return amount;

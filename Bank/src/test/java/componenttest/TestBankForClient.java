@@ -1,6 +1,6 @@
 package componenttest;
 
-import com.ark.bank.IBankForClient;
+import com.ark.bank.IBankForClientSession;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 import static org.junit.Assert.assertFalse;
 
 public class TestBankForClient {
-    private static IBankForClient bank;
+    private static IBankForClientSession bank;
     private static BankUtilities utilities;
 
     @BeforeClass

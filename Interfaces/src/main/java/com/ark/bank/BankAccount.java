@@ -4,16 +4,14 @@ import java.io.Serializable;
 
 public class BankAccount implements Serializable {
 
-    private static long nextNumber = 1000000000;
     private final String number;
     private final double balance = 0.00;
     private double creditLimit = 100.00;
     private final Customer owner;
 
-    public BankAccount(Customer owner, String bankId) {
+    public BankAccount(Customer owner, String number) {
         this.owner = owner;
-        number = bankId + Long.toString(nextNumber);
-        nextNumber++;
+        this.number = number;
     }
 
     public Customer getOwner() {

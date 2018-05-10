@@ -17,7 +17,6 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
     private final List<BankConnectionInfo> bankConnectionInfos = new ArrayList<>();
 
     public CentralBank() {
-        super();
     }
     
     @Override

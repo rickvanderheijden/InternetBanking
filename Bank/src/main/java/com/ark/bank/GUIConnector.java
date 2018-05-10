@@ -8,10 +8,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class GUIConnector extends UnicastRemoteObject implements IBankForClient {
+public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession {
 
     private Random random = new Random();
     private RemotePublisher remotePublisher;
@@ -36,6 +37,21 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClient 
     }
 
     @Override
+    public boolean isActive() throws RemoteException {
+        return false;
+    }
+
+    @Override
+    public boolean refreshSession() throws RemoteException {
+        return false;
+    }
+
+    @Override
+    public void terminateSession() throws RemoteException {
+
+    }
+
+    @Override
     public BankAccount createBankAccount(Customer owner) {
         return bankController.createBankAccount(owner);
     }
@@ -43,6 +59,21 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClient 
     @Override
     public Customer createCustomer(String name, String residence, String password) {
         return bankController.createCustomer(name, residence, password);
+    }
+
+    @Override
+    public Customer getCustomer(String name, String residence) throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public BankAccount getBankAccount(String bankAccountNumber) throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public List<Transaction> getTransactions(String bankAccountNumber) throws RemoteException {
+        return null;
     }
 
     @Override
