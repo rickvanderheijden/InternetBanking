@@ -8,8 +8,7 @@ import org.junit.Test;
 
 import java.rmi.RemoteException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestGUIConnector {
 
@@ -31,9 +30,8 @@ public class TestGUIConnector {
 
     @Test
     public void testLoginWithoutRegisteredCustomer() {
-        int expectedResult = -1;
-        int result = guiConnector.login("Name", "Residence", "password");
-        assertEquals(expectedResult, result);
+        String result = guiConnector.login("Name", "Residence", "password");
+        assertNull(result);
     }
 
     @Test
@@ -43,12 +41,7 @@ public class TestGUIConnector {
         String password = "Password";
 
         guiConnector.createCustomer(name, residence, password);
-
-        int result = guiConnector.login(name, residence, password);
-
-        System.out.println(result);
-
-
-        assertTrue(result > -1);
+        String result = guiConnector.login(name, residence, password);
+        assertNotNull(result);
     }
 }

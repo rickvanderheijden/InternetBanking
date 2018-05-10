@@ -9,15 +9,14 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin {
 
-    private final Random random = new Random();
     private RemotePublisher remotePublisher;
     private BankController bankController;
-    private Set<Integer> sessionIds = new HashSet<>();
+    private Set<UUID> sessionKeys = new HashSet<>();
 
     public GUIConnector(BankController bankController) throws RemoteException {
         super();
@@ -37,17 +36,17 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean isActive() throws RemoteException {
+    public boolean isActive() {
         return false;
     }
 
     @Override
-    public boolean refreshSession() throws RemoteException {
+    public boolean refreshSession() {
         return false;
     }
 
     @Override
-    public void terminateSession() throws RemoteException {
+    public void terminateSession() {
 
     }
 
@@ -62,17 +61,17 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public Customer getCustomer(String name, String residence) throws RemoteException {
+    public Customer getCustomer(String name, String residence) {
         return null;
     }
 
     @Override
-    public BankAccount getBankAccount(String bankAccountNumber) throws RemoteException {
+    public BankAccount getBankAccount(String bankAccountNumber) {
         return null;
     }
 
     @Override
-    public List<Transaction> getTransactions(String bankAccountNumber) throws RemoteException {
+    public List<Transaction> getTransactions(String bankAccountNumber) {
         return null;
     }
 
@@ -86,26 +85,28 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public int login(String name, String residence, String password) {
+    public String login(String name, String residence, String password) {
 
         //TODO: Move to session or something and add timer etc
 
         if (bankController == null) {
-            return -1;
+            return null;
         }
 
         Customer customer = bankController.getCustomer(name, residence);
 
         if (customer == null || !customer.isPasswordValid(password)) {
-            return -1;
+            return null;
         }
 
-        int sessionId = random.nextInt(Integer.MAX_VALUE);
+        UUID uuid = UUID.randomUUID();
 
-        while (!sessionIds.add(sessionId)) {
-            sessionId = random.nextInt(Integer.MAX_VALUE);
+        UUID sessionKey = UUID.randomUUID();
+
+        while (!sessionKeys.add(sessionKey)) {
+            sessionKey = UUID.randomUUID();
         }
 
-        return sessionId;
+        return sessionKey.toString();
     }
 }
