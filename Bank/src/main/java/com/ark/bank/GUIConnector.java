@@ -109,4 +109,9 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
         return sessionKey.toString();
     }
+
+    @Override
+    public boolean logout(String sessionKey) {
+        return false;
+    }
 }

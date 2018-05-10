@@ -12,13 +12,17 @@ import static org.junit.Assert.*;
 
 public class TestGUIConnector {
 
-    private final String BankIdInternal = "TEST";
+    private final String bankIdInternal = "TEST";
+    private final String name = "Name";
+    private final String residence = "Residence";
+    private final String password = "Password";
+
     private BankController bankController;
     private GUIConnector guiConnector;
 
     @Before
     public void setUp() throws RemoteException {
-        bankController = new BankController(BankIdInternal);
+        bankController = new BankController(bankIdInternal);
         guiConnector = new GUIConnector(bankController);
     }
 
@@ -36,12 +40,26 @@ public class TestGUIConnector {
 
     @Test
     public void testLoginWithRegisteredCustomer() {
-        String name = "Name";
-        String residence = "Residence";
-        String password = "Password";
-
-        guiConnector.createCustomer(name, residence, password);
+        createCustomer();
         String result = guiConnector.login(name, residence, password);
         assertNotNull(result);
+    }
+
+    @Test
+    public void testLogoutNull() {
+        boolean result = guiConnector.logout(null);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLogoutWithRegisteredCustomer() {
+        createCustomer();
+        String sessionKey = guiConnector.login(name, residence, password);
+        boolean result = guiConnector.logout(sessionKey);
+        assertTrue(result);
+    }
+
+    private void createCustomer() {
+        guiConnector.createCustomer(name, residence, password);
     }
 }
