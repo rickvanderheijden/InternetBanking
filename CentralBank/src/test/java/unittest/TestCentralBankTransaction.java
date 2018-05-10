@@ -4,6 +4,8 @@ import com.ark.centralbank.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 public class TestCentralBankTransaction {
@@ -54,12 +56,42 @@ public class TestCentralBankTransaction {
         assertFalse(result);
     }
 
+
+
+
+    //TODO: DO THESE IN INTEGRATION TEST
     @Test
-    public void testExecuteTransactionValidValues() {
+    public void testExecuteTransactionValidValuesBothNotRegistered() {
         Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
+    }
 
-        //TODO: Make stub etc
+    @Test
+    public void testExecuteTransactionValidValuesAccountFromNotRegistered() {
+        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        boolean result = centralBank.executeTransaction(transaction);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testExecuteTransactionValidValuesAccountToNotRegistered() {
+        ICentralBankRegister centralBankRegister = (ICentralBankRegister)centralBank;
+        centralBankRegister.registerBank(new BankConnectionInfo("ABNA", ""));
+
+        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        boolean result = centralBank.executeTransaction(transaction);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testExecuteTransactionValidValuesBothRegistered() {
+        ICentralBankRegister centralBankRegister = (ICentralBankRegister)centralBank;
+        centralBankRegister.registerBank(new BankConnectionInfo("ABNA", ""));
+        centralBankRegister.registerBank(new BankConnectionInfo("RABO", ""));
+
+        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        boolean result = centralBank.executeTransaction(transaction);
+        assertTrue(result);
     }
 }

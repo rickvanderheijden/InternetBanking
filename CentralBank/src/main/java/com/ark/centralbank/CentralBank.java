@@ -56,13 +56,30 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
     public boolean executeTransaction(Transaction transaction) {
 
         //TODO: Do we want to do the check here, or leave it to the bank itself?
-        return ((transaction != null)
-                && (transaction.getDate() != null)
-                && (transaction.getAccountFrom() != null)
-                && (transaction.getAccountTo() != null)
-                && (!(transaction.getAmount() <= 0.0))
-                && (transaction.getDate() != null)
-                && (transaction.getDescription() != null));
+        if ((transaction == null)
+            || (transaction.getDate() == null)
+            || (transaction.getAccountFrom() == null)
+            || (transaction.getAccountTo() == null)
+            || (!(transaction.getAmount() <= 0.0))
+            || (transaction.getDate() == null)
+            || (transaction.getDescription() == null)) {
+            return false;
+        }
+
+        String bankIdFrom = getBankId(transaction.getAccountFrom());
+        String bankIdTo = getBankId(transaction.getAccountTo());
+
+        if (!isBankRegistered(bankIdFrom) || !isBankRegistered(bankIdTo)) {
+            return false;
+        }
+
+        IBankForCentralBank bankForCentralBankTo = getBankConnection(getBankURL(bankIdTo));
+
+        if (bankForCentralBankTo == null) {
+            return false;
+        }
+
+        return bankForCentralBankTo.executeTransaction(transaction);
     }
 
     private IBankForCentralBank getBankConnection(String bankURL) {
@@ -78,5 +95,41 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
         QName qnamePort = new QName("http://bank.ark.com/","BankPort");
 
         return service.getPort(qnamePort, IBankForCentralBank.class);
+    }
+
+    private String getBankId(String accountNumber) {
+        if (accountNumber == null) {
+            return null;
+        }
+
+        return accountNumber.length() < 4 ? null : accountNumber.substring(0, 4);
+    }
+
+    private String getBankURL(String bankId) {
+        if ((bankId == null) || bankId.isEmpty()) {
+            return null;
+        }
+
+        for (BankConnectionInfo bankConnectionInfo : bankConnectionInfos) {
+            if (bankConnectionInfo.getBankId().equals(bankId)) {
+                return bankConnectionInfo.getURL();
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isBankRegistered(String bankId) {
+        if ((bankId == null) || bankId.isEmpty()) {
+            return false;
+        }
+
+        for (BankConnectionInfo bankConnectionInfo : bankConnectionInfos) {
+            if (bankConnectionInfo.getBankId().equals(bankId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
