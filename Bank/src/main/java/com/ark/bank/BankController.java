@@ -4,18 +4,19 @@ import com.ark.centralbank.Transaction;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Rick van der Heijden
  */
 public class BankController implements IBankController {
+    private static final long StartBankAccountNumber = 1000000000L;
+    private static final long EndBankAccountNumber = 9999999999L;
+    private static final int DefaultSessionTime = 90000;
     private final Random random = new Random();
-    private final long endBankAccountNumber = 9999999999L;
     private final String bankId;
     private final Set<BankAccount> bankAccounts = new HashSet<>();
     private final Set<Customer> customers = new HashSet<>();
-    private final Set<UUID> sessionKeys = new HashSet<>();
+    private final Set<Session> sessions = new HashSet<>();
 
     public BankController(String bankId) {
         this.bankId = bankId;
@@ -89,13 +90,10 @@ public class BankController implements IBankController {
             return null;
         }
 
-        UUID sessionKey = UUID.randomUUID();
+        Session session = new Session(DefaultSessionTime);
+        sessions.add(session);
 
-        while (!sessionKeys.add(sessionKey)) {
-            sessionKey = UUID.randomUUID();
-        }
-
-        return sessionKey.toString();
+        return session.getSessionKey();
     }
 
     @Override
@@ -104,15 +102,22 @@ public class BankController implements IBankController {
             return false;
         }
 
-        UUID uuid = UUID.fromString(sessionKey);
+        boolean result = false;
+        Session currentSession = null;
 
-        if (!sessionKeys.contains(uuid)) {
-            return false;
-        } else {
-            sessionKeys.remove(uuid);
+        for (Session session : sessions) {
+            if (session.getSessionKey().equals(sessionKey)) {
+                currentSession = session;
+                break;
+            }
         }
 
-        return true;
+        if (currentSession != null) {
+            sessions.remove(currentSession);
+            result = true;
+        }
+
+        return result;
     }
 
     private String getUnusedBankAccountNumber() {
@@ -125,10 +130,9 @@ public class BankController implements IBankController {
     }
 
     private String getRandomBankAccountNumber() {
-        long startBankAccountNumber = 1000000000L;
-        long range = endBankAccountNumber - startBankAccountNumber + 1;
+        long range = EndBankAccountNumber - StartBankAccountNumber + 1;
         long fraction = (long)(range * random.nextDouble());
-        long randomNumber = fraction + startBankAccountNumber;
+        long randomNumber = fraction + StartBankAccountNumber;
         return bankId + Long.toString(randomNumber);
     }
 

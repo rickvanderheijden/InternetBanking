@@ -2,6 +2,7 @@ package com.ark.bank;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 /**
  * @author Rick van der Heijden
@@ -11,8 +12,9 @@ public class Session {
     private String key;
     private String customerName;
     private String customerResidence;
-    private int sessionTime;
+    private final int sessionTime;
     private boolean active;
+    private final UUID sessionKey = UUID.randomUUID();
 
     public Session(int sessionTime) {
         this.sessionTime = sessionTime;
@@ -44,6 +46,10 @@ public class Session {
         }
 
         return result;
+    }
+
+    public String getSessionKey() {
+        return sessionKey.toString();
     }
 
     private void createTimer() {

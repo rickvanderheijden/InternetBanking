@@ -7,11 +7,8 @@ import java.rmi.RemoteException;
  */
 class BankHost {
 
-    static private String BankId = "RABO";
+    private static String BankId = "RABO";
     private static String URLBase = "http://localhost:1200/";
-    private static IBankController bankController;
-    private static CentralBankConnector centralBankConnector;
-    private static GUIConnector guiConnector;
 
     public static void main(String[] args) throws RemoteException {
 
@@ -26,8 +23,8 @@ class BankHost {
             URLBase = args[1];
         }
 
-        bankController = new BankController(BankId);
-        centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
-        guiConnector = new GUIConnector(bankController);
+        IBankController bankController = new BankController(BankId);
+        CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
+        GUIConnector guiConnector = new GUIConnector(bankController);
     }
 }
