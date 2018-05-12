@@ -1,4 +1,4 @@
-package main.java.com.ark.bankingapplication;
+package com.ark.bankingapplication;
 
 public class BankConnector {
 
