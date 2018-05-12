@@ -34,18 +34,30 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean isActive() {
-        return false;
+    public boolean isSessionActive(String sessionKey) {
+        if (bankController == null) {
+            return false;
+        }
+
+        return bankController.isSessionActive(sessionKey);
     }
 
     @Override
-    public boolean refreshSession() {
-        return false;
+    public boolean refreshSession(String sessionKey) {
+        if (bankController == null) {
+            return false;
+        }
+
+        return bankController.refreshSession(sessionKey);
     }
 
     @Override
-    public void terminateSession() {
+    public boolean terminateSession(String sessionKey) {
+        if (bankController == null) {
+            return false;
+        }
 
+        return bankController.terminateSession(sessionKey);
     }
 
     @Override

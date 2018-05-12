@@ -35,6 +35,21 @@ public class BankController implements IBankController {
         //TODO: Handle correctly
     }
 
+    @Override
+    public boolean isSessionActive(String sessionKey) {
+        return false;
+    }
+
+    @Override
+    public boolean refreshSession(String sessionKey) {
+        return false;
+    }
+
+    @Override
+    public boolean terminateSession(String sessionKey) {
+        return false;
+    }
+
     //TODO: Do not use Customer?
     @Override
     public BankAccount createBankAccount(Customer owner) {

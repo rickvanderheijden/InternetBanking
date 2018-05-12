@@ -12,5 +12,11 @@ public interface IBankController {
     Customer createCustomer(String name, String residence, String password);
     BankAccount createBankAccount(Customer owner);
     boolean executeTransaction(Transaction transaction);
+    boolean isSessionActive(String sessionKey);
+    boolean refreshSession(String sessionKey);
+    boolean terminateSession(String sessionKey);
+
+    //TODO: use this for GUIConnector
+    //boolean executeTransaction(String sessionKey, Transaction transaction );
 
 }

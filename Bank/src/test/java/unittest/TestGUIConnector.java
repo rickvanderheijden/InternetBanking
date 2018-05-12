@@ -23,11 +23,14 @@ public class TestGUIConnector {
 
     private IBankController bankController;
     private GUIConnector guiConnector;
+    private String sessionKey;
 
     @Before
     public void setUp() throws RemoteException {
         bankController = new BankController(BankIdInternal);
         guiConnector = new GUIConnector(bankController);
+        guiConnector.createCustomer(Name, Residence, Password);
+        sessionKey = guiConnector.login(Name, Residence, Password);
     }
 
     @After
@@ -36,34 +39,84 @@ public class TestGUIConnector {
         bankController = null;
     }
 
+
+    @Test
+    public void testLoginWithNoBankController() throws RemoteException {
+        guiConnector = new GUIConnector(null);
+        String result = guiConnector.login(Name, Residence, Password);
+        assertNull(result);
+    }
+
     @Test
     public void testLoginWithoutRegisteredCustomer() {
-        String result = guiConnector.login("Name", "Residence", "password");
+        String result = guiConnector.login("OtherName", "OtherResidence", "OtherPassword");
         assertNull(result);
     }
 
     @Test
     public void testLoginWithRegisteredCustomer() {
-        createCustomer();
         String result = guiConnector.login(Name, Residence, Password);
         assertNotNull(result);
     }
 
     @Test
-    public void testLogoutNull() {
+    public void testLogoutWithNoBankController() throws RemoteException {
+        guiConnector = new GUIConnector(null);
+        String result = guiConnector.login(Name, Residence, Password);
+        assertNull(result);
+    }
+
+    @Test
+    public void testLogoutWithSessionKeyNull() {
         boolean result = guiConnector.logout(null);
         assertFalse(result);
     }
 
     @Test
     public void testLogoutWithRegisteredCustomer() {
-        createCustomer();
-        String sessionKey = guiConnector.login(Name, Residence, Password);
         boolean result = guiConnector.logout(sessionKey);
         assertTrue(result);
     }
 
-    private void createCustomer() {
-        guiConnector.createCustomer(Name, Residence, Password);
+    @Test
+    public void testIsSessionActive() {
+        boolean result = guiConnector.isSessionActive(sessionKey);
+        assertFalse(result);
     }
+
+    @Test
+    public void testIsSessionActiveWithNoBankController() throws RemoteException {
+        guiConnector = new GUIConnector(null);
+        boolean result = guiConnector.isSessionActive(sessionKey);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRefreshSession() {
+        boolean result = guiConnector.refreshSession(sessionKey);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRefreshSessionWithNoBankController() throws RemoteException {
+        guiConnector = new GUIConnector(null);
+        boolean result = guiConnector.refreshSession(sessionKey);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTerminateSession() {
+        boolean result = guiConnector.terminateSession(sessionKey);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTerminateSessionWithNoBankController() throws RemoteException {
+        guiConnector = new GUIConnector(null);
+        boolean result = guiConnector.terminateSession(sessionKey);
+        assertFalse(result);
+    }
+
+
+    //TODO: What if user is already logged in?
 }

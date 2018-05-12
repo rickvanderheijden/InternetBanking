@@ -9,12 +9,11 @@ import java.util.UUID;
  */
 public class Session {
     private Timer timer;
-    private String key;
     private String customerName;
     private String customerResidence;
     private final int sessionTime;
     private boolean active;
-    private final UUID sessionKey = UUID.randomUUID();
+    private final UUID key = UUID.randomUUID();
 
     public Session(int sessionTime) {
         this.sessionTime = sessionTime;
@@ -49,7 +48,7 @@ public class Session {
     }
 
     public String getSessionKey() {
-        return sessionKey.toString();
+        return isActive() ? key.toString() : null;
     }
 
     private void createTimer() {

@@ -15,7 +15,7 @@ public interface IBankForClientSession extends Remote {
      * @return boolean This returns true if the session is active, false if not.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    boolean isActive() throws RemoteException;
+    boolean isSessionActive(String sessionKey) throws RemoteException;
 
     /**
      * This method can be used to refresh the session. This resets the timer for the active session.
@@ -23,13 +23,14 @@ public interface IBankForClientSession extends Remote {
      * @return boolean This returns true if the session is active and has been reset, false if not.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    boolean refreshSession() throws RemoteException;
+    boolean refreshSession(String sessionKey) throws RemoteException;
 
     /**
      * This method can be used to terminate the current session.
+     * @return boolean This returns true if the session is active and has been terminated, false if not.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    void terminateSession() throws RemoteException;
+    boolean terminateSession(String sessionkey) throws RemoteException;
 
     /**
      * This method can be used create a new bank account.

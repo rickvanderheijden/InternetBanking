@@ -8,6 +8,7 @@ import org.junit.Test;
 import static java.lang.Thread.sleep;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Rick van der Heijden
@@ -68,4 +69,15 @@ public class TestSession {
         assertFalse(session.terminate());
     }
 
+    @Test
+    public void testGetSessionKeyBeforeTimeOut() throws InterruptedException {
+        sleep(sessionTime - sessionTimeDelta);
+        assertTrue(session.getSessionKey().length() == 36);
+    }
+
+    @Test
+    public void testGetSessionKeyAfterTimeOut() throws InterruptedException {
+        sleep(sessionTime + sessionTimeDelta);
+        assertNull(session.getSessionKey());
+    }
 }
