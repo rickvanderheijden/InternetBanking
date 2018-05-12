@@ -16,7 +16,7 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     private RemotePublisher remotePublisher;
     private BankController bankController;
-    private Set<UUID> sessionKeys = new HashSet<>();
+    private final Set<UUID> sessionKeys = new HashSet<>();
 
     public GUIConnector(BankController bankController) throws RemoteException {
         super();

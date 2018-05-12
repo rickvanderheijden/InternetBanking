@@ -39,11 +39,7 @@ public class BankUtilities {
         service = Service.create(wsdlURL, qname);
         qnamePort = new QName("http://bank.ark.com/", "BankPort");
 
-        if (service != null) {
-            return service.getPort(qnamePort, IBankForCentralBank.class);
-        }
-
-        return null;
+        return service.getPort(qnamePort, IBankForCentralBank.class);
     }
 
     public IBankForClientSession startBankForClient() throws IOException, NotBoundException {
