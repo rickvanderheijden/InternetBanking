@@ -99,8 +99,6 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
             return null;
         }
 
-        UUID uuid = UUID.randomUUID();
-
         UUID sessionKey = UUID.randomUUID();
 
         while (!sessionKeys.add(sessionKey)) {
@@ -112,6 +110,18 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public boolean logout(String sessionKey) {
-        return false;
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        UUID uuid = UUID.fromString(sessionKey);
+
+        if (!sessionKeys.contains(uuid)) {
+            return false;
+        } else {
+            sessionKeys.remove(uuid);
+        }
+
+        return true;
     }
 }
