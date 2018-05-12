@@ -4,6 +4,7 @@ import com.ark.centralbank.Transaction;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author Rick van der Heijden
@@ -15,6 +16,7 @@ public class BankController {
     private final String bankId;
     private final Set<BankAccount> bankAccounts = new HashSet<>();
     private final Set<Customer> customers = new HashSet<>();
+    private final Set<UUID> sessionKeys = new HashSet<>();
 
     public BankController(String bankId) {
         this.bankId = bankId;
@@ -76,6 +78,40 @@ public class BankController {
         return null;
     }
 
+    //@Override
+    public String login(String name, String residence, String password) {
+        Customer customer = getCustomer(name, residence);
+
+        if (customer == null || !customer.isPasswordValid(password)) {
+            return null;
+        }
+
+        UUID sessionKey = UUID.randomUUID();
+
+        while (!sessionKeys.add(sessionKey)) {
+            sessionKey = UUID.randomUUID();
+        }
+
+        return sessionKey.toString();
+    }
+
+    //@Override
+    public boolean logout(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        UUID uuid = UUID.fromString(sessionKey);
+
+        if (!sessionKeys.contains(uuid)) {
+            return false;
+        } else {
+            sessionKeys.remove(uuid);
+        }
+
+        return true;
+    }
+
     private String getUnusedBankAccountNumber() {
         String bankAccountNumber = getRandomBankAccountNumber();
         while (isBankAccountNumberInUse(bankAccountNumber)) {
@@ -101,6 +137,4 @@ public class BankController {
 
         return false;
     }
-
-
 }

@@ -7,10 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author Rick van der Heijden
@@ -19,7 +16,6 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     private RemotePublisher remotePublisher;
     private BankController bankController;
-    private final Set<UUID> sessionKeys = new HashSet<>();
 
     public GUIConnector(BankController bankController) throws RemoteException {
         super();
@@ -89,42 +85,19 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public String login(String name, String residence, String password) {
-
-        //TODO: Move to session or something and add timer etc
-
         if (bankController == null) {
             return null;
         }
 
-        Customer customer = bankController.getCustomer(name, residence);
-
-        if (customer == null || !customer.isPasswordValid(password)) {
-            return null;
-        }
-
-        UUID sessionKey = UUID.randomUUID();
-
-        while (!sessionKeys.add(sessionKey)) {
-            sessionKey = UUID.randomUUID();
-        }
-
-        return sessionKey.toString();
+        return bankController.login(name, residence, password);
     }
 
     @Override
     public boolean logout(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (bankController == null) {
             return false;
         }
 
-        UUID uuid = UUID.fromString(sessionKey);
-
-        if (!sessionKeys.contains(uuid)) {
-            return false;
-        } else {
-            sessionKeys.remove(uuid);
-        }
-
-        return true;
+        return bankController.logout(sessionKey);
     }
 }
