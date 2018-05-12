@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin {
 
     private RemotePublisher remotePublisher;

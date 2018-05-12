@@ -6,6 +6,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * @author Rick van der Heijden
+ */
 public interface IBankForClientSession extends Remote {
     /**
      * This method can be used to check if the session is still active.

@@ -14,6 +14,9 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class TestBankController {
 
     private final String BankIdInternal = "TEST";

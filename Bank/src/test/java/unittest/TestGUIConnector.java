@@ -10,6 +10,9 @@ import java.rmi.RemoteException;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class TestGUIConnector {
 
     private final String bankIdInternal = "TEST";

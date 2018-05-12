@@ -15,6 +15,9 @@ import javax.xml.ws.Service;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class BankUtilities {
 
     private static final String JARPATH = "..\\out\\artifacts\\Bank_jar\\";

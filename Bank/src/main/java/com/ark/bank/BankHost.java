@@ -2,7 +2,9 @@ package com.ark.bank;
 
 import java.rmi.RemoteException;
 
-@SuppressWarnings("SpellCheckingInspection")
+/**
+ * @author Rick van der Heijden
+ */
 class BankHost {
 
     static private String BankId = "RABO";

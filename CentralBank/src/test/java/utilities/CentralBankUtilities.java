@@ -11,6 +11,9 @@ import javax.xml.ws.Service;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class CentralBankUtilities {
 
     private static final String JARPATH = "..\\out\\artifacts\\CentralBank_jar\\";

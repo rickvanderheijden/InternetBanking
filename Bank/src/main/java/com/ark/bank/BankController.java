@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-@SuppressWarnings("SpellCheckingInspection")
+/**
+ * @author Rick van der Heijden
+ */
 public class BankController {
     private final Random random = new Random();
     private final long startBankAccountNumber = 1000000000L;

@@ -6,6 +6,9 @@ import org.junit.BeforeClass;
 import utilities.CentralBankUtilities;
 import java.io.IOException;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class TestCentralBankTransaction {
     private static ICentralBankTransaction centralBank;
     private static CentralBankUtilities utilities;
