@@ -1,4 +1,4 @@
-package main.java.com.ark.bankingapplication;
+package com.ark.bankingapplication;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -6,11 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-public class GUIHost extends Application {
+public class BankingApplicationHost extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("StartUp.fxml"));
+
+        Parent root = FXMLLoader.load(getClass().getResource("views/StartUp.fxml"));
 
         Scene scene = new Scene(root);
 
