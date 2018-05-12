@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main.java.com.ark.bankingapplication.views;
+package com.ark.bankingapplication.views;
 
 import java.io.IOException;
 import java.net.URL;
