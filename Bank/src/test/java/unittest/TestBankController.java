@@ -3,6 +3,7 @@ package unittest;
 import com.ark.bank.BankAccount;
 import com.ark.bank.BankController;
 import com.ark.bank.Customer;
+import com.ark.bank.IBankController;
 import com.ark.centralbank.Transaction;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class TestBankController {
     private final String accountToExternal   = BankIdExternal + "239475623";
     private String accountFromInternal;
     private String accountToInternal;
-    private BankController bankController;
+    private IBankController bankController;
 
     @Before
     public void setUp() {

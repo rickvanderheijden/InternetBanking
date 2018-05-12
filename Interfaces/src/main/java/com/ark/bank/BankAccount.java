@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class BankAccount implements Serializable {
 
     private final String number;
-    private final double balance = 0.00;
     private double creditLimit = 100.00;
     private final Customer owner;
 
@@ -26,6 +25,7 @@ public class BankAccount implements Serializable {
     }
 
     public double getBalance() {
+        double balance = 0.00;
         return balance;
     }
 

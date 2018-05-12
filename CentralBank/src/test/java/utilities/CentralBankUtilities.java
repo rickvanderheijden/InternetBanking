@@ -57,7 +57,7 @@ public class CentralBankUtilities {
         qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
     }
 
-    private boolean waitForConnection() {
+    private void waitForConnection() {
 
         //TODO: Replace sleep with valid check.
         try {
@@ -66,6 +66,5 @@ public class CentralBankUtilities {
             e.printStackTrace();
         }
 
-        return true;
     }
 }

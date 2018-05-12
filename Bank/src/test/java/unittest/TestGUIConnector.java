@@ -2,6 +2,7 @@ package unittest;
 
 import com.ark.bank.BankController;
 import com.ark.bank.GUIConnector;
+import com.ark.bank.IBankController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class TestGUIConnector {
     private final String residence = "Residence";
     private final String password = "Password";
 
-    private BankController bankController;
+    private IBankController bankController;
     private GUIConnector guiConnector;
 
     @Before

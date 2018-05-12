@@ -9,7 +9,7 @@ class BankHost {
 
     static private String BankId = "RABO";
     private static String URLBase = "http://localhost:1200/";
-    private static BankController bankController;
+    private static IBankController bankController;
     private static CentralBankConnector centralBankConnector;
     private static GUIConnector guiConnector;
 

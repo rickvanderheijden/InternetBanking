@@ -23,9 +23,6 @@ public class BankUtilities {
     private static final String JARPATH = "..\\out\\artifacts\\Bank_jar\\";
     private static final String JARFILE = "Bank.jar";
     private Process processBank;
-    private Service service;
-    private QName qnamePort;
-    private IRemotePublisherForListener remotePublisher;
 
     public IBankForCentralBank startBankForCentralBank() throws IOException {
         startBank();
@@ -39,8 +36,8 @@ public class BankUtilities {
         waitForConnection();
 
         QName qname = new QName("http://bank.ark.com/", "BankService");
-        service = Service.create(wsdlURL, qname);
-        qnamePort = new QName("http://bank.ark.com/", "BankPort");
+        Service service = Service.create(wsdlURL, qname);
+        QName qnamePort = new QName("http://bank.ark.com/", "BankPort");
 
         return service.getPort(qnamePort, IBankForCentralBank.class);
     }
@@ -51,7 +48,7 @@ public class BankUtilities {
         waitForConnection();
 
         Registry registry = LocateRegistry.getRegistry("localhost",1099);
-        remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher");
+        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher");
         //remotePublisher.subscribeRemoteListener(this, "fondsen");
         return (IBankForClientSession) registry.lookup("bank");
     }
@@ -68,7 +65,7 @@ public class BankUtilities {
         processBank = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE).start();
     }
 
-    private boolean waitForConnection() {
+    private void waitForConnection() {
 
         //TODO: Replace sleep with valid check.
         try {
@@ -77,6 +74,5 @@ public class BankUtilities {
             e.printStackTrace();
         }
 
-        return true;
     }
 }

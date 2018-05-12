@@ -9,9 +9,8 @@ import java.util.UUID;
 /**
  * @author Rick van der Heijden
  */
-public class BankController {
+public class BankController implements IBankController {
     private final Random random = new Random();
-    private final long startBankAccountNumber = 1000000000L;
     private final long endBankAccountNumber = 9999999999L;
     private final String bankId;
     private final Set<BankAccount> bankAccounts = new HashSet<>();
@@ -22,6 +21,7 @@ public class BankController {
         this.bankId = bankId;
     }
 
+    @Override
     public boolean executeTransaction(Transaction transaction) {
         return ((transaction != null)
                 && (transaction.getDate() != null)
@@ -35,6 +35,7 @@ public class BankController {
     }
 
     //TODO: Do not use Customer?
+    @Override
     public BankAccount createBankAccount(Customer owner) {
 
         if (owner == null) {
@@ -46,6 +47,7 @@ public class BankController {
         return bankAccount;
     }
 
+    @Override
     public Customer createCustomer(String name, String residence, String password) {
         //TODO: Override equals
         if ((name == null) || name.isEmpty()
@@ -67,6 +69,7 @@ public class BankController {
         return customer;
     }
 
+    @Override
     public Customer getCustomer(String name, String residence) {
         for (Customer customer : customers) {
             if ((customer.getName().equals(name))
@@ -78,7 +81,7 @@ public class BankController {
         return null;
     }
 
-    //@Override
+    @Override
     public String login(String name, String residence, String password) {
         Customer customer = getCustomer(name, residence);
 
@@ -95,7 +98,7 @@ public class BankController {
         return sessionKey.toString();
     }
 
-    //@Override
+    @Override
     public boolean logout(String sessionKey) {
         if ((sessionKey == null) || sessionKey.isEmpty()) {
             return false;
@@ -122,6 +125,7 @@ public class BankController {
     }
 
     private String getRandomBankAccountNumber() {
+        long startBankAccountNumber = 1000000000L;
         long range = endBankAccountNumber - startBankAccountNumber + 1;
         long fraction = (long)(range * random.nextDouble());
         long randomNumber = fraction + startBankAccountNumber;

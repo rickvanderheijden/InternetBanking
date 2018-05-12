@@ -14,15 +14,14 @@ import java.util.List;
  */
 public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin {
 
-    private RemotePublisher remotePublisher;
-    private BankController bankController;
+    private IBankController bankController;
 
-    public GUIConnector(BankController bankController) throws RemoteException {
+    public GUIConnector(IBankController bankController) throws RemoteException {
         super();
 
         this.bankController = bankController;
 
-        remotePublisher = new RemotePublisher();
+        RemotePublisher remotePublisher = new RemotePublisher();
         //remotePublisher.registerProperty("");
 
         try {
