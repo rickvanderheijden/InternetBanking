@@ -33,7 +33,7 @@ public class StartUp implements Initializable {
     @FXML private AnchorPane startAnchorPane;
 
 
-    private ArrayList<String> Banks;
+    private ArrayList<String> banks;
 
     /**
      * Initializes the controller class.
@@ -45,8 +45,8 @@ public class StartUp implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.Banks = this.getAllRegisteredBanks();
-        this.selectBankComboBox.getItems().addAll(Banks);
+        this.banks = this.getAllRegisteredBanks();
+        this.selectBankComboBox.getItems().addAll(banks);
         this.loginButton.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -61,23 +61,23 @@ public class StartUp implements Initializable {
         this.usernameTextField.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
                 if(!this.usernameTextField.getText().isEmpty()){
-                    this.usernameTextField.getStyleClass().add("succes");
+                    this.usernameTextField.getStyleClass().add("success");
                 }else{
                     this.usernameTextField.getStyleClass().add("error");
                 }
             }else{
-                this.usernameTextField.getStyleClass().removeAll("succes", "error");
+                this.usernameTextField.getStyleClass().removeAll("success", "error");
             }
         });
         this.passwordField.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
                 if(!this.passwordField.getText().isEmpty() && this.passwordField.getText().length() >= 8){
-                    this.passwordField.getStyleClass().add("succes");
+                    this.passwordField.getStyleClass().add("success");
                 }else{
                     this.passwordField.getStyleClass().add("error");
                 }
             }else{
-                this.passwordField.getStyleClass().removeAll("succes", "error");
+                this.passwordField.getStyleClass().removeAll("success", "error");
             }
         });
         this.selectBankComboBox.focusedProperty().addListener((arg0, oldValue, newValue)->{
@@ -85,12 +85,12 @@ public class StartUp implements Initializable {
                 String bank = this.selectBankComboBox.getValue();
                 System.out.println(bank);
                 if(bank != null){
-                    this.selectBankComboBox.getStyleClass().add("succes");
+                    this.selectBankComboBox.getStyleClass().add("success");
                 }else{
                     this.selectBankComboBox.getStyleClass().add("error");
                 }
             }else{
-                this.selectBankComboBox.getStyleClass().removeAll("succes", "error");
+                this.selectBankComboBox.getStyleClass().removeAll("success", "error");
             }
         });
     }
@@ -112,7 +112,7 @@ public class StartUp implements Initializable {
 
     /**
      * Get all registered banks from the database
-     * @return ArrayList of Banks
+     * @return ArrayList of banks
      */
     private ArrayList<String> getAllRegisteredBanks(){
         ArrayList returnList = new ArrayList<String>();
