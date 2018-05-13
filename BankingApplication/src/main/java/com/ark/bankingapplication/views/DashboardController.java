@@ -1,6 +1,7 @@
 package com.ark.bankingapplication.views;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -48,6 +49,25 @@ public class DashboardController implements Initializable {
                 }
             }
         });
+    }
+
+    /**
+     * Get all the incomming transactions
+     * @return list of incomming transactions
+     */
+    public ArrayList<String> getIncommingTransactions(){
+        //TODO: get incomming transactions
+
+        return null;
+    }
+
+    /**
+     * Get all the outgoing transactions
+     * @return list of outgoing transactions
+     */
+    public ArrayList<String> getOutgoingTransactions(){
+        //TODO: get outgoing transactions
+        return null;
     }
 
 }

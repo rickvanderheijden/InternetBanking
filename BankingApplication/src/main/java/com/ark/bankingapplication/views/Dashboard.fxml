@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" layoutX="40.0" layoutY="40.0" prefHeight="560.0" prefWidth="1000.0" styleClass="anchor-background" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.com.ark.bankingapplication.views.DashboardController">
+<AnchorPane id="AnchorPane" layoutX="40.0" layoutY="40.0" prefHeight="560.0" prefWidth="1000.0" styleClass="anchor-background" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ark.bankingapplication.views.DashboardController">
    <stylesheets>
       <URL value="@style.css" />
    </stylesheets>
