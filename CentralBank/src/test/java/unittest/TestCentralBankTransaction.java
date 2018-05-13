@@ -8,6 +8,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class TestCentralBankTransaction {
 
     private static ICentralBankTransaction centralBank;

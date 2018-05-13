@@ -12,17 +12,20 @@ import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * @author Rick van der Heijden
+ */
 @WebService(serviceName = "BankService", portName = "BankPort")
 public class CentralBankConnector implements IBankForCentralBank {
     private ICentralBankRegister centralBank = null;
-    private BankController bankController;
+    private IBankController bankController;
     private String bankId;
     private String URLBase;
 
     public CentralBankConnector() {
     }
 
-    public CentralBankConnector(BankController bankController, String bankId, String URLBase) {
+    public CentralBankConnector(IBankController bankController, String bankId, String URLBase) {
         this.bankController = bankController;
         this.bankId = bankId;
         this.URLBase = URLBase;

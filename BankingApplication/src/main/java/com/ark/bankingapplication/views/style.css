@@ -33,7 +33,6 @@ Startup screen
 
 .transparent-input:focused{
    -fx-border-color: #806105;
-   -fx-border-color: #806105;
    -fx-text-inner-color: #806105;
 }
 #loginPane{

@@ -10,6 +10,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class TestBankForClient {
     private static IBankForClientSession bank;
     private static BankUtilities utilities;

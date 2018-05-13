@@ -1,5 +1,8 @@
 package com.ark.centralbank;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class BankConnectionInfo {
     private String bankId;
     private String URL;
