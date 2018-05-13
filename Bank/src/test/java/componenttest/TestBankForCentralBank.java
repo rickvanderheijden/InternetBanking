@@ -12,6 +12,9 @@ import org.junit.Test;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class TestBankForCentralBank {
     private static IBankForCentralBank bank;
     private static BankUtilities utilities;

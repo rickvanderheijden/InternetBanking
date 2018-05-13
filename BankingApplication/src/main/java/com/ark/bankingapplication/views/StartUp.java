@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -47,14 +45,12 @@ public class StartUp implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.banks = this.getAllRegisteredBanks();
         this.selectBankComboBox.getItems().addAll(banks);
-        this.loginButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event) {
-                try {
-                    doLogin();
-                } catch (IOException ex) {
-                    Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-                }
+
+        this.loginButton.setOnAction(event -> {
+            try {
+                doLogin();
+            } catch (IOException ex) {
+                Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 

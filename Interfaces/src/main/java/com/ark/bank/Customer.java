@@ -2,6 +2,9 @@ package com.ark.bank;
 
 import java.io.Serializable;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class Customer implements Serializable {
 
     private final String name;

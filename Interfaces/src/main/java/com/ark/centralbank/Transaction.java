@@ -4,6 +4,9 @@ import javax.jws.WebService;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author Rick van der Heijden
+ */
 @WebService
 public class Transaction implements Serializable {
     private double amount;

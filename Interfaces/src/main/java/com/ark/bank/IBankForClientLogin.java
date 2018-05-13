@@ -3,6 +3,9 @@ package com.ark.bank;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * @author Rick van der Heijden
+ */
 public interface IBankForClientLogin extends Remote {
 
     //TODO: Change class diagram or change code to be like class diagram

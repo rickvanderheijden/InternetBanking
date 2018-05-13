@@ -2,6 +2,9 @@ package com.ark.centralbank;
 
 import javax.xml.ws.Endpoint;
 
+/**
+ * @author Rick van der Heijden
+ */
 class CentralBankHost {
     
     private static final String URL = "http://localhost:8080/CentralBank";
