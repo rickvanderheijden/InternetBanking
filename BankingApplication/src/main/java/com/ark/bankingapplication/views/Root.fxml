@@ -4,8 +4,6 @@
 <?import com.ark.bankingapplication.views.*?>
 
 <AnchorPane id="AnchorPane" prefWidth="1080" prefHeight="640" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ark.bankingapplication.views.Root">
-    <children>
-        <StartUp />
-        <Dashboard />
-    </children>
+    <StartUp/>
+    <Dashboard/>
 </AnchorPane>
