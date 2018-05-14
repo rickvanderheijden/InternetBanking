@@ -3,6 +3,8 @@ package com.ark.bankingapplication.views;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -16,7 +18,7 @@ import javafx.scene.control.TextField;
  *
  * @author Arthur
  */
-public class DashboardController implements Initializable {
+public class Dashboard extends View {
 
     @FXML private Label nameLabel;
     @FXML private Label balanceLabel;
@@ -26,11 +28,9 @@ public class DashboardController implements Initializable {
     @FXML private ListView<?> outgoingListView;
     @FXML private ListView<?> incomingListView;
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public Dashboard() throws ControlNotLoadedException {
+        super("Dashboard.fxml");
+
         amountFullTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,

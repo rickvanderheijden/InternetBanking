@@ -12,9 +12,6 @@ class BankHost {
 
     public static void main(String[] args) throws RemoteException {
 
-        // Welcome message
-        System.out.println("Bank is running");
-
         if ((args.length >= 2)
             && (args[0] != null) && (!args[0].isEmpty())
             && (args[1] != null) && (!args[1].isEmpty()))
@@ -22,6 +19,9 @@ class BankHost {
             BankId = args[0];
             URLBase = args[1];
         }
+
+        // Welcome message
+        System.out.println("Bank is running: " + BankId);
 
         IBankController bankController = new BankController(BankId);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);

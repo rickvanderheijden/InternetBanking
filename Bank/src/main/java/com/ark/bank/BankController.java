@@ -135,6 +135,11 @@ public class BankController implements IBankController {
         return result;
     }
 
+    @Override
+    public String getBankId() {
+        return bankId;
+    }
+
     private String getUnusedBankAccountNumber() {
         String bankAccountNumber = getRandomBankAccountNumber();
         while (isBankAccountNumberInUse(bankAccountNumber)) {

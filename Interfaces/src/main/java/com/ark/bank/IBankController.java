@@ -15,6 +15,7 @@ public interface IBankController {
     boolean isSessionActive(String sessionKey);
     boolean refreshSession(String sessionKey);
     boolean terminateSession(String sessionKey);
+    String getBankId();
 
     //TODO: use this for GUIConnector
     //boolean executeTransaction(String sessionKey, Transaction transaction );
