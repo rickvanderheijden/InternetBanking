@@ -12,9 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" layoutX="40.0" layoutY="40.0" prefHeight="560.0" prefWidth="1000.0"
-            styleClass="anchor-background" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.ark.bankingapplication.views.DashboardController">
+<fx:root fx:id="dashboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="javafx.scene.layout.AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@style.css"/>
    </stylesheets>
@@ -69,4 +67,4 @@
          </Tab>
       </TabPane>
    </HBox>
-</AnchorPane>
+</fx:root>

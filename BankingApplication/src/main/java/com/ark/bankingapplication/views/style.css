@@ -29,7 +29,7 @@
  ********   STARTUP SCREEN    ********
  *************************************/
 
-#startAnchorPane{ -fx-background-image: url("./images/creditcard.jpg");}
+#startUp{ -fx-background-image: url("./images/creditcard.jpg");}
 #loginPane{ -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 100,100,100,100 );}
 
 /*************************************

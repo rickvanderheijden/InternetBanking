@@ -10,9 +10,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="startAnchorPane" fx:id="startAnchorPane" prefHeight="640.0" prefWidth="1080.0" stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.ark.bankingapplication.views.StartUp">
+<fx:root fx:id="startUp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="javafx.scene.layout.AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <AnchorPane id="loginPane" layoutX="540.0" prefHeight="640.0" prefWidth="540.0"
                style="-fx-background-color: #212636;" styleClass="loginPane" stylesheets="@style.css">
       <children>
@@ -44,4 +43,4 @@
          <Image url="@images/logo.png"/>
       </image>
    </ImageView>
-</AnchorPane>
+</fx:root>

@@ -24,10 +24,15 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         RemotePublisher remotePublisher = new RemotePublisher();
         //remotePublisher.registerProperty("");
 
+        String bankId = "";
+        if (bankController != null) {
+            bankId = bankController.getBankId();
+        }
+
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("bankPublisher", remotePublisher);
-            registry.rebind("bank", this);
+            registry.rebind("bankPublisher" + bankId, remotePublisher);
+            registry.rebind("bank" + bankId, this);
         } catch (RemoteException e) {
 
         }
