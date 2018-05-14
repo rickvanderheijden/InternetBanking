@@ -48,10 +48,8 @@
 
 /** List Styling **/
 .list { -fx-background-color: transparent;}
-=======
-/*
-Startup screen
-*/
+
+/**Startup screen **/
 #startAnchorPane{
     -fx-background-image: url("./images/creditcard.jpg");
     
