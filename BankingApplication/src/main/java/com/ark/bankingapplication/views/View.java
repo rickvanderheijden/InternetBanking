@@ -11,6 +11,7 @@ import java.io.IOException;
 public abstract class View extends AnchorPane {
 
     protected Controller controller;
+    private String bank = null;
 
     public View(String resource) throws ControlNotLoadedException {
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -50,5 +51,14 @@ public abstract class View extends AnchorPane {
         alert.setHeaderText(null);
         alert.setContentText(text);
         alert.show();
+    }
+
+    public String getBank(){
+        return this.bank;
+    }
+
+    public void setBank(String bank){
+        this.bank = bank;
+
     }
 }
