@@ -16,7 +16,6 @@ import java.rmi.NotBoundException;
 public class Controller {
     private final Stage stage;
     private final BankConnector bankConnector = new BankConnector();
-    private final String test = "HOOOI";
 
     private Scene scene;
     private StartUp startUp;
@@ -94,7 +93,6 @@ public class Controller {
     }
     public void login(){
         dashboard.setBank(this.bank);
-//        this.bankLogin.login()
     }
 
     public void setDashboardBankId(String bankId){

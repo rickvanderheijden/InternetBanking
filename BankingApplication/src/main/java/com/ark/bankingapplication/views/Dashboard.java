@@ -1,22 +1,18 @@
 package com.ark.bankingapplication.views;
 
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * FXML Controller class
