@@ -1,16 +1,29 @@
 package com.ark.bankingapplication.views;
 
-import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
-import java.util.ArrayList;
-
-public class StartUp extends View {
+/**
+ * FXML Controller class
+ *
+ * @author Arthur
+ */
+public class StartUpOld implements Initializable {
 
     @FXML private TextField usernameTextField;
-    @FXML private TextField residenceTextField;
     @FXML private Label errorMessageLabel;
     @FXML private ComboBox<String> selectBankComboBox;
     @FXML private PasswordField passwordField;
@@ -20,14 +33,26 @@ public class StartUp extends View {
 
     private ArrayList<String> banks;
 
+    /**
+     * Initializes the controller class.
+     */
 
-    public StartUp() throws ControlNotLoadedException {
-        super("StartUp.fxml");
+    public StartUpOld() {
 
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
         this.banks = this.getAllRegisteredBanks();
         this.selectBankComboBox.getItems().addAll(banks);
 
-        this.loginButton.setOnAction(event -> doLogin());
+        this.loginButton.setOnAction(event -> {
+            try {
+                doLogin();
+            } catch (IOException ex) {
+                Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         this.usernameTextField.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
@@ -38,17 +63,6 @@ public class StartUp extends View {
                 }
             }else{
                 this.usernameTextField.getStyleClass().removeAll("success", "error");
-            }
-        });
-        this.residenceTextField.focusedProperty().addListener((arg0, oldValue, newValue)->{
-            if(!newValue){
-                if(!this.residenceTextField.getText().isEmpty()){
-                    this.residenceTextField.getStyleClass().add("success");
-                }else{
-                    this.residenceTextField.getStyleClass().add("error");
-                }
-            }else{
-                this.residenceTextField.getStyleClass().removeAll("success", "error");
             }
         });
         this.passwordField.focusedProperty().addListener((arg0, oldValue, newValue)->{
@@ -65,6 +79,7 @@ public class StartUp extends View {
         this.selectBankComboBox.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
                 String bank = this.selectBankComboBox.getValue();
+                System.out.println(bank);
                 if(bank != null){
                     this.selectBankComboBox.getStyleClass().add("success");
                 }else{
@@ -79,50 +94,30 @@ public class StartUp extends View {
 
     /**
      * Execute login
+     * @throws IOException
      */
-    private void doLogin()
-    {
+    private void doLogin() throws IOException {
         this.errorMessageLabel.setVisible(false);
-        String selectedBank = this.selectBankComboBox.getValue();
-        String username = this.usernameTextField.getText();
-        String password = this.passwordField.getText();
-        String residence = this.residenceTextField.getText();
+        System.out.println("login geklikt");
 
-        if(selectedBank == null || username.isEmpty() || password.isEmpty() || residence.isEmpty())
-        {
-            this.errorMessageLabel.setText("Er is iets fout gegaan, niet alle velden zijn ingevuld");
-            this.errorMessageLabel.setVisible(true);
-        }else
-        {
-            controller.setDashboardBankId(selectedBank);
-            controller.login();
-            controller.changeStyleSheet(selectedBank+".css");
-            controller.showDashboard();
-        }
+        this.errorMessageLabel.setText("Er is iets fout gegaan");
+        this.errorMessageLabel.setVisible(true);
+        AnchorPane pane = FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
+        startAnchorPane.getChildren().setAll(pane);
     }
 
     /**
      * Get all registered banks from the database
      * @return ArrayList of banks
      */
-    private ArrayList getAllRegisteredBanks(){
+    private ArrayList<String> getAllRegisteredBanks(){
         ArrayList returnList = new ArrayList<String>();
-        returnList.add("ABNA");
-        returnList.add("RABO");
+        returnList.add("ABN AMRO");
+        returnList.add("Rabobank");
+        returnList.add("ING");
+        returnList.add("SNS");
 
         return returnList;
     }
-
-    public void clearInputs() {
-        residenceTextField.getStyleClass().removeAll("success", "error");
-        usernameTextField.getStyleClass().removeAll("success", "error");
-        selectBankComboBox.getStyleClass().removeAll("success", "error");
-        passwordField.getStyleClass().removeAll("success", "error");
-        usernameTextField.clear();
-       residenceTextField.clear();
-       selectBankComboBox.getItems().clear();
-       selectBankComboBox.getItems().addAll(banks);
-       passwordField.clear();
-    }
-
+    
 }

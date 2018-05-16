@@ -2,7 +2,6 @@
 
 <?import javafx.scene.layout.*?>
 <?import com.ark.bankingapplication.views.*?>
-
 <AnchorPane id="AnchorPane" prefWidth="1680" prefHeight="960" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ark.bankingapplication.views.Root">
     <StartUp/>
     <Dashboard/>

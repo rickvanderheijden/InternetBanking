@@ -1,5 +1,9 @@
 package com.ark.bankingapplication.views;
 
+
+=======
+import java.net.URL;
+import java.util.ResourceBundle;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -10,9 +14,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
 import java.io.File;
 import java.util.ArrayList;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+
 
 /**
  * FXML Controller class
@@ -28,6 +36,7 @@ public class Dashboard extends View {
     @FXML private TextField amountCentsTextField;
     @FXML private ListView<?> outgoingListView;
     @FXML private ListView<?> incomingListView;
+
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
     @FXML private ImageView logoutImageView;
@@ -37,8 +46,6 @@ public class Dashboard extends View {
 
     public Dashboard( ) throws ControlNotLoadedException {
         super("Dashboard.fxml");
-
-
 
         amountFullTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -58,7 +65,9 @@ public class Dashboard extends View {
                 }
             }
         });
+
         logoutImageView.setOnMouseClicked(e -> doLogout());
+
 
     }
 
@@ -100,4 +109,5 @@ public class Dashboard extends View {
     private void doLogout() {
         controller.showStartUp();
     }
+
 }

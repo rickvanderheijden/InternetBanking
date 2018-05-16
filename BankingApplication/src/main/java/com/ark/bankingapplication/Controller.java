@@ -32,6 +32,7 @@ public class Controller {
     public void start() throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("views/Root.fxml"));
         this.scene = new Scene(root);
+
         scene.getStylesheets().add(getClass().getResource("views/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
@@ -45,12 +46,14 @@ public class Controller {
         startUp.show();
         dashboard.hide();
     }
+ 
     public void setBank(String bank) {
         this.bank = bank;
     }
     public String getBank(){
         return  this.bank;
     }
+
 
     private void setControls(Scene scene) {
         startUp = (StartUp) scene.lookup("#startUp");
@@ -65,7 +68,9 @@ public class Controller {
     public void showStartUp() {
         hideAllViews();
         startUp.show();
+
         startUp.clearInputs();
+
     }
 
     public void hideAllViews() {
@@ -100,4 +105,5 @@ public class Controller {
         dashboard.setBank(bankId);
         dashboard.setLogo();
     }
+
 }
