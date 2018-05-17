@@ -1,7 +1,5 @@
 package com.ark.bankingapplication.views;
 
-
-=======
 import java.net.URL;
 import java.util.ResourceBundle;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
