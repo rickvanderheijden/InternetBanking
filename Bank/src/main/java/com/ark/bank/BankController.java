@@ -37,6 +37,12 @@ public class BankController implements IBankController {
 
     @Override
     public boolean isSessionActive(String sessionKey) {
+        //TODO: Use function and do for each. Also for other functions.
+        for (Session session : sessions) {
+            if (session.getSessionKey().equals(sessionKey)) {
+                return session.isActive();
+            }
+        }
         return false;
     }
 
@@ -52,9 +58,15 @@ public class BankController implements IBankController {
 
     //TODO: Do not use Customer?
     @Override
-    public BankAccount createBankAccount(Customer owner) {
+    public BankAccount createBankAccount(String sessionKey, Customer owner) {
 
-        if (owner == null) {
+        if ((owner == null) || (sessionKey == null) || sessionKey.isEmpty()) {
+            return null;
+        }
+
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
             return null;
         }
 
@@ -79,7 +91,7 @@ public class BankController implements IBankController {
             }
         }
 
-        Customer customer = new Customer(name, password, residence);
+        Customer customer = new Customer(name, residence, password);
         customers.add(customer);
 
         return customer;

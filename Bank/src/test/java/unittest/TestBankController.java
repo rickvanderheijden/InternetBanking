@@ -20,6 +20,9 @@ import static org.junit.Assert.*;
  */
 public class TestBankController {
 
+    private static final String Name = "TestName";
+    private static final String Password = "TestPassword";
+    private static final String Residence = "TestResidence";
     private final String BankIdInternal = "TEST";
     private final String BankIdExternal = "NONE";
     private final String accountFromExternal = BankIdExternal + "287493762";
@@ -43,15 +46,31 @@ public class TestBankController {
     //TODO: Need stubs to check for scenario's (other banks, etc)
 
     @Test
-    public void testCreateBankAccountOwnerNull() {
-        BankAccount result = bankController.createBankAccount(null);
+    public void testCreateBankAccountSessionKeyNullOwnerNull() {
+        BankAccount result = bankController.createBankAccount(null, null);
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateBankAccountValidSessionKeyOwnerNull() {
+        bankController.createCustomer(Name, Residence, Password);
+        String sessionKey = bankController.login(Name, Residence, Password);
+        BankAccount result = bankController.createBankAccount(sessionKey,null);
+        assertNull(result);
+    }
+
+    @Test
+    public void testCreateBankAccountInvalidSessionKeyOwnerNull() {
+        String sessionKey = "Invalid";
+        BankAccount result = bankController.createBankAccount(sessionKey, null);
         assertNull(result);
     }
 
     @Test
     public void testCreateBankAccount() {
-        Customer owner = new Customer("TestUser", "TestPassword", "TestResidence");
-        BankAccount result = bankController.createBankAccount(owner);
+        Customer owner = bankController.createCustomer(Name, Residence, Password);
+        String sessionKey = bankController.login(Name, Residence, Password);
+        BankAccount result = bankController.createBankAccount(sessionKey, owner);
         assertThat(result.getNumber(), startsWith(BankIdInternal));
         assertEquals(14, result.getNumber().length());
         assertEquals(100.0, result.getCreditLimit(), 0.0);
@@ -113,60 +132,54 @@ public class TestBankController {
 
     @Test
     public void testCreateCustomerNameNull() {
-        Customer result = bankController.createCustomer(null, "Password", "Residence");
+        Customer result = bankController.createCustomer(null, Residence, Password);
         assertNull(result);
     }
 
     @Test
     public void testCreateCustomerNameEmpty() {
-        Customer result = bankController.createCustomer("", "Residence", "Password");
+        Customer result = bankController.createCustomer("", Residence, Password);
         assertNull(result);
     }
 
     @Test
     public void testCreateCustomerPasswordNull() {
-        Customer result = bankController.createCustomer("Name", "Residence", null);
+        Customer result = bankController.createCustomer(Name, Residence, null);
         assertNull(result);
     }
 
     @Test
     public void testCreateCustomerPasswordEmpty() {
-        Customer result = bankController.createCustomer("Name", "Residence", "");
+        Customer result = bankController.createCustomer(Name, Residence, "");
         assertNull(result);
     }
 
     @Test
     public void testCreateCustomerResidenceNull() {
-        Customer result = bankController.createCustomer("Name", null, "Password");
+        Customer result = bankController.createCustomer(Name, null, Password);
         assertNull(result);
     }
 
     @Test
     public void testCreateCustomerResidenceEmpty() {
-        Customer result = bankController.createCustomer("Name", "", "Password");
+        Customer result = bankController.createCustomer(Name, "", Password);
         assertNull(result);
     }
 
     @Test
     public void testCreateCustomerValidValues() {
-        String name = "Name";
-        String password = "Password";
-        String residence = "Residence";
-        Customer result = bankController.createCustomer(name, residence, password);
+        Customer result = bankController.createCustomer(Name, Residence, Password);
         assertNotNull(result);
-        assertEquals(name, result.getName());
-        assertEquals(residence, result.getResidence());
-        assertTrue(result.isPasswordValid(password));
+        assertEquals(Name, result.getName());
+        assertEquals(Residence, result.getResidence());
+        assertTrue(result.isPasswordValid(Password));
     }
 
     @Test
     public void testCreateCustomerAlreadyExists() {
-        String name = "Name";
-        String password = "Password";
-        String residence = "Residence";
-        Customer result = bankController.createCustomer(name, residence, password);
+        Customer result = bankController.createCustomer(Name, Residence, Password);
         assertNotNull(result);
-        result = bankController.createCustomer(name, residence, password);
+        result = bankController.createCustomer(Name, Residence, Password);
         assertNull(result);
     }
 }

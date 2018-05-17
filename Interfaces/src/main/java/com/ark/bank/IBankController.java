@@ -10,7 +10,7 @@ public interface IBankController {
     boolean logout(String sessionKey);
     Customer getCustomer(String name, String residence);
     Customer createCustomer(String name, String residence, String password);
-    BankAccount createBankAccount(Customer owner);
+    BankAccount createBankAccount(String sessionKey, Customer owner);
     boolean executeTransaction(Transaction transaction);
     boolean isSessionActive(String sessionKey);
     boolean refreshSession(String sessionKey);

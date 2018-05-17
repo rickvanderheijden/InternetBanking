@@ -66,8 +66,8 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public BankAccount createBankAccount(Customer owner) {
-        return bankController.createBankAccount(owner);
+    public BankAccount createBankAccount(String sessionKey, Customer owner) {
+        return bankController.createBankAccount(sessionKey, owner);
     }
 
     @Override

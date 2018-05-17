@@ -81,7 +81,7 @@ public class TestGUIConnector {
     @Test
     public void testIsSessionActive() {
         boolean result = guiConnector.isSessionActive(sessionKey);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
