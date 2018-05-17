@@ -48,9 +48,9 @@ public class BankUtilities {
         waitForConnection();
 
         Registry registry = LocateRegistry.getRegistry("localhost",1099);
-        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher");
+        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisherRABO");
         //remotePublisher.subscribeRemoteListener(this, "fondsen");
-        return (IBankForClientSession) registry.lookup("bank");
+        return (IBankForClientSession) registry.lookup("bankRABO");
     }
 
     public void stopBank() {
