@@ -7,9 +7,6 @@
  **********     GLOBALS     **********
  *************************************/
 
-.anchor-background{ -fx-background-color: #212636; -fx-background-radius: 15;}
-
-
 /** Input styling **/
 .transparent-input { -fx-background-color: rgba(255,255,255,0.1); -fx-border-radius: 5px; -fx-text-inner-color: #e7e7e7; -fx-text-fill: #e7e7e7; -fx-prompt-text-fill: #e7e7e7; -fx-fill: #e7e7e7; -fx-control-inner-background: #212636; -fx-highlight-fill: #e7e7e7; -fx-highlight-text-fill: rgba(255,255,255,0.1);}
 .transparent-input:focused{ -fx-border-color: #806105; -fx-text-inner-color: #806105;}
@@ -20,7 +17,10 @@
 .ark-button:hover{ -fx-opacity: 0.5;}
 
 /** Feedback on input **/
+/*noinspection ALL*/
 .success{-fx-border-color: green;}
+
+/*noinspection ALL*/
 .error{-fx-border-color: red;}
 .error-message{ -fx-border-color: #ff0000; -fx-border-width: 2px; -fx-border-radius: 5px; -fx-text-fill : #ff0000;}
 
@@ -29,68 +29,19 @@
  ********   STARTUP SCREEN    ********
  *************************************/
 
-#startUp{ -fx-background-image: url("./images/creditcard.jpg");}
+
+#startUp,
+#AnchorPane{ -fx-background-image: url("./images/creditcard.jpg"); -fx-background-size: cover; -fx-background-repeat: no-repeat;}
+
 #loginPane{ -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 100,100,100,100 );}
 
-/*************************************
- ********  DASHBOARD SCREEN   ********
- *************************************/
-
-/** Tabpane styling **/
-.tab-pane { -fx-tab-min-width:160px; -fx-tab-min-height: 50px; -fx-border-radius: 0px;}
-.tab-pane .tab {-fx-background-color: rgba(255,255,255,0.2);}
-.tab-pane .tab:selected { -fx-background-color: #806105;}
-.tab-pane .tab-header-area .tab-header-background { -fx-opacity: 0;}
-.tab { -fx-background-insets: 0 1 0 1,0,0;}
-.tab .tab-label { -fx-alignment: CENTER; -fx-text-fill: #806105; -fx-font-size: 12px;  -fx-font-weight: bold; -fx-tab-min-width: 50%; }
-.tab:selected .tab-label {-fx-alignment: CENTER; -fx-text-fill: #e7e7e7;}
-.tabpane { -fx-background-color: #212636;}
-
-/** List Styling **/
-.list { -fx-background-color: transparent;}
 
 /**Startup screen **/
-#startAnchorPane{
-    -fx-background-image: url("./images/creditcard.jpg");
-    
-}
-.anchor-background{
-    -fx-background-color: #212636;
-    -fx-background-radius: 15;
-}
-.transparent-input {
-    -fx-background-color: rgba(255,255,255,0.1);
-    /*-fx-border-color: #e7e7e7;*/
-    /*-fx-border-width: 2px;*/
-    -fx-border-radius: 5px;
-    -fx-text-inner-color: #e7e7e7;
-    -fx-text-fill: #e7e7e7;
-    -fx-prompt-text-fill: #e7e7e7;
-    -fx-fill: #e7e7e7;
-    /*-fx-border-bottom: 2px solid #e7e7e7*/
-}
+#startAnchorPane{ -fx-background-image: url("./images/creditcard.jpg");}
 
-.transparent-input:focused{
-   -fx-border-color: #806105;
-   -fx-text-inner-color: #806105;
-}
-#loginPane{
-    fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 100,100,100,100 ); 
-}
+.transparent-input {-fx-background-color: rgba(255,255,255,0.1); -fx-border-radius: 5px; -fx-text-inner-color: #e7e7e7; -fx-text-fill: #e7e7e7;  -fx-prompt-text-fill: #e7e7e7;  -fx-fill: #e7e7e7;}
+.transparent-input:focused{ -fx-border-color: #806105; -fx-text-inner-color: #806105;}
 
-.error-message{
-    -fx-border-color: #ff0000;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-    -fx-text-fill : #ff0000;
-}
-.ark-button{
-    -fx-background-color: #806105;
-    -fx-border-radius: 5px;
-    -fx-text-fill: #e7e7e7;
-    
-}
-.ark-button:hover{
-    -fx-opacity: 0.5;
-}
+.ark-button{ -fx-background-color: #806105; -fx-border-radius: 5px; -fx-text-fill: #e7e7e7;}
+.ark-button:hover{ -fx-opacity: 0.5;}
 

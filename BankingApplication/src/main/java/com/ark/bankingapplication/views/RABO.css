@@ -1,0 +1,21 @@
+
+
+/**
+RABO
+ */
+/*#AnchorPane{ -fx-background-image: none; -fx-background-color: #fff; -fx-background-size: cover; -fx-background-repeat: no-repeat;}*/
+.header-bar{-fx-background-color: #ffffff;}
+.title-bar{ -fx-background-color: #FD6400; -fx-text-fill: #ffffff; }
+.anchorpane{ -fx-background-color: #fff;}
+.anchorpane{ -fx-text-fill: #777;}
+
+.title{-fx-text-fill: #009;}
+.text{-fx-text-fill: #777}
+.ark-button{-fx-background-color: #009; -fx-border-radius: 5px; -fx-text-fill: #fff;}
+.ark-button:hover{ -fx-opacity: 0.5;}
+
+.input {-fx-background-color: rgba(255,255,255,1);-fx-border-color: #e7e7e7;-fx-border-width: 1px;-fx-border-radius: 5px;-fx-text-inner-color: #777;-fx-text-fill: #777;-fx-prompt-text-fill: #777;-fx-fill: #777;-fx-border-bottom: 2px solid #009;}
+.input:focused{-fx-border-color: #FD6400;-fx-text-inner-color: #FD6400;}
+
+/** List Styling **/
+.list { -fx-background-color: transparent;}
