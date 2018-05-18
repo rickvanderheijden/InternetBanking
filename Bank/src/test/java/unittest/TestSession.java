@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.lang.Thread.sleep;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -72,7 +73,7 @@ public class TestSession {
     @Test
     public void testGetSessionKeyBeforeTimeOut() throws InterruptedException {
         sleep(sessionTime - sessionTimeDelta);
-        assertTrue(session.getSessionKey().length() == 36);
+        assertEquals(36, session.getSessionKey().length());
     }
 
     @Test
