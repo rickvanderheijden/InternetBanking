@@ -76,6 +76,17 @@ public class BankController implements IBankController {
     }
 
     @Override
+    public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
+            return null;
+        }
+
+        return null;
+    }
+
+    @Override
     public Customer createCustomer(String name, String residence, String password) {
         //TODO: Override equals
         if ((name == null) || name.isEmpty()
@@ -98,15 +109,13 @@ public class BankController implements IBankController {
     }
 
     @Override
-    public Customer getCustomer(String name, String residence) {
-        for (Customer customer : customers) {
-            if ((customer.getName().equals(name))
-                    && customer.getResidence().equals(residence)) {
-                return customer;
-            }
+    public Customer getCustomer(String sessionKey, String name, String residence) {
+
+        if (!isSessionActive(sessionKey)) {
+            return null;
         }
 
-        return null;
+        return getCustomer(name, residence);
     }
 
     @Override
@@ -159,6 +168,16 @@ public class BankController implements IBankController {
         }
 
         return bankAccountNumber;
+    }
+
+    private Customer getCustomer(String name, String residence) {
+        for (Customer customer : customers) {
+            if ((customer.getName().equals(name))
+                    && customer.getResidence().equals(residence)) {
+                return customer;
+            }
+        }
+        return null;
     }
 
     private String getRandomBankAccountNumber() {

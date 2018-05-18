@@ -59,10 +59,10 @@ public interface IBankForClientSession extends Remote {
      * @return
      * @throws RemoteException
      */
-    Customer getCustomer(String name, String residence) throws RemoteException;
+    Customer getCustomer(String sessionKey, String name, String residence) throws RemoteException;
 
 
-    BankAccount getBankAccount(String bankAccountNumber) throws RemoteException;
+    BankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
     List<Transaction> getTransactions(String bankAccountNumber) throws RemoteException;
     boolean executeTransaction(Transaction transaction) throws RemoteException;
 }

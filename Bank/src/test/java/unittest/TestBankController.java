@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Random;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -181,5 +183,40 @@ public class TestBankController {
         assertNotNull(result);
         result = bankController.createCustomer(Name, Residence, Password);
         assertNull(result);
+    }
+
+    @Test
+    public void TestGetCustomerInvalidName() {
+        bankController.createCustomer(Name, Residence, Password);
+        String sessionKey = bankController.login(Name, Residence, Password);
+        Customer result = bankController.getCustomer(sessionKey, "WrongName", Residence);
+        assertNull(result);
+    }
+
+    @Test
+    public void TestGetCustomerInvalidResidence() {
+        bankController.createCustomer(Name, Residence, Password);
+        String sessionKey = bankController.login(Name, Residence, Password);
+        Customer result = bankController.getCustomer(sessionKey, Name, "InvalidResidence");
+        assertNull(result);
+    }
+
+    @Test
+    public void TestGetCustomerExpiredSession() {
+        bankController.createCustomer(Name, Residence, Password);
+        String sessionKey = bankController.login(Name, Residence, Password);
+        bankController.terminateSession(sessionKey);
+        Customer result = bankController.getCustomer(sessionKey, Name, "InvalidResidence");
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetCustomerValidValues() {
+        bankController.createCustomer(Name, Residence, Password);
+        String sessionKey = bankController.login(Name, Residence, Password);
+        Customer result = bankController.getCustomer(sessionKey, Name, Residence);
+        assertEquals(Name, result.getName());
+        assertEquals(Residence, result.getResidence());
+        assertTrue(result.isPasswordValid(Password));
     }
 }

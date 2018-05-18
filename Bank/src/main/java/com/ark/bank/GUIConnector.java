@@ -72,17 +72,29 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public Customer createCustomer(String name, String residence, String password) {
+        if (bankController == null) {
+            return null;
+        }
+
         return bankController.createCustomer(name, residence, password);
     }
 
     @Override
-    public Customer getCustomer(String name, String residence) {
-        return null;
+    public Customer getCustomer(String sessionKey, String name, String residence) {
+        if (bankController == null) {
+            return null;
+        }
+
+        return bankController.getCustomer(sessionKey, name, residence);
     }
 
     @Override
-    public BankAccount getBankAccount(String bankAccountNumber) {
-        return null;
+    public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
+        if (bankController == null) {
+            return null;
+        }
+
+        return bankController.getBankAccount(sessionKey, bankAccountNumber);
     }
 
     @Override
