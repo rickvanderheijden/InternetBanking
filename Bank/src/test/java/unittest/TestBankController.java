@@ -30,6 +30,7 @@ public class TestBankController {
     private String accountFromInternal;
     private String accountToInternal;
     private IBankController bankController;
+    private String sessionKey;
 
     @Before
     public void setUp() {
@@ -53,8 +54,7 @@ public class TestBankController {
 
     @Test
     public void testCreateBankAccountValidSessionKeyOwnerNull() {
-        bankController.createCustomer(Name, Residence, Password);
-        String sessionKey = bankController.login(Name, Residence, Password);
+        createCustomerAndLogin();
         BankAccount result = bankController.createBankAccount(sessionKey,null);
         assertNull(result);
     }
@@ -69,7 +69,7 @@ public class TestBankController {
     @Test
     public void testCreateBankAccount() {
         Customer owner = bankController.createCustomer(Name, Residence, Password);
-        String sessionKey = bankController.login(Name, Residence, Password);
+        sessionKey = bankController.login(Name, Residence, Password);
         BankAccount result = bankController.createBankAccount(sessionKey, owner);
         assertThat(result.getNumber(), startsWith(BankIdInternal));
         assertEquals(14, result.getNumber().length());
@@ -78,43 +78,56 @@ public class TestBankController {
     }
 
     @Test
+    public void testCreateBankAccountInvalidSession() {
+        Customer owner = bankController.createCustomer(Name, Residence, Password);
+        sessionKey = bankController.login(Name, Residence, Password);
+        BankAccount result = bankController.createBankAccount("InvalidSession", owner);
+        assertNull(result);
+    }
+
+    @Test
     public void testExecuteTransactionNull() {
-        boolean result = bankController.executeTransaction(null);
+        createCustomerAndLogin();
+        boolean result = bankController.executeTransaction(sessionKey, null);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAllValuesNull() {
+        createCustomerAndLogin();
         Transaction transaction = new Transaction(.00, null, null, null);
-        boolean result = bankController.executeTransaction(transaction);
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAccountToNull() {
+        createCustomerAndLogin();
         Transaction transaction = new Transaction(22.95, "Description", "AccountFrom", null);
-        boolean result = bankController.executeTransaction(transaction);
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionDescriptionNull() {
+        createCustomerAndLogin();
         Transaction transaction = new Transaction(22.95, null, "AccountFrom", "AccountTo");
-        boolean result = bankController.executeTransaction(transaction);
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAmountNull() {
         Transaction transaction = new Transaction(0.0, "Description", "AccountFrom", "AccountTo");
-        boolean result = bankController.executeTransaction(transaction);
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionValidValues() {
+        createCustomerAndLogin();
         Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
-        boolean result = bankController.executeTransaction(transaction);
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertTrue(result);
     }
 
@@ -201,20 +214,189 @@ public class TestBankController {
 
     @Test
     public void TestGetCustomerExpiredSession() {
-        bankController.createCustomer(Name, Residence, Password);
-        String sessionKey = bankController.login(Name, Residence, Password);
+        createCustomerAndLogin();
         bankController.terminateSession(sessionKey);
-        Customer result = bankController.getCustomer(sessionKey, Name, "InvalidResidence");
+        Customer result = bankController.getCustomer(sessionKey, Name, Residence);
         assertNull(result);
     }
 
     @Test
     public void testGetCustomerValidValues() {
-        bankController.createCustomer(Name, Residence, Password);
-        String sessionKey = bankController.login(Name, Residence, Password);
+        createCustomerAndLogin();
         Customer result = bankController.getCustomer(sessionKey, Name, Residence);
         assertEquals(Name, result.getName());
         assertEquals(Residence, result.getResidence());
         assertTrue(result.isPasswordValid(Password));
+    }
+
+    @Test
+    public void testTerminateSessionValidValues() {
+        createCustomerAndLogin();
+        boolean result = bankController.terminateSession(sessionKey);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testTerminateSessionSessionKeyNull() {
+        createCustomerAndLogin();
+        boolean result = bankController.terminateSession(null);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTerminateSessionSessionKeyEmpty() {
+        createCustomerAndLogin();
+        boolean result = bankController.terminateSession("");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTerminateSessionSessionKeyInvalid() {
+        createCustomerAndLogin();
+        boolean result = bankController.terminateSession("InvalidKey");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRefreshSessionValidValues() {
+        createCustomerAndLogin();
+        boolean result = bankController.refreshSession(sessionKey);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testRefreshSessionSessionKeyNull() {
+        createCustomerAndLogin();
+        boolean result = bankController.refreshSession(null);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRefreshSessionSessionKeyEmpty() {
+        createCustomerAndLogin();
+        boolean result = bankController.refreshSession("");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRefreshSessionSessionKeyInvalid() {
+        createCustomerAndLogin();
+        boolean result = bankController.refreshSession("InvalidKey");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLogoutValidValues() {
+        createCustomerAndLogin();
+        boolean result = bankController.logout(sessionKey);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testLogoutSessionExpired() {
+        createCustomerAndLogin();
+        bankController.terminateSession(sessionKey);
+        boolean result = bankController.logout(sessionKey);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLogoutSessionInvalid() {
+        createCustomerAndLogin();
+        boolean result = bankController.logout("InvalidSession");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLogoutSessionNull() {
+        createCustomerAndLogin();
+        boolean result = bankController.logout(null);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testLogoutSessionEmpty() {
+        createCustomerAndLogin();
+        boolean result = bankController.logout("");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testGetBankAccountValidValues() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount(sessionKey, bankAccount.getNumber());
+        assertNotNull(result);
+        assertEquals(result.getNumber(), bankAccount.getNumber());
+    }
+
+    @Test
+    public void testGetBankAccountBankAccountNumberNull() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount(sessionKey, null);
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountBankAccountNumberEmpty() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount(sessionKey, "");
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountBankAccountNumberInvalid() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount(sessionKey, "InvalidNumber");
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountSessionExpired() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        bankController.terminateSession(sessionKey);
+        BankAccount result = bankController.getBankAccount(sessionKey, bankAccount.getNumber());
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountSessionInvalid() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount("InvalidSession", bankAccount.getNumber());
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountSessionEmpty() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount("", bankAccount.getNumber());
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountSessionNull() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        BankAccount result = bankController.getBankAccount(null, bankAccount.getNumber());
+        assertNull(result);
+    }
+
+    private void createCustomerAndLogin() {
+        bankController.createCustomer(Name, Residence, Password);
+        sessionKey = bankController.login(Name, Residence, Password);
     }
 }

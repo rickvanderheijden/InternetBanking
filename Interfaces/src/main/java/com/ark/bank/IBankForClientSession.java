@@ -63,6 +63,6 @@ public interface IBankForClientSession extends Remote {
 
 
     BankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
-    List<Transaction> getTransactions(String bankAccountNumber) throws RemoteException;
-    boolean executeTransaction(Transaction transaction) throws RemoteException;
+    List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) throws RemoteException;
+    boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException;
 }

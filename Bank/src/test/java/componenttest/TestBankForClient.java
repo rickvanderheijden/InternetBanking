@@ -30,7 +30,8 @@ public class TestBankForClient {
 
     @Test
     public void testExecuteTransactionNull() throws RemoteException {
-        boolean result = bank.executeTransaction(null);
+        //TODO: Fix test
+        boolean result = bank.executeTransaction(null,null);
         assertFalse(result);
     }
 

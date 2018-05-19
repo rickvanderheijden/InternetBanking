@@ -95,7 +95,7 @@ public class TestGUIConnector {
     @Test
     public void testRefreshSession() {
         boolean result = guiConnector.refreshSession(sessionKey);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class TestGUIConnector {
     @Test
     public void testTerminateSession() {
         boolean result = guiConnector.terminateSession(sessionKey);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test

@@ -13,6 +13,7 @@ public interface IBankController {
     BankAccount createBankAccount(String sessionKey, Customer owner);
     BankAccount getBankAccount(String sessionKey, String bankAccountNumber);
     boolean executeTransaction(Transaction transaction);
+    boolean executeTransaction(String sessionKey, Transaction transaction);
     boolean isSessionActive(String sessionKey);
     boolean refreshSession(String sessionKey);
     boolean terminateSession(String sessionKey);

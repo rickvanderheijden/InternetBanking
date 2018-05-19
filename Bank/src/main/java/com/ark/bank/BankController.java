@@ -17,9 +17,21 @@ public class BankController implements IBankController {
     private final Set<BankAccount> bankAccounts = new HashSet<>();
     private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
+    private final Set<Transaction> transactions = new HashSet<>();
 
     public BankController(String bankId) {
         this.bankId = bankId;
+    }
+
+    @Override
+    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+        if (!isSessionActive(sessionKey)) {
+            return false;
+        }
+
+        //TODO: CHECK ONLY DO TRANSACTION IF SESSIONKEY MATCHES ACCOUNT IN TRANSACTION
+
+        return executeTransaction(transaction);
     }
 
     @Override
@@ -38,21 +50,47 @@ public class BankController implements IBankController {
     @Override
     public boolean isSessionActive(String sessionKey) {
         //TODO: Use function and do for each. Also for other functions.
+
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
         for (Session session : sessions) {
-            if (session.getSessionKey().equals(sessionKey)) {
+            if (session.isActive() && session.getSessionKey().equals(sessionKey)) {
                 return session.isActive();
             }
         }
+
         return false;
     }
 
     @Override
     public boolean refreshSession(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        for (Session session : sessions) {
+            if (session.isActive() && session.getSessionKey().equals(sessionKey)) {
+                return session.refresh();
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean terminateSession(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        for (Session session : sessions) {
+            if (session.isActive() && session.getSessionKey().equals(sessionKey)) {
+                return session.terminate();
+            }
+        }
+
         return false;
     }
 
@@ -83,6 +121,16 @@ public class BankController implements IBankController {
             return null;
         }
 
+        if ((bankAccountNumber == null) || bankAccountNumber.isEmpty()) {
+            return null;
+        }
+
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getNumber().equals(bankAccountNumber)) {
+                return bankAccount;
+            }
+        }
+
         return null;
     }
 
@@ -110,8 +158,9 @@ public class BankController implements IBankController {
 
     @Override
     public Customer getCustomer(String sessionKey, String name, String residence) {
-
-        if (!isSessionActive(sessionKey)) {
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
             return null;
         }
 
@@ -134,7 +183,7 @@ public class BankController implements IBankController {
 
     @Override
     public boolean logout(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (!isSessionActive(sessionKey)) {
             return false;
         }
 
