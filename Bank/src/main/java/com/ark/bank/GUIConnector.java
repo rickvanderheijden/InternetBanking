@@ -100,6 +100,11 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
+    public IBankForClientLogin getBankLogin() {
+        return null;
+    }
+
+    @Override
     public String login(String name, String residence, String password) {
         if (bankController == null) {
             return null;

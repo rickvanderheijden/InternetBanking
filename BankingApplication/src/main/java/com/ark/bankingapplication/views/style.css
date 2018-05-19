@@ -31,7 +31,11 @@
 
 #startUp,
 #AnchorPane{ -fx-background-image: url("./images/creditcard.jpg"); -fx-background-size: cover; -fx-background-repeat: no-repeat;}
-#loginPane{ -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 100,100,100,100 );}
+
+#loginPane,
+#registerPane {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.9), 100, 0, 0, 0);
+}
 
 
 /**Startup screen **/
