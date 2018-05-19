@@ -11,6 +11,7 @@ import java.io.IOException;
 public abstract class View extends AnchorPane {
 
     protected Controller controller;
+
     private String bank = null;
 
     public View(String resource) throws ControlNotLoadedException {
@@ -61,4 +62,5 @@ public abstract class View extends AnchorPane {
         this.bank = bank;
 
     }
+
 }

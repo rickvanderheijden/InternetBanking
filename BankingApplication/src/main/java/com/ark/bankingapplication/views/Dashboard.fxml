@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
+
 <fx:root fx:id="dashboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="javafx.scene.layout.AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane fx:id="dashboardPane" layoutX="40.0" layoutY="40.0" prefHeight="880.0" prefWidth="1600.0" styleClass="anchorpane">
        <AnchorPane prefHeight="100.0" prefWidth="1601.0" styleClass="header-bar" AnchorPane.leftAnchor="0.0">

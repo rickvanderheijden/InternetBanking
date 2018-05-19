@@ -263,4 +263,5 @@ public class StartUp extends View {
         this.registerPasswordCheckPasswordField.clear();
         this.passwordField.clear();
     }
+
 }
