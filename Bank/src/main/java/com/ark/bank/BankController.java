@@ -114,8 +114,6 @@ public class BankController implements IBankController {
 
     @Override
     public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
-
-        //TODO: CHECK IF VALID USER
         if (isSessionActive(sessionKey)) {
             refreshSession(sessionKey);
         } else {
@@ -126,8 +124,12 @@ public class BankController implements IBankController {
             return null;
         }
 
+        Session session = getSession(sessionKey);
+
         for (BankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getNumber().equals(bankAccountNumber)) {
+            if (bankAccount.getNumber().equals(bankAccountNumber)
+                    && bankAccount.getOwner().getName().equals(session.getCustomerName())
+                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
                 return bankAccount;
             }
         }

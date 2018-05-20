@@ -2,7 +2,6 @@ package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
 import fontyspublisher.RemotePublisher;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -30,12 +29,17 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
             bankId = bankController.getBankId();
         }
 
+        Registry registry;
+
         try {
-            Registry registry = LocateRegistry.createRegistry(1099);
+            registry = LocateRegistry.createRegistry(1099);
+        } catch (RemoteException e) {
+            registry = LocateRegistry.getRegistry(1099);
+        }
+
+        if (registry != null) {
             registry.rebind("bankPublisher" + bankId, remotePublisher);
             registry.rebind("bank" + bankId, this);
-        } catch (RemoteException e) {
-
         }
     }
 

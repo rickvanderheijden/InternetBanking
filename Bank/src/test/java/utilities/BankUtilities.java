@@ -10,6 +10,8 @@ import java.net.URL;
 import java.rmi.NotBoundException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
@@ -22,14 +24,12 @@ public class BankUtilities {
 
     private static final String JARPATH = "..\\out\\artifacts\\Bank_jar\\";
     private static final String JARFILE = "Bank.jar";
-    private Process processBank;
+    private Map<String, Process> bankProcesses = new HashMap<>();
 
-    public IBankForCentralBank startBankForCentralBank() throws IOException {
-        startBank();
-
+    public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) throws IOException {
         URL wsdlURL = null;
         try {
-            wsdlURL = new URL("http://localhost:1200/RABOService?wsdl");
+            wsdlURL = new URL(URLBase + bankId + "Service?wsdl");
         } catch (MalformedURLException e) {
         }
 
@@ -42,27 +42,28 @@ public class BankUtilities {
         return service.getPort(qnamePort, IBankForCentralBank.class);
     }
 
-    public IBankForClientSession startBankForClient() throws IOException, NotBoundException {
-        startBank();
-
+    public IBankForClientSession getIBankForClient(String bankId) throws IOException, NotBoundException {
         waitForConnection();
 
         Registry registry = LocateRegistry.getRegistry("localhost",1099);
-        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisherRABO");
+        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
         //remotePublisher.subscribeRemoteListener(this, "fondsen");
-        return (IBankForClientSession) registry.lookup("bankRABO");
+        return (IBankForClientSession) registry.lookup("bank" + bankId);
     }
 
-    public void stopBank() {
-        if (processBank != null) {
-            processBank.destroy();
+    public void stopBank(String bankId) {
+        Process process = bankProcesses.get(bankId);
+
+        if (process != null) {
+            process.destroy();
         }
     }
 
-    private void startBank() throws IOException {
+    public void startBank(String bankId, String URLBase) throws IOException {
         String jrePath = System.getProperty("java.home");
         String javaPath = jrePath + "\\bin\\java.exe";
-        processBank = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE).start();
+        Process process = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE, bankId, URLBase).start();
+        bankProcesses.put(bankId, process);
     }
 
     private void waitForConnection() {
@@ -73,6 +74,5 @@ public class BankUtilities {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }

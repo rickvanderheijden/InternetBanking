@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -395,7 +397,70 @@ public class TestBankController {
         assertNull(result);
     }
 
-    //TODO: ADD TESTS FOR GETBANKACCOUNTNUMBERS
+    @Test
+    public void testGetBankAccountOtherCustomer() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+
+        bankController.createCustomer("OtherName", "OtherResidence", "OtherPassword");
+        String otherSessionKey = bankController.login("OtherName", "OtherResidence", "OtherPassword");
+        BankAccount result = bankController.getBankAccount(otherSessionKey, bankAccount.getNumber());
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetBankAccountNumbersValidValuesOneAccount() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        List<String> bankAccountNumbers = bankController.getBankAccountNumbers(sessionKey);
+        assertEquals(1, bankAccountNumbers.size());
+        assertTrue(bankAccountNumbers.contains(bankAccount.getNumber()));
+    }
+
+    @Test
+    public void testGetBankAccountNumbersValidValuesFiveAccounts() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        BankAccount bankAccount1 = bankController.createBankAccount(sessionKey, owner);
+        BankAccount bankAccount2 = bankController.createBankAccount(sessionKey, owner);
+        BankAccount bankAccount3 = bankController.createBankAccount(sessionKey, owner);
+        BankAccount bankAccount4 = bankController.createBankAccount(sessionKey, owner);
+        BankAccount bankAccount5 = bankController.createBankAccount(sessionKey, owner);
+        List<String> bankAccountNumbers = bankController.getBankAccountNumbers(sessionKey);
+        assertEquals(5, bankAccountNumbers.size());
+        assertTrue(bankAccountNumbers.contains(bankAccount1.getNumber()));
+        assertTrue(bankAccountNumbers.contains(bankAccount2.getNumber()));
+        assertTrue(bankAccountNumbers.contains(bankAccount3.getNumber()));
+        assertTrue(bankAccountNumbers.contains(bankAccount4.getNumber()));
+        assertTrue(bankAccountNumbers.contains(bankAccount5.getNumber()));
+    }
+
+    @Test
+    public void testGetBankAccountNumbersOtherOwner() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        bankController.createBankAccount(sessionKey, owner);
+
+        bankController.createCustomer("OtherName", "OtherResidence", "OtherPassword");
+        String otherSessionKey = bankController.login("OtherName", "OtherResidence", "OtherPassword");
+
+        List<String> bankAccountNumbers = bankController.getBankAccountNumbers(otherSessionKey);
+        assertEquals(0, bankAccountNumbers.size());
+    }
+
+    @Test
+    public void testGetBankAccountNumbersExpiredSession() {
+        createCustomerAndLogin();
+        Customer owner = new Customer(Name, Residence, Password);
+        bankController.createBankAccount(sessionKey, owner);
+
+        bankController.terminateSession(sessionKey);
+        List<String> bankAccountNumbers = bankController.getBankAccountNumbers(sessionKey);
+        assertEquals(0, bankAccountNumbers.size());
+    }
 
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);

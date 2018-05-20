@@ -12,6 +12,7 @@ public interface IBankController {
     boolean logout(String sessionKey);
     Customer getCustomer(String sessionKey, String name, String residence);
     Customer createCustomer(String name, String residence, String password);
+    //TODO: Is owner needed? Only sessionKey?
     BankAccount createBankAccount(String sessionKey, Customer owner);
     BankAccount getBankAccount(String sessionKey, String bankAccountNumber);
     List<String> getBankAccountNumbers(String sessionKey);
