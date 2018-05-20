@@ -4,9 +4,6 @@ import com.ark.bank.BankAccount;
 import com.ark.bank.Customer;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
-import com.ark.centralbank.BankConnectionInfo;
-import com.ark.centralbank.ICentralBankRegister;
-import com.ark.centralbank.ICentralBankTransaction;
 import com.ark.centralbank.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -18,8 +15,8 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 //TODO: MOVE TO SEPARATE MODULE?
 
@@ -36,12 +33,11 @@ public class TestTransaction {
     private static IBankForClientLogin bankForClientLoginABNA;
     private static IBankForClientLogin bankForClientLoginRABO;
     private static BankUtilities bankUtilities;
-    private static CentralBankUtilities centralBankUtilities;
 
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
         bankUtilities = new BankUtilities();
-        centralBankUtilities = new CentralBankUtilities();
+        CentralBankUtilities centralBankUtilities = new CentralBankUtilities();
 
         centralBankUtilities.startCentralBank();
         bankUtilities.startBank(BankIdABNA, URLBaseABNA);
@@ -75,7 +71,10 @@ public class TestTransaction {
 
         assertTrue(result);
 
-        //TODO: Add more checkhs... balance etc
+        bankAccountABNA = bankForClientSessionABNA.getBankAccount(sessionIdABNA, bankAccountABNA.getNumber());
+        bankAccountRABO = bankForClientSessionRABO.getBankAccount(sessionIdRABO, bankAccountRABO.getNumber());
+        assertEquals(-23.15, bankAccountABNA.getBalance());
+        assertEquals( 23.15, bankAccountRABO.getBalance());
     }
 }
 

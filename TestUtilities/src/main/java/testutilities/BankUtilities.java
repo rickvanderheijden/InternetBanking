@@ -24,7 +24,7 @@ public class BankUtilities {
 
     private static final String JARPATH = "..\\out\\artifacts\\Bank_jar\\";
     private static final String JARFILE = "Bank.jar";
-    private Map<String, Process> bankProcesses = new HashMap<>();
+    private final Map<String, Process> bankProcesses = new HashMap<>();
 
     public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) throws IOException {
         URL wsdlURL = null;
