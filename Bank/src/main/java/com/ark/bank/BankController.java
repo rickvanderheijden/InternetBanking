@@ -1,9 +1,8 @@
 package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * @author Rick van der Heijden
@@ -115,6 +114,8 @@ public class BankController implements IBankController {
 
     @Override
     public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
+
+        //TODO: CHECK IF VALID USER
         if (isSessionActive(sessionKey)) {
             refreshSession(sessionKey);
         } else {
@@ -132,6 +133,28 @@ public class BankController implements IBankController {
         }
 
         return null;
+    }
+
+    public List<String> getBankAccountNumbers(String sessionKey) {
+        List<String> bankAccountsToReturn = new ArrayList<>();
+
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
+            return bankAccountsToReturn;
+        }
+
+        Session session = getSession(sessionKey);
+
+
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getOwner().getName().equals(session.getCustomerName())
+            && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+                bankAccountsToReturn.add(bankAccount.getNumber());
+            }
+        }
+
+        return bankAccountsToReturn;
     }
 
     @Override
@@ -175,7 +198,7 @@ public class BankController implements IBankController {
             return null;
         }
 
-        Session session = new Session(DefaultSessionTime);
+        Session session = new Session(DefaultSessionTime, name, residence);
         sessions.add(session);
 
         return session.getSessionKey();
@@ -244,5 +267,19 @@ public class BankController implements IBankController {
         }
 
         return false;
+    }
+
+    private Session getSession(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return null;
+        }
+
+        for (Session session : sessions) {
+            if ((session.getSessionKey() != null) && session.getSessionKey().equals(sessionKey)) {
+                return session;
+            }
+        }
+
+        return null;
     }
 }

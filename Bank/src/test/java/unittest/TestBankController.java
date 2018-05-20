@@ -395,6 +395,8 @@ public class TestBankController {
         assertNull(result);
     }
 
+    //TODO: ADD TESTS FOR GETBANKACCOUNTNUMBERS
+
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);
         sessionKey = bankController.login(Name, Residence, Password);

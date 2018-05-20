@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,6 +72,15 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
+    public List<String> getBankAccountNumbers(String sessionKey) {
+        if (bankController == null) {
+            return new ArrayList<>();
+        }
+
+        return bankController.getBankAccountNumbers(sessionKey);
+    }
+
+    @Override
     public Customer createCustomer(String name, String residence, String password) {
         if (bankController == null) {
             return null;
@@ -79,6 +89,8 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         return bankController.createCustomer(name, residence, password);
     }
 
+
+    //TODO: ONLY FOR CURRENT CUSTOMER? IN THAT CASE, NAME AND RESIDENCE CAN BE REMOVED
     @Override
     public Customer getCustomer(String sessionKey, String name, String residence) {
         if (bankController == null) {
