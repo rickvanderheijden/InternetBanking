@@ -11,7 +11,7 @@ public class Customer implements Serializable {
     private final String password;
     private final String residence;
 
-    public Customer(String name, String password, String residence) {
+    public Customer(String name, String residence, String password) {
         this.name = name;
         this.password = password;
         this.residence = residence;

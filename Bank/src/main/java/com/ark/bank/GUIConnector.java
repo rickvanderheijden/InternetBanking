@@ -2,11 +2,11 @@ package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
 import fontyspublisher.RemotePublisher;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,12 +29,17 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
             bankId = bankController.getBankId();
         }
 
+        Registry registry;
+
         try {
-            Registry registry = LocateRegistry.createRegistry(1099);
+            registry = LocateRegistry.createRegistry(1099);
+        } catch (RemoteException e) {
+            registry = LocateRegistry.getRegistry(1099);
+        }
+
+        if (registry != null) {
             registry.rebind("bankPublisher" + bankId, remotePublisher);
             registry.rebind("bank" + bankId, this);
-        } catch (RemoteException e) {
-
         }
     }
 
@@ -66,37 +71,60 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public BankAccount createBankAccount(Customer owner) {
-        return bankController.createBankAccount(owner);
+    public BankAccount createBankAccount(String sessionKey, Customer owner) {
+        return bankController.createBankAccount(sessionKey, owner);
+    }
+
+    @Override
+    public List<String> getBankAccountNumbers(String sessionKey) {
+        if (bankController == null) {
+            return new ArrayList<>();
+        }
+
+        return bankController.getBankAccountNumbers(sessionKey);
     }
 
     @Override
     public Customer createCustomer(String name, String residence, String password) {
+        if (bankController == null) {
+            return null;
+        }
+
         return bankController.createCustomer(name, residence, password);
     }
 
+
+    //TODO: ONLY FOR CURRENT CUSTOMER? IN THAT CASE, NAME AND RESIDENCE CAN BE REMOVED
     @Override
-    public Customer getCustomer(String name, String residence) {
+    public Customer getCustomer(String sessionKey, String name, String residence) {
+        if (bankController == null) {
+            return null;
+        }
+
+        return bankController.getCustomer(sessionKey, name, residence);
+    }
+
+    @Override
+    public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
+        if (bankController == null) {
+            return null;
+        }
+
+        return bankController.getBankAccount(sessionKey, bankAccountNumber);
+    }
+
+    @Override
+    public List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) {
         return null;
     }
 
     @Override
-    public BankAccount getBankAccount(String bankAccountNumber) {
-        return null;
-    }
-
-    @Override
-    public List<Transaction> getTransactions(String bankAccountNumber) {
-        return null;
-    }
-
-    @Override
-    public boolean executeTransaction(Transaction transaction) {
+    public boolean executeTransaction(String sessionKey, Transaction transaction) {
         if (bankController == null) {
             return false;
         }
 
-        return bankController.executeTransaction(transaction);
+        return bankController.executeTransaction(sessionKey, transaction);
     }
 
     @Override

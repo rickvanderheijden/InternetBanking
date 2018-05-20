@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.lang.Thread.sleep;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -15,13 +16,15 @@ import static org.junit.Assert.assertNull;
  */
 public class TestSession {
 
+    private static final String Name = "Name";
+    private static final String Residence = "Residence";
     private final int sessionTime = 400;
     private final int sessionTimeDelta = sessionTime / 2;
     private Session session;
 
     @Before
     public void setUp() {
-        session = new Session(sessionTime);
+        session = new Session(sessionTime, Name, Residence);
     }
 
     @After
@@ -72,12 +75,36 @@ public class TestSession {
     @Test
     public void testGetSessionKeyBeforeTimeOut() throws InterruptedException {
         sleep(sessionTime - sessionTimeDelta);
-        assertTrue(session.getSessionKey().length() == 36);
+        assertEquals(36, session.getSessionKey().length());
     }
 
     @Test
     public void testGetSessionKeyAfterTimeOut() throws InterruptedException {
         sleep(sessionTime + sessionTimeDelta);
         assertNull(session.getSessionKey());
+    }
+
+    @Test
+    public void testGetCustomerNameBeforeTimeOut() throws InterruptedException {
+        sleep(sessionTime - sessionTimeDelta);
+        assertEquals(Name, session.getCustomerName());
+    }
+
+    @Test
+    public void testGetCustomerNameAfterTimeOut() throws InterruptedException {
+        sleep(sessionTime + sessionTimeDelta);
+        assertEquals(Name, session.getCustomerName());
+    }
+
+    @Test
+    public void testGetCustomerResidenceBeforeTimeOut() throws InterruptedException {
+        sleep(sessionTime - sessionTimeDelta);
+        assertEquals(Residence, session.getCustomerResidence());
+    }
+
+    @Test
+    public void testGetCustomerResidenceAfterTimeOut() throws InterruptedException {
+        sleep(sessionTime + sessionTimeDelta);
+        assertEquals(Residence, session.getCustomerResidence());
     }
 }

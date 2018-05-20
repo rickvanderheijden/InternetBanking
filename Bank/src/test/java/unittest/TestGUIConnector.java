@@ -1,6 +1,7 @@
 package unittest;
 
 import com.ark.bank.BankController;
+import com.ark.bank.Customer;
 import com.ark.bank.GUIConnector;
 import com.ark.bank.IBankController;
 import org.junit.After;
@@ -81,7 +82,7 @@ public class TestGUIConnector {
     @Test
     public void testIsSessionActive() {
         boolean result = guiConnector.isSessionActive(sessionKey);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
@@ -94,7 +95,7 @@ public class TestGUIConnector {
     @Test
     public void testRefreshSession() {
         boolean result = guiConnector.refreshSession(sessionKey);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
@@ -107,7 +108,7 @@ public class TestGUIConnector {
     @Test
     public void testTerminateSession() {
         boolean result = guiConnector.terminateSession(sessionKey);
-        assertFalse(result);
+        assertTrue (result);
     }
 
     @Test
@@ -115,6 +116,20 @@ public class TestGUIConnector {
         guiConnector = new GUIConnector(null);
         boolean result = guiConnector.terminateSession(sessionKey);
         assertFalse(result);
+    }
+
+    @Test
+    public void testGetCustomer() {
+        Customer result = guiConnector.getCustomer(sessionKey, Name, Residence);
+        assertEquals(Name, result.getName());
+        assertEquals(Residence, result.getResidence());
+    }
+
+    @Test
+    public void testGetCustomerWithNoBankController() throws RemoteException {
+        guiConnector = new GUIConnector(null);
+        Customer result = guiConnector.getCustomer(sessionKey, Name, Residence);
+        assertNull(result);
     }
 
 

@@ -54,6 +54,7 @@ public class CentralBankConnector implements IBankForCentralBank {
             return false;
         }
 
+        //TODO: HOW TO DO THIS FOR BANK??
         return bankController.executeTransaction(transaction);
     }
 

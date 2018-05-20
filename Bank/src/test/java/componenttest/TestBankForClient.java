@@ -14,24 +14,27 @@ import static org.junit.Assert.assertFalse;
  * @author Rick van der Heijden
  */
 public class TestBankForClient {
+    private static final String BankId = "RABO";
+    private static final String URLBase = "http://localhost:1200/";
     private static IBankForClientSession bank;
     private static BankUtilities utilities;
 
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
         utilities = new BankUtilities();
-        bank = utilities.startBankForClient();
+        utilities.startBank(BankId, URLBase);
+        bank = utilities.getIBankForClient(BankId);
     }
 
     @AfterClass
     public static void tearDownClass() {
-        utilities.stopBank();
+        utilities.stopBank(BankId);
     }
 
     @Test
     public void testExecuteTransactionNull() throws RemoteException {
-        boolean result = bank.executeTransaction(null);
+        //TODO: Fix test
+        boolean result = bank.executeTransaction(null,null);
         assertFalse(result);
     }
-
 }

@@ -34,11 +34,12 @@ public interface IBankForClientSession extends Remote {
 
     /**
      * This method can be used create a new bank account.
+     * @param sessionKey This is the session key that is given after a succesful login. It should be valid.
      * @param owner This is the owner of the new bank account. This should be an existing customer.
      * @return BankAccount This is the newly created bank account. Will be null if creation is not successful.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    BankAccount createBankAccount(Customer owner) throws RemoteException;
+    BankAccount createBankAccount(String sessionKey, Customer owner) throws RemoteException;
 
     /**
      * This method can be used create a new customer. The combination of the name and residence should be unique.
@@ -58,12 +59,18 @@ public interface IBankForClientSession extends Remote {
      * @return
      * @throws RemoteException
      */
-    Customer getCustomer(String name, String residence) throws RemoteException;
+    Customer getCustomer(String sessionKey, String name, String residence) throws RemoteException;
 
+    /**
+     * This method can be used to get all the bank account numbers of the logged in user.
+     * @param sessionKey This is the session key that is given after a succesful login. It should be valid.
+     * @return List<String> This is a list of bank account numbers. Empty (not null) when no bank accounts are found, or if the session is invalid.
+     * @throws RemoteException Thrown when remote method call fails.
+     */
+    List<String> getBankAccountNumbers(String sessionKey) throws RemoteException;
 
-    BankAccount getBankAccount(String bankAccountNumber) throws RemoteException;
-    List<Transaction> getTransactions(String bankAccountNumber) throws RemoteException;
-    boolean executeTransaction(Transaction transaction) throws RemoteException;
-
+    BankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
+    List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) throws RemoteException;
+    boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException;
     IBankForClientLogin getBankLogin();
 }

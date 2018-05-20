@@ -15,8 +15,10 @@ public class Session {
     private boolean active;
     private final UUID key = UUID.randomUUID();
 
-    public Session(int sessionTime) {
+    public Session(int sessionTime, String customerName, String customerResidence) {
         this.sessionTime = sessionTime;
+        this.customerName = customerName;
+        this.customerResidence = customerResidence;
         createTimer();
     }
 
@@ -66,6 +68,14 @@ public class Session {
         }
 
         active = false;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getCustomerResidence() {
+        return customerResidence;
     }
 
     private class PeriodicTask extends TimerTask {

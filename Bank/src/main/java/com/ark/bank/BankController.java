@@ -1,9 +1,8 @@
 package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * @author Rick van der Heijden
@@ -17,9 +16,21 @@ public class BankController implements IBankController {
     private final Set<BankAccount> bankAccounts = new HashSet<>();
     private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
+    private final Set<Transaction> transactions = new HashSet<>();
 
     public BankController(String bankId) {
         this.bankId = bankId;
+    }
+
+    @Override
+    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+        if (!isSessionActive(sessionKey)) {
+            return false;
+        }
+
+        //TODO: CHECK ONLY DO TRANSACTION IF SESSIONKEY MATCHES ACCOUNT IN TRANSACTION
+
+        return executeTransaction(transaction);
     }
 
     @Override
@@ -37,30 +48,115 @@ public class BankController implements IBankController {
 
     @Override
     public boolean isSessionActive(String sessionKey) {
+        //TODO: Use function and do for each. Also for other functions.
+
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        for (Session session : sessions) {
+            if (session.isActive() && session.getSessionKey().equals(sessionKey)) {
+                return session.isActive();
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean refreshSession(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        for (Session session : sessions) {
+            if (session.isActive() && session.getSessionKey().equals(sessionKey)) {
+                return session.refresh();
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean terminateSession(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return false;
+        }
+
+        for (Session session : sessions) {
+            if (session.isActive() && session.getSessionKey().equals(sessionKey)) {
+                return session.terminate();
+            }
+        }
+
         return false;
     }
 
     //TODO: Do not use Customer?
     @Override
-    public BankAccount createBankAccount(Customer owner) {
+    public BankAccount createBankAccount(String sessionKey, Customer owner) {
 
-        if (owner == null) {
+        if ((owner == null) || (sessionKey == null) || sessionKey.isEmpty()) {
+            return null;
+        }
+
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
             return null;
         }
 
         BankAccount bankAccount = new BankAccount(owner, getUnusedBankAccountNumber());
         bankAccounts.add(bankAccount);
         return bankAccount;
+    }
+
+    @Override
+    public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
+            return null;
+        }
+
+        if ((bankAccountNumber == null) || bankAccountNumber.isEmpty()) {
+            return null;
+        }
+
+        Session session = getSession(sessionKey);
+
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getNumber().equals(bankAccountNumber)
+                    && bankAccount.getOwner().getName().equals(session.getCustomerName())
+                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+                return bankAccount;
+            }
+        }
+
+        return null;
+    }
+
+    public List<String> getBankAccountNumbers(String sessionKey) {
+        List<String> bankAccountsToReturn = new ArrayList<>();
+
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
+            return bankAccountsToReturn;
+        }
+
+        Session session = getSession(sessionKey);
+
+
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getOwner().getName().equals(session.getCustomerName())
+            && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+                bankAccountsToReturn.add(bankAccount.getNumber());
+            }
+        }
+
+        return bankAccountsToReturn;
     }
 
     @Override
@@ -79,22 +175,21 @@ public class BankController implements IBankController {
             }
         }
 
-        Customer customer = new Customer(name, password, residence);
+        Customer customer = new Customer(name, residence, password);
         customers.add(customer);
 
         return customer;
     }
 
     @Override
-    public Customer getCustomer(String name, String residence) {
-        for (Customer customer : customers) {
-            if ((customer.getName().equals(name))
-                    && customer.getResidence().equals(residence)) {
-                return customer;
-            }
+    public Customer getCustomer(String sessionKey, String name, String residence) {
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
+            return null;
         }
 
-        return null;
+        return getCustomer(name, residence);
     }
 
     @Override
@@ -105,7 +200,7 @@ public class BankController implements IBankController {
             return null;
         }
 
-        Session session = new Session(DefaultSessionTime);
+        Session session = new Session(DefaultSessionTime, name, residence);
         sessions.add(session);
 
         return session.getSessionKey();
@@ -113,7 +208,7 @@ public class BankController implements IBankController {
 
     @Override
     public boolean logout(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (!isSessionActive(sessionKey)) {
             return false;
         }
 
@@ -149,6 +244,16 @@ public class BankController implements IBankController {
         return bankAccountNumber;
     }
 
+    private Customer getCustomer(String name, String residence) {
+        for (Customer customer : customers) {
+            if ((customer.getName().equals(name))
+                    && customer.getResidence().equals(residence)) {
+                return customer;
+            }
+        }
+        return null;
+    }
+
     private String getRandomBankAccountNumber() {
         long range = EndBankAccountNumber - StartBankAccountNumber + 1;
         long fraction = (long)(range * random.nextDouble());
@@ -164,5 +269,19 @@ public class BankController implements IBankController {
         }
 
         return false;
+    }
+
+    private Session getSession(String sessionKey) {
+        if ((sessionKey == null) || sessionKey.isEmpty()) {
+            return null;
+        }
+
+        for (Session session : sessions) {
+            if ((session.getSessionKey() != null) && session.getSessionKey().equals(sessionKey)) {
+                return session;
+            }
+        }
+
+        return null;
     }
 }
