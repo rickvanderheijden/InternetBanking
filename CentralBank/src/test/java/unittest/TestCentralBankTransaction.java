@@ -89,6 +89,7 @@ public class TestCentralBankTransaction {
 
     @Test
     public void testExecuteTransactionValidValuesBothRegistered() {
+        //TODO: CREATE STUBS? OR DO IN INTEGRATION
         ICentralBankRegister centralBankRegister = (ICentralBankRegister)centralBank;
         centralBankRegister.registerBank(new BankConnectionInfo("ABNA", ""));
         centralBankRegister.registerBank(new BankConnectionInfo("RABO", ""));

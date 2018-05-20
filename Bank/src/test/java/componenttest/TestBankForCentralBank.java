@@ -5,11 +5,10 @@ import java.io.IOException;
 import com.ark.bank.IBankForCentralBank;
 import com.ark.centralbank.Transaction;
 import org.junit.AfterClass;
-import utilities.BankUtilities;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import testutilities.BankUtilities;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 /**
@@ -65,13 +64,6 @@ public class TestBankForCentralBank {
         Transaction transaction = new Transaction(0.0, "Description", "AccountFrom", "AccountTo");
         boolean result = bank.executeTransaction(transaction);
         assertFalse(result);
-    }
-
-    @Test
-    public void testExecuteTransactionValidValues() {
-        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
-        boolean result = bank.executeTransaction(transaction);
-        assertTrue(result);
     }
 
     //TODO: Only test interface, not internals.

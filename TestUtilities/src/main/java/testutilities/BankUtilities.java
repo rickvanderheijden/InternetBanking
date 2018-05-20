@@ -1,9 +1,11 @@
-package utilities;
+package testutilities;
 
 import com.ark.bank.IBankForCentralBank;
 import com.ark.bank.IBankForClientSession;
 import fontyspublisher.IRemotePublisherForListener;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,8 +14,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 
 import static java.lang.Thread.sleep;
 
@@ -24,7 +24,7 @@ public class BankUtilities {
 
     private static final String JARPATH = "..\\out\\artifacts\\Bank_jar\\";
     private static final String JARFILE = "Bank.jar";
-    private Map<String, Process> bankProcesses = new HashMap<>();
+    private final Map<String, Process> bankProcesses = new HashMap<>();
 
     public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) throws IOException {
         URL wsdlURL = null;

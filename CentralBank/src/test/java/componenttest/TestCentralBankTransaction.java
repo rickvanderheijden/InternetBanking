@@ -3,7 +3,8 @@ package componenttest;
 import com.ark.centralbank.ICentralBankTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import utilities.CentralBankUtilities;
+import testutilities.CentralBankUtilities;
+
 import java.io.IOException;
 
 /**
@@ -16,7 +17,8 @@ public class TestCentralBankTransaction {
     @BeforeClass
     public static void setUpClass() throws IOException {
         utilities = new CentralBankUtilities();
-        centralBank = utilities.startCentralBankTransaction();
+        utilities.startCentralBank();
+        centralBank = utilities.getCentralBankTransaction();
     }
 
     @AfterClass

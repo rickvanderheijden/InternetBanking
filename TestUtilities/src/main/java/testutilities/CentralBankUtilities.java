@@ -1,4 +1,4 @@
-package utilities;
+package testutilities;
 
 import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
@@ -22,13 +22,11 @@ public class CentralBankUtilities {
     private Service service;
     private QName qnamePort;
 
-    public ICentralBankTransaction startCentralBankTransaction() throws IOException {
-        startCentralBank();
+    public ICentralBankTransaction getCentralBankTransaction() throws IOException {
         return service.getPort(qnamePort, ICentralBankTransaction.class);
     }
 
-    public ICentralBankRegister startCentralBankRegister() throws IOException {
-        startCentralBank();
+    public ICentralBankRegister getCentralBankRegister() throws IOException {
         return service.getPort(qnamePort, ICentralBankRegister.class);
     }
 
@@ -38,7 +36,7 @@ public class CentralBankUtilities {
         }
     }
 
-    private void startCentralBank() throws IOException {
+    public void startCentralBank() throws IOException {
 
         String jrePath = System.getProperty("java.home");
         String javaPath = jrePath + "\\bin\\java.exe";

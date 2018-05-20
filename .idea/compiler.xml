@@ -10,6 +10,7 @@
         <module name="BankingApplication" />
         <module name="CentralBank" />
         <module name="Interfaces" />
+        <module name="TestUtilities" />
       </profile>
     </annotationProcessing>
   </component>

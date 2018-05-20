@@ -4,7 +4,8 @@ import com.ark.bank.IBankForClientSession;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import utilities.BankUtilities;
+import testutilities.BankUtilities;
+
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
