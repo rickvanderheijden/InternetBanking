@@ -5,9 +5,9 @@ import java.io.IOException;
 import com.ark.bank.IBankForCentralBank;
 import com.ark.centralbank.Transaction;
 import org.junit.AfterClass;
-import utilities.BankUtilities;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import testutilities.BankUtilities;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;

@@ -6,10 +6,12 @@ import com.ark.centralbank.ICentralBankTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import utilities.BankUtilities;
+import testutilities.BankUtilities;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
+
+//TODO: MOVE TO SEPARATE MODULE?
 
 /**
  * @author Rick van der Heijden

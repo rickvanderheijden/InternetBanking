@@ -1,4 +1,4 @@
-package utilities;
+package testutilities;
 
 import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
