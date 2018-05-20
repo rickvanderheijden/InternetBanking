@@ -34,6 +34,7 @@ public class Dashboard extends View {
     @FXML private ImageView logoutImageView;
     @FXML
     private Button addBankAccountButton;
+
     private String bankId = null;
     private String sessionKey;
 
@@ -105,6 +106,6 @@ public class Dashboard extends View {
     }
 
     private void doAddBankAccount() {
-        controller.
+        
     }
 }
