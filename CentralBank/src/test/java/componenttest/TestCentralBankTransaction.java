@@ -17,7 +17,8 @@ public class TestCentralBankTransaction {
     @BeforeClass
     public static void setUpClass() throws IOException {
         utilities = new CentralBankUtilities();
-        centralBank = utilities.startCentralBankTransaction();
+        utilities.startCentralBank();
+        centralBank = utilities.getCentralBankTransaction();
     }
 
     @AfterClass
