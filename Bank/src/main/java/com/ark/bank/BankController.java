@@ -151,7 +151,7 @@ public class BankController implements IBankController {
 
         for (BankAccount bankAccount : bankAccounts) {
             if (bankAccount.getOwner().getName().equals(session.getCustomerName())
-            && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
                 bankAccountsToReturn.add(bankAccount.getNumber());
             }
         }
