@@ -15,8 +15,6 @@ import static java.lang.Thread.sleep;
  * @author Rick van der Heijden
  */
 public class CentralBankUtilities {
-
-    private static final String JARPATH = "..\\out\\artifacts\\CentralBank_jar\\";
     private static final String JARFILE = "CentralBank.jar";
     private Process processCentralBank;
     private Service service;
@@ -37,10 +35,19 @@ public class CentralBankUtilities {
     }
 
     public void startCentralBank() throws IOException {
-
+        String javaPath;
+        String jarPath;
         String jrePath = System.getProperty("java.home");
-        String javaPath = jrePath + "\\bin\\java.exe";
-        processCentralBank = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE).start();
+        String OS = System.getProperty("os.name").toLowerCase();
+        if (OS.indexOf("win") >= 0) {
+            jarPath = "..\\out\\artifacts\\CentralBank_jar\\";
+            javaPath = jrePath + "\\bin\\java.exe";
+        } else {
+            jarPath = "..//out//artifacts//CentralBank_jar//";
+            javaPath = jrePath + "//bin//java";
+        }
+
+        processCentralBank = new ProcessBuilder(javaPath, "-jar", jarPath + JARFILE).start();
 
         waitForConnection();
 
