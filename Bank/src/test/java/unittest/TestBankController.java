@@ -127,6 +127,9 @@ public class TestBankController {
 
     @Test
     public void testExecuteTransactionValidValues() {
+
+        //TODO: IS THIS CORRECT? MISSES A LOT OF STUFF
+        //TODO: Create stubs and all?
         createCustomerAndLogin();
         Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
         boolean result = bankController.executeTransaction(sessionKey, transaction);

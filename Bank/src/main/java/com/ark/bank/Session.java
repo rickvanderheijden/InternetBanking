@@ -9,8 +9,8 @@ import java.util.UUID;
  */
 public class Session {
     private Timer timer;
-    private String customerName;
-    private String customerResidence;
+    private final String customerName;
+    private final String customerResidence;
     private final int sessionTime;
     private boolean active;
     private final UUID key = UUID.randomUUID();

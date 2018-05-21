@@ -1,7 +1,13 @@
 package com.ark.bank;
 
+import com.ark.centralbank.ICentralBankTransaction;
 import com.ark.centralbank.Transaction;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -17,9 +23,11 @@ public class BankController implements IBankController {
     private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
     private final Set<Transaction> transactions = new HashSet<>();
+    private final ICentralBankTransaction centralBank;
 
     public BankController(String bankId) {
         this.bankId = bankId;
+        centralBank = getCentralBankConnection();
     }
 
     @Override
@@ -30,20 +38,54 @@ public class BankController implements IBankController {
 
         //TODO: CHECK ONLY DO TRANSACTION IF SESSIONKEY MATCHES ACCOUNT IN TRANSACTION
 
-        return executeTransaction(transaction);
+        return executeTransaction(transaction, false);
     }
 
     @Override
     public boolean executeTransaction(Transaction transaction) {
-        return ((transaction != null)
-                && (transaction.getDate() != null)
-                && (transaction.getAccountFrom() != null)
-                && (transaction.getAccountTo() != null)
-                && (!(transaction.getAmount() <= 0.0))
-                && (transaction.getDate() != null)
-                && (transaction.getDescription() != null));
+        return executeTransaction(transaction, true);
+    }
 
-        //TODO: Handle correctly
+    private boolean executeTransaction(Transaction transaction, boolean incoming) {
+        if ((transaction == null)
+                || (transaction.getDate() == null)
+                || (transaction.getAccountFrom() == null)
+                || (transaction.getAccountTo() == null)
+                || (transaction.getAmount() <= 0.0)
+                || (transaction.getDate() == null)
+                || (transaction.getDescription() == null)) {
+            return false;
+        }
+
+        if (!isBankAccountNumberInUse(incoming ? transaction.getAccountTo() : transaction.getAccountFrom())) {
+            return false;
+        }
+
+        if (!incoming) {
+            if ((centralBank == null || !centralBank.executeTransaction(transaction))) {
+                return false;
+            }
+        }
+
+        BankAccount bankAccount = null;
+
+        for (BankAccount bankAccountToUse : bankAccounts) {
+            if (bankAccountToUse.getNumber().equals(incoming ? transaction.getAccountTo() : transaction.getAccountFrom())) {
+                bankAccount = bankAccountToUse;
+            }
+        }
+
+        if (bankAccount == null) {
+            return false;
+        }
+
+        if (incoming) {
+            bankAccount.increaseBalance(transaction.getAmount());
+        } else {
+            return bankAccount.decreaseBalance(transaction.getAmount());
+        }
+
+        return true;
     }
 
     @Override
@@ -283,5 +325,19 @@ public class BankController implements IBankController {
         }
 
         return null;
+    }
+
+    private ICentralBankTransaction getCentralBankConnection() {
+        URL wsdlURL;
+        try {
+            wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
+            QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
+            Service service = Service.create(wsdlURL, qname);
+            QName qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
+
+            return service.getPort(qnamePort, ICentralBankTransaction.class);
+        } catch (MalformedURLException | WebServiceException e) {
+            return null;
+        }
     }
 }
