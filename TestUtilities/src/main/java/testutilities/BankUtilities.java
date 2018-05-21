@@ -22,7 +22,6 @@ import static java.lang.Thread.sleep;
  */
 public class BankUtilities {
 
-    private static final String JARPATH = "..\\out\\artifacts\\Bank_jar\\";
     private static final String JARFILE = "Bank.jar";
     private final Map<String, Process> bankProcesses = new HashMap<>();
 
@@ -60,9 +59,20 @@ public class BankUtilities {
     }
 
     public void startBank(String bankId, String URLBase) throws IOException {
+
+        String javaPath;
+        String jarPath;
         String jrePath = System.getProperty("java.home");
-        String javaPath = jrePath + "\\bin\\java.exe";
-        Process process = new ProcessBuilder(javaPath, "-jar", JARPATH + JARFILE, bankId, URLBase).start();
+        String OS = System.getProperty("os.name").toLowerCase();
+        if (OS.indexOf("win") >= 0) {
+            jarPath = "..\\out\\artifacts\\Bank_jar\\";
+            javaPath = jrePath + "\\bin\\java.exe";
+        } else {
+            jarPath = "..//out//artifacts//Bank_jar//";
+            javaPath = jrePath + "//bin//java";
+        }
+
+        Process process = new ProcessBuilder(javaPath, "-jar", jarPath + JARFILE, bankId, URLBase).start();
         bankProcesses.put(bankId, process);
     }
 
