@@ -23,7 +23,7 @@ public class TestBankForClient {
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
         utilities = new BankUtilities();
-        //utilities.startBank(BankId, URLBase);
+        utilities.startBank(BankId, URLBase);
         bank = utilities.getIBankForClient(BankId);
     }
 
