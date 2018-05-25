@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class StartUp extends View {
@@ -56,7 +57,13 @@ public class StartUp extends View {
         this.selectBankComboBox.getItems().addAll(banks);
         this.registerBankComboBox.getItems().addAll(banks);
 
-        this.loginButton.setOnAction(event -> doLogin());
+        this.loginButton.setOnAction(event -> {
+            try {
+                doLogin();
+            } catch (RemoteException | NotBoundException e) {
+                e.printStackTrace();
+            }
+        });
         this.registerButton.setOnAction(e -> doRegister());
         this.goToRegisterPane.setOnMouseClicked(e -> togglePanes());
         this.toLoginPane.setOnMouseClicked(e -> togglePanes());
@@ -175,8 +182,7 @@ public class StartUp extends View {
     /**
      * Execute login
      */
-    private void doLogin()
-    {
+    private void doLogin() throws RemoteException, NotBoundException {
         this.errorMessageLabel.setVisible(false);
         String selectedBank = this.selectBankComboBox.getValue();
         String username = this.usernameTextField.getText();

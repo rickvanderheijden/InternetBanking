@@ -74,7 +74,7 @@ public class TestTransaction {
         bankAccountABNA = bankForClientSessionABNA.getBankAccount(sessionIdABNA, bankAccountABNA.getNumber());
         bankAccountRABO = bankForClientSessionRABO.getBankAccount(sessionIdRABO, bankAccountRABO.getNumber());
         assertEquals(-23.15, bankAccountABNA.getBalance());
-        assertEquals( 23.15, bankAccountRABO.getBalance());
+        assertEquals(23.15, bankAccountRABO.getBalance());
     }
 }
 
