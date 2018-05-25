@@ -16,14 +16,14 @@ import java.util.List;
 public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin {
 
     private IBankController bankController;
+    private RemotePublisher remotePublisher;
 
     public GUIConnector(IBankController bankController) throws RemoteException {
         super();
 
         this.bankController = bankController;
-
-        RemotePublisher remotePublisher = new RemotePublisher();
-        //remotePublisher.registerProperty("");
+        remotePublisher = new RemotePublisher();
+        remotePublisher.registerProperty("transactionExecuted");
 
         String bankId = "";
         if (bankController != null) {
@@ -120,17 +120,18 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+    public boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException {
         if (bankController == null) {
             return false;
         }
 
-        return bankController.executeTransaction(sessionKey, transaction);
-    }
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
 
-    @Override
-    public IBankForClientLogin getBankLogin() {
-        return null;
+        if (result) {
+            remotePublisher.inform("transactionExecuted", null, null);
+        }
+
+        return result;
     }
 
     @Override

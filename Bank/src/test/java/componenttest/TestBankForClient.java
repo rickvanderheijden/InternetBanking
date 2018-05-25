@@ -23,7 +23,7 @@ public class TestBankForClient {
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
         utilities = new BankUtilities();
-        utilities.startBank(BankId, URLBase);
+        //utilities.startBank(BankId, URLBase);
         bank = utilities.getIBankForClient(BankId);
     }
 
@@ -34,7 +34,7 @@ public class TestBankForClient {
 
     @Test
     public void testExecuteTransactionNull() throws RemoteException {
-        //TODO: Fix test
+        //TODO: Fix test with one bank transaction
         boolean result = bank.executeTransaction(null,null);
         assertFalse(result);
     }

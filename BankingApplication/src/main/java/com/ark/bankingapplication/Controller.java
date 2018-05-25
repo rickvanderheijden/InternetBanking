@@ -24,9 +24,7 @@ public class Controller {
     private StartUp startUp;
     private Dashboard dashboard;
 
-    private IBankForClientSession bankSession;
-    private IBankForClientLogin bankLogin;
-    private String bank = null;
+    private String bankId = null;
     private String sessionKey;
     private Customer customer;
 
@@ -50,11 +48,11 @@ public class Controller {
         startUp.show();
         dashboard.hide();
     }
-    public void setBank(String bank) {
-        this.bank = bank;
+    public void setBank(String bankId) {
+        this.bankId = bankId;
     }
     public String getBank(){
-        return  this.bank;
+        return  this.bankId;
     }
 
     public Customer getCustomer() {
@@ -91,22 +89,22 @@ public class Controller {
         this.scene.getStylesheets().add(getClass().getResource("views/"+stylesheet).toExternalForm());
     }
 
-    public boolean getBankConnection(String bankId) {
+    public boolean connectToBank(String bankId) {
+        boolean result = false;
         try {
-            this.bankSession = this.bankConnector.getBankConnection(bankId);
-            return true;
+            result = this.bankConnector.connect(bankId);
         } catch (IOException | NotBoundException e) {
             e.printStackTrace();
-            return false;
         }
+
+        return result;
     }
 
     public ReturnObject login(String name, String residence, String password) throws IOException, NotBoundException, RemoteException {
-        dashboard.setBank(this.bank);
-        if (this.getBankConnection(this.bank)) {
-            this.bankLogin = this.bankSession.getBankLogin();
+        dashboard.setBank(this.bankId);
+        if (this.connectToBank(this.bankId)) {
             try {
-                this.sessionKey = this.bankLogin.login(name, residence, password);
+                this.sessionKey = this.bankConnector.login(name, residence, password);
                 return new ReturnObject(true, "Gelukt", "Inloggen is gelukt");
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -118,7 +116,7 @@ public class Controller {
     }
 
     public void setDashboardBankId(String bankId){
-        this.bank = bankId;
+        this.bankId = bankId;
         dashboard.setBank(bankId);
         dashboard.setLogo();
     }
@@ -134,12 +132,12 @@ public class Controller {
      */
     public ReturnObject registerUser(String bankId, String name, String residence, String password) {
         try {
-            if (this.getBankConnection(bankId)) {
-                Customer customer = this.bankSession.createCustomer(name, residence, password);
+            if (this.connectToBank(bankId)) {
+                Customer customer = this.bankConnector.createCustomer(name, residence, password);
                 try {
                     ReturnObject rt = this.login(name, residence, password);
                     if (rt.isSuccess()) {
-                        this.bankSession.createBankAccount(this.sessionKey, customer);
+                        this.bankConnector.createBankAccount(this.sessionKey, customer);
                         return new ReturnObject(true, "Registratie succesvol", "Je Bent succesvol geregistreerd!");
                     }
                 } catch (IOException | NotBoundException e) {
@@ -167,7 +165,7 @@ public class Controller {
      */
     public List<Transaction> getTransactions(String bankNumber, String name, String residence) {
         try {
-            return this.bankSession.getTransactions(this.sessionKey, bankNumber);
+            return this.bankConnector.getTransactions(this.sessionKey, bankNumber);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
