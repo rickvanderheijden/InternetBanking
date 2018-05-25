@@ -63,6 +63,7 @@ public interface IBankForClientSession extends Remote {
 
     /**
      * This method can be used to get all the bank account numbers of the logged in user.
+     *
      * @param sessionKey This is the session key that is given after a succesful login. It should be valid.
      * @return List<String> This is a list of bank account numbers. Empty (not null) when no bank accounts are found, or if the session is invalid.
      * @throws RemoteException Thrown when remote method call fails.
@@ -70,6 +71,9 @@ public interface IBankForClientSession extends Remote {
     List<String> getBankAccountNumbers(String sessionKey) throws RemoteException;
 
     BankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
+
     List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) throws RemoteException;
+
     boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException;
+    IBankForClientLogin getBankLogin();
 }

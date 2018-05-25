@@ -2,6 +2,7 @@ package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
 import fontyspublisher.RemotePublisher;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -125,6 +126,11 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         }
 
         return bankController.executeTransaction(sessionKey, transaction);
+    }
+
+    @Override
+    public IBankForClientLogin getBankLogin() {
+        return null;
     }
 
     @Override

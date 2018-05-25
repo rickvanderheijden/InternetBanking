@@ -1,23 +1,16 @@
 package com.ark.bankingapplication.views;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+
 import java.io.File;
 import java.util.ArrayList;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 
 
 /**
@@ -34,12 +27,16 @@ public class Dashboard extends View {
     @FXML private TextField amountCentsTextField;
     @FXML private ListView<?> outgoingListView;
     @FXML private ListView<?> incomingListView;
-
+    @FXML
+    private ComboBox<String> BankAccountsComboBox;
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
     @FXML private ImageView logoutImageView;
+    @FXML
+    private Button addBankAccountButton;
 
     private String bankId = null;
+    private String sessionKey;
 
 
     public Dashboard( ) throws ControlNotLoadedException {
@@ -65,9 +62,9 @@ public class Dashboard extends View {
         });
 
         logoutImageView.setOnMouseClicked(e -> doLogout());
-
-
+        addBankAccountButton.setOnAction(e -> doAddBankAccount());
     }
+
 
     /**
      * Get all the incomming transactions
@@ -108,4 +105,7 @@ public class Dashboard extends View {
         controller.showStartUp();
     }
 
+    private void doAddBankAccount() {
+        
+    }
 }

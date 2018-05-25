@@ -57,7 +57,7 @@ public class TestBankController {
     @Test
     public void testCreateBankAccountValidSessionKeyOwnerNull() {
         createCustomerAndLogin();
-        BankAccount result = bankController.createBankAccount(sessionKey,null);
+        BankAccount result = bankController.createBankAccount(sessionKey, null);
         assertNull(result);
     }
 
