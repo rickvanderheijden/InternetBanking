@@ -7,6 +7,7 @@ import com.ark.bank.IBankForClientSession;
 import com.ark.centralbank.Transaction;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
+import fontyspublisher.RemotePublisher;
 
 import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
@@ -21,9 +22,12 @@ public class BankConnector extends UnicastRemoteObject implements IRemotePropert
     private String sessionKey;
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
+    private RemotePublisher remotePublisher;
 
     public BankConnector() throws RemoteException {
         super();
+        remotePublisher = new RemotePublisher();
+        remotePublisher.registerProperty("updateBankAccount");
     }
 
     public String getSessionKey() {
@@ -32,8 +36,11 @@ public class BankConnector extends UnicastRemoteObject implements IRemotePropert
 
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
-        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-        remotePublisher.subscribeRemoteListener(this, "transactionExecuted");
+        IRemotePublisherForListener remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
+        if (registry != null) {
+            registry.rebind("bankPublisherForClient" + bankId, remotePublisher);
+        }
+        remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted");
 
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
         bankForClientSession = (IBankForClientSession) registry.lookup("bank" + bankId);
@@ -94,9 +101,32 @@ public class BankConnector extends UnicastRemoteObject implements IRemotePropert
         return this.bankForClientSession.getBankAccountNumbers(sessionKey);
     }
 
+    public boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException {
+        if (this.bankForClientSession == null) {
+            return false;
+        }
+
+        return this.bankForClientSession.executeTransaction(sessionKey, transaction);
+    }
+
+    public Customer getCustomer(String sessionKey, String name, String residence) throws RemoteException {
+        if (this.bankForClientSession == null) {
+            return null;
+        }
+        return this.bankForClientSession.getCustomer(sessionKey, name, residence);
+    }
+
+    public BankAccount getBankAccount(String sessionKey, String bankAccountNr) throws RemoteException {
+        if (this.bankForClientSession == null) {
+            return null;
+        }
+        return this.bankForClientSession.getBankAccount(sessionKey, bankAccountNr);
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
         //DO STUFF
+        remotePublisher.inform("updateBankAccount", null, null);
         System.out.println("");
     }
 }

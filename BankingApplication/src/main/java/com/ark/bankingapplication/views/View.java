@@ -7,6 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 public abstract class View extends AnchorPane {
 
@@ -58,7 +60,7 @@ public abstract class View extends AnchorPane {
         return this.bank;
     }
 
-    public void setBank(String bank){
+    public void setBank(String bank) throws RemoteException, NotBoundException {
         this.bank = bank;
 
     }

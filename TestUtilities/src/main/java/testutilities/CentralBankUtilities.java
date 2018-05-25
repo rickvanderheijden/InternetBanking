@@ -3,11 +3,11 @@ package testutilities;
 import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 
 import static java.lang.Thread.sleep;
 

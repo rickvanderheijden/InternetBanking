@@ -1,8 +1,7 @@
 package com.ark.bankingapplication;
 
+import com.ark.bank.BankAccount;
 import com.ark.bank.Customer;
-import com.ark.bank.IBankForClientLogin;
-import com.ark.bank.IBankForClientSession;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
 import com.ark.centralbank.Transaction;
@@ -105,7 +104,12 @@ public class Controller {
         if (this.connectToBank(this.bankId)) {
             try {
                 this.sessionKey = this.bankConnector.login(name, residence, password);
-                return new ReturnObject(true, "Gelukt", "Inloggen is gelukt");
+                dashboard.setCustomer(this.bankConnector.getCustomer(this.sessionKey, name, residence));
+                dashboard.setSessionKey(this.sessionKey);
+                dashboard.initDashboard();
+                ReturnObject returnObject = new ReturnObject(true, "Gelukt", "Inloggen is gelukt");
+                returnObject.setSessionKey(this.sessionKey);
+                return returnObject;
             } catch (RemoteException e) {
                 e.printStackTrace();
                 return new ReturnObject(false, "Inlog fout", "Er is een fout opgetreden bij het inloggen");
@@ -115,7 +119,7 @@ public class Controller {
         }
     }
 
-    public void setDashboardBankId(String bankId){
+    public void setDashboardBankId(String bankId) throws RemoteException, NotBoundException {
         this.bankId = bankId;
         dashboard.setBank(bankId);
         dashboard.setLogo();
@@ -158,17 +162,34 @@ public class Controller {
     /**
      * Method to get all the transactions of the given bankAccountNumber
      *
+     * @param sessionKey
      * @param bankNumber
-     * @param name
-     * @param residence
      * @return List of Transactions
      */
-    public List<Transaction> getTransactions(String bankNumber, String name, String residence) {
+    public List<Transaction> getTransactions(String sessionKey, String bankNumber) {
         try {
-            return this.bankConnector.getTransactions(this.sessionKey, bankNumber);
+            return this.bankConnector.getTransactions(sessionKey, bankNumber);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<String> getBankAccounts(String sessionKey) {
+        try {
+            return this.bankConnector.getBankAccountNumbers(sessionKey);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public BankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNr) {
+        try {
+            return this.bankConnector.getBankAccount(sessionKey, selectedBankAccountNr);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
