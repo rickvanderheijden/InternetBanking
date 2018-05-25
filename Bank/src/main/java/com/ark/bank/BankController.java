@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * @author Rick van der Heijden
  */
-public class BankController implements IBankController {
+public class BankController extends Observable implements IBankController {
     private static final long StartBankAccountNumber = 1000000000L;
     private static final long EndBankAccountNumber = 9999999999L;
     private static final int DefaultSessionTime = 90000;
@@ -81,6 +81,8 @@ public class BankController implements IBankController {
 
         if (incoming) {
             bankAccount.increaseBalance(transaction.getAmount());
+            setChanged();
+            notifyObservers();
         } else {
             return bankAccount.decreaseBalance(transaction.getAmount());
         }
