@@ -28,8 +28,6 @@
                                    preserveRatio="true">
                             <Image url="@images/lock.png"/>
                         </ImageView>
-                        <ComboBox fx:id="selectBankComboBox" prefHeight="40.0" prefWidth="300.0"
-                                  promptText="Kies uw bank" styleClass="transparent-input"/>
                         <TextField fx:id="usernameTextField" prefHeight="40.0" prefWidth="300.0"
                                    promptText="Gebruikersnaam" styleClass="transparent-input"/>
                         <TextField fx:id="residenceTextField" prefHeight="40.0" prefWidth="300.0"
@@ -67,8 +65,6 @@
                             <Image url="@images/lock.png"/>
                         </image>
                     </ImageView>
-                    <ComboBox fx:id="registerBankComboBox" prefHeight="40.0" prefWidth="300.0" promptText="Kies uw bank"
-                              styleClass="transparent-input"/>
                     <TextField fx:id="registernameTextField" prefHeight="40.0" prefWidth="300.0"
                                promptText="Gebruikersnaam" styleClass="transparent-input"/>
                     <TextField fx:id="registerResidenceTextField" prefHeight="40.0" prefWidth="300.0"

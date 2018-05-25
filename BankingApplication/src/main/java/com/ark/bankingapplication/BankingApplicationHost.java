@@ -1,16 +1,17 @@
 package com.ark.bankingapplication;
 
-import com.ark.bank.IBankForClientLogin;
-import com.ark.bank.IBankForClientSession;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class BankingApplicationHost extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        List<String> parameters = getParameters().getRaw();
 
-        Controller controller = new Controller(stage);
+        Controller controller = new Controller(stage, parameters.get(0));
         controller.start();
     }
 
