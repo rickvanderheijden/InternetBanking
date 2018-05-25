@@ -2,8 +2,6 @@ package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
 import fontyspublisher.RemotePublisher;
-import javafx.beans.value.ObservableValue;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

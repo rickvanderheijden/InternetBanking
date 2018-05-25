@@ -1,12 +1,19 @@
 package com.ark.bankingapplication;
 
 public class ReturnObject {
-    private boolean success;
-    private String sessionKey;
-    private String title;
-    private String body;
+    private final boolean success;
+    private final String title;
+    private final String body;
+    private final String sessionKey;
 
     public ReturnObject(boolean success, String title, String body) {
+        this.success = success;
+        this.title = title;
+        this.body = body;
+        this.sessionKey = null;
+    }
+
+    public ReturnObject(boolean success, String title, String body, String sessionKey) {
         this.success = success;
         this.title = title;
         this.body = body;
@@ -28,9 +35,4 @@ public class ReturnObject {
     public String getSessionKey() {
         return sessionKey;
     }
-
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
 }

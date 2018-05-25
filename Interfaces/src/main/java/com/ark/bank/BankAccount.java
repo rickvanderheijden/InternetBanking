@@ -21,9 +21,8 @@ public class BankAccount implements Serializable {
         this.number = number;
     }
 
-    public  BankAccount(){
-
-    };
+    public BankAccount(){
+    }
 
     public Customer getOwner() {
         return owner;

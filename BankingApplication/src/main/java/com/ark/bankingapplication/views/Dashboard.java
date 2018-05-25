@@ -36,24 +36,20 @@ public class Dashboard extends View implements IRemotePropertyListener {
     @FXML private TextField toBankAccountTextField;
     @FXML private TextField amountFullTextField;
     @FXML private TextField amountCentsTextField;
-    @FXML
-    private ListView<String> transactionListView;
-    @FXML
-    private ComboBox<String> BankAccountsComboBox;
+    @FXML private ListView<String> transactionListView;
+    @FXML private ComboBox<String> BankAccountsComboBox;
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
     @FXML private ImageView logoutImageView;
-    @FXML
-    private Button addBankAccountButton;
-    @FXML
-    private Label selectedBankNrLabel;
+    @FXML private Button addBankAccountButton;
+    @FXML private Label selectedBankNrLabel;
 
     private Customer customer = null;
     private BankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
     private String selectedBankAccountNr = null;
-    private ArrayList<String> transactions = null;
+    private final ArrayList<String> transactions = null;
     private List<String> bankAccounts = null;
 
 
@@ -103,8 +99,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
      * Get all  transactions
      * @return list of transactions
      */
-    public List<Transaction> getTransactions() {
-
+    private List<Transaction> getTransactions() {
         if (this.sessionKey != null) {
             return controller.getTransactions(sessionKey, selectedBankAccountNr);
         }
@@ -167,6 +162,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
         }
     }
 
+
     public void setTransactions() {
         List<Transaction> transactions = this.getTransactions();
         if (transactions != null) {
@@ -174,6 +170,9 @@ public class Dashboard extends View implements IRemotePropertyListener {
                 this.transactions.add(transaction.toString());
             }
         }
-        this.transactionListView.getItems().addAll(this.transactions);
+
+        if (this.transactions != null) {
+            this.transactionListView.getItems().addAll(this.transactions);
+        }
     }
 }

@@ -5,15 +5,11 @@ import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
-
 import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 
 public abstract class View extends AnchorPane {
 
-    protected Controller controller;
-
+    Controller controller;
     private String bank = null;
 
     public View(String resource) throws ControlNotLoadedException {
@@ -60,7 +56,7 @@ public abstract class View extends AnchorPane {
         return this.bank;
     }
 
-    public void setBank(String bank) throws RemoteException, NotBoundException {
+    public void setBank(String bank) {
         this.bank = bank;
 
     }

@@ -5,13 +5,10 @@ import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-
-import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 public class StartUp extends View {
+
 
     @FXML private TextField usernameTextField;
     @FXML private TextField residenceTextField;
@@ -19,44 +16,25 @@ public class StartUp extends View {
     @FXML private PasswordField passwordField;
     @FXML private Button loginButton;
     @FXML private AnchorPane startAnchorPane;
-    @FXML
-    private AnchorPane startUp;
-    @FXML
-    private AnchorPane loginAnchorPane;
-    @FXML
-    private Label goToRegisterPane;
-    @FXML
-    private AnchorPane registerAnchorPane;
-    @FXML
-    private TextField registernameTextField;
-    @FXML
-    private TextField registerResidenceTextField;
-    @FXML
-    private PasswordField registerPasswordField;
-    @FXML
-    private PasswordField registerPasswordCheckPasswordField;
-    @FXML
-    private Button registerButton;
-    @FXML
-    private Label toLoginPane;
-    @FXML
-    private Label registerErrorMessagesLabel;
-
-
-
-    private ArrayList<String> banks;
-
+    @FXML private AnchorPane startUp;
+    @FXML private AnchorPane loginAnchorPane;
+    @FXML private Label goToRegisterPane;
+    @FXML private AnchorPane registerAnchorPane;
+    @FXML private TextField registernameTextField;
+    @FXML private TextField registerResidenceTextField;
+    @FXML private PasswordField registerPasswordField;
+    @FXML private PasswordField registerPasswordCheckPasswordField;
+    @FXML private Button registerButton;
+    @FXML private Label toLoginPane;
+    @FXML private Label registerErrorMessagesLabel;
 
     public StartUp() throws ControlNotLoadedException {
         super("StartUp.fxml");
 
         this.loginButton.setOnAction(event -> {
-            try {
-                doLogin();
-            } catch (RemoteException | NotBoundException e) {
-                e.printStackTrace();
-            }
+            doLogin();
         });
+
         this.registerButton.setOnAction(e -> doRegister());
         this.goToRegisterPane.setOnMouseClicked(e -> togglePanes());
         this.toLoginPane.setOnMouseClicked(e -> togglePanes());
@@ -151,7 +129,7 @@ public class StartUp extends View {
     /**
      * Execute login
      */
-    private void doLogin() throws RemoteException, NotBoundException {
+    private void doLogin() {
         this.errorMessageLabel.setVisible(false);
         String username = this.usernameTextField.getText();
         String password = this.passwordField.getText();
@@ -162,7 +140,7 @@ public class StartUp extends View {
             this.errorMessageLabel.setText("Er is iets fout gegaan, niet alle velden zijn ingevuld");
             this.errorMessageLabel.setVisible(true);
         }else {
-            ReturnObject returnObject = null;
+            ReturnObject returnObject = new ReturnObject(false, "Inlog fout", "Er is een fout opgetreden bij het inloggen");
             try {
                 returnObject = controller.login(username, residence, password);
             } catch (NotBoundException e) {
