@@ -5,19 +5,26 @@ import com.ark.bank.Customer;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
 import com.ark.centralbank.Transaction;
+import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
 
+import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class BankConnector {
+public class BankConnector extends UnicastRemoteObject implements IRemotePropertyListener {
 
     private String sessionKey;
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
+
+    public BankConnector() throws RemoteException {
+        super();
+    }
 
     public String getSessionKey() {
         return sessionKey;
@@ -26,7 +33,7 @@ public class BankConnector {
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-        //remotePublisher.subscribeRemoteListener(this, "");
+        remotePublisher.subscribeRemoteListener(this, "transactionExecuted");
 
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
         bankForClientSession = (IBankForClientSession) registry.lookup("bank" + bankId);
@@ -85,5 +92,11 @@ public class BankConnector {
         }
 
         return this.bankForClientSession.getBankAccountNumbers(sessionKey);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
+        //DO STUFF
+        System.out.println("");
     }
 }
