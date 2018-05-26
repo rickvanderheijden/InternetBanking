@@ -1,4 +1,23 @@
+/**
+GLOBALS
+ */
+/** Feedback on input **/
+/*noinspection ALL*/
+.success {
+    -fx-border-color: green;
+}
 
+/*noinspection ALL*/
+.error {
+    -fx-border-color: red;
+}
+
+.error-message {
+    -fx-border-color: #ff0000;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-text-fill: #ff0000;
+}
 
 /**
 ABN COLORS
@@ -10,10 +29,56 @@ ABN COLORS
 
 .title{-fx-text-fill: #608e28;}
 .text{-fx-text-fill: #333333}
-.ark-button{-fx-background-color: #ffd200;-fx-border-radius: 5px;-fx-text-fill: #000000;}
-.ark-button:hover{-fx-opacity: 0.5;}
-.input {-fx-background-color: rgba(255,255,255,1);-fx-border-radius: 5px; -fx-text-inner-color: #333333; -fx-text-fill: #333333; -fx-prompt-text-fill: #333333; -fx-fill: #333333; -fx-border-bottom: 2px solid #009286}
+
+.input {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-border-radius: 5px;
+    -fx-text-inner-color: #333333;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #333333;
+    -fx-fill: #333333;
+    -fx-border-bottom: 2px solid #009286;
+}
 .input:focused{-fx-border-color: #608e28;-fx-text-inner-color: #608e28;}
 
 /** List Styling **/
 .list { -fx-background-color: transparent;}
+
+.transparent-input {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-border-radius: 5px;
+    -fx-text-inner-color: #333333;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #333333;
+    -fx-fill: #333333;
+    -fx-border-bottom: 2px solid #009286;
+}
+
+.transparent-input:focused {
+    -fx-border-color: #608e28;
+    -fx-text-inner-color: #608e28;
+}
+
+/*.combo-box .cell{ -fx-text-fill: #e7e7e7; -fx-background-color: #212636;}*/
+
+/** Button styling **/
+.ark-button {
+    -fx-background-color: #ffd200;
+    -fx-border-radius: 5px;
+    -fx-text-fill: #000000;
+}
+
+.ark-button:hover {
+    -fx-opacity: 0.5;
+}
+
+/*************************************
+ ********   STARTUP SCREEN    ********
+ *************************************/
+
+#loginPane,
+#registerPane {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.9), 100, 0, 0, 0);
+}
+
+
