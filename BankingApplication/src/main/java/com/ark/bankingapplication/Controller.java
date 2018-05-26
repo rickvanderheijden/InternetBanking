@@ -37,12 +37,14 @@ public class Controller {
 
         Parent root = FXMLLoader.load(getClass().getResource("views/Root.fxml"));
         this.scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("views/style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("views/" + this.bankId + ".css").toExternalForm());
+
         stage.setScene(scene);
         stage.show();
 
         setControls(scene);
         setControllers();
+        startUp.setLogo(this.bankId);
         showStartUp();
 
         startUp.show();

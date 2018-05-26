@@ -3,8 +3,15 @@ package com.ark.bankingapplication.views;
 import com.ark.bankingapplication.ReturnObject;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.File;
 import java.rmi.NotBoundException;
 
 public class StartUp extends View {
@@ -27,6 +34,10 @@ public class StartUp extends View {
     @FXML private Button registerButton;
     @FXML private Label toLoginPane;
     @FXML private Label registerErrorMessagesLabel;
+    @FXML
+    private Label bankNameLabel;
+    @FXML
+    private ImageView bankLogo;
 
     public StartUp() throws ControlNotLoadedException {
         super("StartUp.fxml");
@@ -192,5 +203,25 @@ public class StartUp extends View {
         this.registerPasswordCheckPasswordField.clear();
         this.passwordField.clear();
     }
+
+    public void setLogo(String bankId) {
+        System.out.println("aangeroepen");
+        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + bankId + "-ICON.png");
+        Image image = new Image(file.toURI().toString());
+        System.out.println(image);
+        this.bankLogo.setImage(image);
+        this.setBankNameLabel(bankId);
+    }
+
+    public void setBankNameLabel(String bankname) {
+        if (!bankname.isEmpty()) {
+            if (bankname.equals("ABNA")) {
+                bankNameLabel.setText("ABN AMRO");
+            } else {
+                bankNameLabel.setText("Rabobank");
+            }
+        }
+    }
+
 
 }
