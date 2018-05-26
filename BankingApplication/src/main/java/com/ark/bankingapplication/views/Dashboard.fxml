@@ -39,9 +39,9 @@
                   <Font size="24.0" />
                </font>
             </Label>
-          <ListView fx:id="transactionsListView" layoutX="14.0" layoutY="233.0" prefHeight="567.0" prefWidth="942.0"
+          <ListView fx:id="transactionsListView" layoutX="-1.0" layoutY="233.0" prefHeight="567.0" prefWidth="957.0"
                     styleClass="list"/>
-          <ComboBox fx:id="BankAccountsComboBox" layoutX="18.0" layoutY="134.0" prefHeight="40.0" prefWidth="367.0"
+          <ComboBox fx:id="BankAccountsComboBox" layoutX="18.0" layoutY="115.0" prefHeight="40.0" prefWidth="367.0"
                     promptText="Kies een rekeningnummer" styleClass="transparent-input"/>
           <Button fx:id="addBankAccountButton" layoutX="712.0" layoutY="94.0" mnemonicParsing="false" prefHeight="40.0"
                   prefWidth="245.0" styleClass="ark-button" text="Nieuwe rekening aanmaken" wrapText="true"/>
