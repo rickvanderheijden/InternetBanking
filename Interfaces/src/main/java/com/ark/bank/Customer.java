@@ -1,7 +1,5 @@
 package com.ark.bank;
 
-import com.sun.istack.internal.Nullable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

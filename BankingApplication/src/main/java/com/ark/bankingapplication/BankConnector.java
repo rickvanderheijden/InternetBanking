@@ -37,9 +37,7 @@ public class BankConnector extends UnicastRemoteObject implements IRemotePropert
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         IRemotePublisherForListener remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-        if (registry != null) {
-            registry.rebind("bankPublisherForClient" + bankId, remotePublisher);
-        }
+        registry.rebind("bankPublisherForClient" + bankId, remotePublisher);
         remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted");
 
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
@@ -124,9 +122,7 @@ public class BankConnector extends UnicastRemoteObject implements IRemotePropert
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent propertyChangeEvent) throws RemoteException {
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         //DO STUFF
-        remotePublisher.inform("updateBankAccount", null, null);
-        System.out.println("");
     }
 }

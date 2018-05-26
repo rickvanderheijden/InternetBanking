@@ -20,11 +20,11 @@ public class CentralBankUtilities {
     private Service service;
     private QName qnamePort;
 
-    public ICentralBankTransaction getCentralBankTransaction() throws IOException {
+    public ICentralBankTransaction getCentralBankTransaction() {
         return service.getPort(qnamePort, ICentralBankTransaction.class);
     }
 
-    public ICentralBankRegister getCentralBankRegister() throws IOException {
+    public ICentralBankRegister getCentralBankRegister() {
         return service.getPort(qnamePort, ICentralBankRegister.class);
     }
 

@@ -10,89 +10,73 @@
          type="javafx.scene.layout.AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/9">
     <HBox alignment="CENTER" prefHeight="960.0" prefWidth="1680.0">
-        <children>
-            <AnchorPane prefHeight="960.0" prefWidth="840.0">
-                <children>
-                    <ImageView fitHeight="141.0" fitWidth="497.0" layoutX="185.0" layoutY="406.0" pickOnBounds="true"
-                               preserveRatio="true">
-                        <Image url="@images/logo.png"/>
-                    </ImageView>
-                </children>
-            </AnchorPane>
-            <AnchorPane id="loginPane" fx:id="loginAnchorPane" maxHeight="1.7976931348623157E308"
-                        maxWidth="1.7976931348623157E308" style="-fx-background-color: #212636;" styleClass="loginPane"
-                        stylesheets="@style.css" HBox.hgrow="ALWAYS">
-                <VBox alignment="CENTER" fillWidth="false" minHeight="960.0" minWidth="840.0" spacing="20.0">
-                    <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" opacity="0.32" pickOnBounds="true"
-                                   preserveRatio="true">
-                            <Image url="@images/lock.png"/>
-                        </ImageView>
-                        <ComboBox fx:id="selectBankComboBox" prefHeight="40.0" prefWidth="300.0"
-                                  promptText="Kies uw bank" styleClass="transparent-input"/>
-                        <TextField fx:id="usernameTextField" prefHeight="40.0" prefWidth="300.0"
-                                   promptText="Gebruikersnaam" styleClass="transparent-input"/>
-                        <TextField fx:id="residenceTextField" prefHeight="40.0" prefWidth="300.0"
-                                   promptText="Woonplaats" styleClass="transparent-input"/>
-                        <PasswordField fx:id="passwordField" prefHeight="40.0" prefWidth="300.0" promptText="Wachtwoord"
-                                       styleClass="transparent-input"/>
-                        <Button fx:id="loginButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0"
-                                styleClass="ark-button" text="Inloggen"/>
-                        <Label fx:id="goToRegisterPane" prefHeight="17.0" prefWidth="300.0"
-                               text="Nog geen account? Registreer je hier." textFill="#e7e7e7" underline="true">
-                            <cursor>
-                                <Cursor fx:constant="HAND"/>
-                            </cursor>
-                        </Label>
-                        <Label fx:id="errorMessageLabel" prefHeight="150.0" prefWidth="714.0" styleClass="error-message"
-                               visible="false">
-                            <padding>
-                                <Insets left="10.0" right="10.0"/>
-                            </padding>
-                        </Label>
-                    </children>
-                </VBox>
-            </AnchorPane>
-        </children>
+        <AnchorPane prefHeight="960.0" prefWidth="840.0">
+            <ImageView fitHeight="141.0" fitWidth="497.0" layoutX="185.0" layoutY="406.0" pickOnBounds="true"
+                       preserveRatio="true">
+                <Image url="@images/logo.png"/>
+            </ImageView>
+        </AnchorPane>
+        <AnchorPane id="loginPane" fx:id="loginAnchorPane" maxHeight="1.7976931348623157E308"
+                    maxWidth="1.7976931348623157E308" style="-fx-background-color: #212636;" styleClass="loginPane"
+                    stylesheets="@style.css" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" fillWidth="false" minHeight="960.0" minWidth="840.0" spacing="20.0">
+                <ImageView fitHeight="150.0" fitWidth="200.0" opacity="0.32" pickOnBounds="true"
+                           preserveRatio="true">
+                    <Image url="@images/lock.png"/>
+                </ImageView>
+                <TextField fx:id="usernameTextField" prefHeight="40.0" prefWidth="300.0"
+                           promptText="Gebruikersnaam" styleClass="transparent-input"/>
+                <TextField fx:id="residenceTextField" prefHeight="40.0" prefWidth="300.0"
+                           promptText="Woonplaats" styleClass="transparent-input"/>
+                <PasswordField fx:id="passwordField" prefHeight="40.0" prefWidth="300.0" promptText="Wachtwoord"
+                               styleClass="transparent-input"/>
+                <Button fx:id="loginButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0"
+                        styleClass="ark-button" text="Inloggen"/>
+                <Label fx:id="goToRegisterPane" prefHeight="17.0" prefWidth="300.0"
+                       text="Nog geen account? Registreer je hier." textFill="#e7e7e7" underline="true">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Label>
+                <Label fx:id="errorMessageLabel" prefHeight="150.0" prefWidth="714.0" styleClass="error-message"
+                       visible="false">
+                    <padding>
+                        <Insets left="10.0" right="10.0"/>
+                    </padding>
+                </Label>
+            </VBox>
+        </AnchorPane>
     </HBox>
     <AnchorPane id="registerPane" fx:id="registerAnchorPane" layoutX="840.0" prefHeight="960.0" prefWidth="840.0"
                 style="-fx-background-color: #212636;" styleClass="registerPane" stylesheets="@style.css"
                 visible="false">
-        <children>
-            <VBox alignment="CENTER" fillWidth="false" prefHeight="960.0" prefWidth="840.0" spacing="20.0">
-                <children>
-                    <ImageView fitHeight="150.0" fitWidth="200.0" opacity="0.32" pickOnBounds="true"
-                               preserveRatio="true">
-                        <image>
-                            <Image url="@images/lock.png"/>
-                        </image>
-                    </ImageView>
-                    <ComboBox fx:id="registerBankComboBox" prefHeight="40.0" prefWidth="300.0" promptText="Kies uw bank"
-                              styleClass="transparent-input"/>
-                    <TextField fx:id="registernameTextField" prefHeight="40.0" prefWidth="300.0"
-                               promptText="Gebruikersnaam" styleClass="transparent-input"/>
-                    <TextField fx:id="registerResidenceTextField" prefHeight="40.0" prefWidth="300.0"
-                               promptText="Woonplaats" styleClass="transparent-input"/>
-                    <PasswordField fx:id="registerPasswordField" prefHeight="40.0" prefWidth="300.0"
-                                   promptText="Wachtwoord" styleClass="transparent-input"/>
-                    <PasswordField fx:id="registerPasswordCheckPasswordField" prefHeight="40.0" prefWidth="300.0"
-                                   promptText="Herhaal wachtwoord" styleClass="transparent-input"/>
-                    <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0"
-                            styleClass="ark-button" text="Rgistreren"/>
-                    <Label fx:id="toLoginPane" prefHeight="17.0" prefWidth="300.0"
-                           text="Al een account? Klik hier om in te loggen" textFill="#e7e7e7" underline="true">
-                        <cursor>
-                            <Cursor fx:constant="HAND"/>
-                        </cursor>
-                    </Label>
-                    <Label fx:id="registerErrorMessagesLabel" prefHeight="150.0" prefWidth="714.0"
-                           styleClass="error-message" visible="false">
-                        <padding>
-                            <Insets left="10.0" right="10.0"/>
-                        </padding>
-                    </Label>
-                </children>
-            </VBox>
-        </children>
-   </AnchorPane>
+        <VBox alignment="CENTER" fillWidth="false" prefHeight="960.0" prefWidth="840.0" spacing="20.0">
+            <ImageView fitHeight="150.0" fitWidth="200.0" opacity="0.32" pickOnBounds="true"
+                       preserveRatio="true">
+                <Image url="@images/lock.png"/>
+            </ImageView>
+            <TextField fx:id="registernameTextField" prefHeight="40.0" prefWidth="300.0"
+                       promptText="Gebruikersnaam" styleClass="transparent-input"/>
+            <TextField fx:id="registerResidenceTextField" prefHeight="40.0" prefWidth="300.0"
+                       promptText="Woonplaats" styleClass="transparent-input"/>
+            <PasswordField fx:id="registerPasswordField" prefHeight="40.0" prefWidth="300.0"
+                           promptText="Wachtwoord" styleClass="transparent-input"/>
+            <PasswordField fx:id="registerPasswordCheckPasswordField" prefHeight="40.0" prefWidth="300.0"
+                           promptText="Herhaal wachtwoord" styleClass="transparent-input"/>
+            <Button fx:id="registerButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0"
+                    styleClass="ark-button" text="Rgistreren"/>
+            <Label fx:id="toLoginPane" prefHeight="17.0" prefWidth="300.0"
+                   text="Al een account? Klik hier om in te loggen" textFill="#e7e7e7" underline="true">
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </Label>
+            <Label fx:id="registerErrorMessagesLabel" prefHeight="150.0" prefWidth="714.0"
+                   styleClass="error-message" visible="false">
+                <padding>
+                    <Insets left="10.0" right="10.0"/>
+                </padding>
+            </Label>
+        </VBox>
+    </AnchorPane>
 </fx:root>

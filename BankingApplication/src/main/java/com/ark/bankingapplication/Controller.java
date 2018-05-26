@@ -23,35 +23,30 @@ public class Controller {
     private StartUp startUp;
     private Dashboard dashboard;
 
-    private String bankId = null;
+    private final String bankId;
     private String sessionKey;
     private Customer customer;
 
-    public Controller(Stage stage) throws RemoteException, NotBoundException {
+    public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
+        this.bankId = bankId;
     }
 
     public void start() throws IOException {
+        connectToBank(bankId);
+
         Parent root = FXMLLoader.load(getClass().getResource("views/Root.fxml"));
         this.scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("views/style.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
 
-
         setControls(scene);
         setControllers();
         showStartUp();
 
-
         startUp.show();
         dashboard.hide();
-    }
-    public void setBank(String bankId) {
-        this.bankId = bankId;
-    }
-    public String getBank(){
-        return  this.bankId;
     }
 
     public Customer getCustomer() {
@@ -61,6 +56,9 @@ public class Controller {
     private void setControls(Scene scene) {
         startUp = (StartUp) scene.lookup("#startUp");
         dashboard = (Dashboard) scene.lookup("#dashboard");
+
+        changeStyleSheet(bankId + ".css");
+        setDashboardBankId();
     }
 
     private void setControllers() {
@@ -74,7 +72,7 @@ public class Controller {
         startUp.clearInputs();
     }
 
-    public void hideAllViews() {
+    private void hideAllViews() {
         startUp.hide();
         dashboard.hide();
     }
@@ -84,43 +82,25 @@ public class Controller {
         dashboard.show();
     }
 
-    public void changeStyleSheet(String stylesheet){
+    private void changeStyleSheet(String stylesheet){
         this.scene.getStylesheets().add(getClass().getResource("views/"+stylesheet).toExternalForm());
     }
 
-    public boolean connectToBank(String bankId) {
-        boolean result = false;
-        try {
-            result = this.bankConnector.connect(bankId);
-        } catch (IOException | NotBoundException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    public ReturnObject login(String name, String residence, String password) throws IOException, NotBoundException, RemoteException {
+    public ReturnObject login(String name, String residence, String password) throws NotBoundException{
         dashboard.setBank(this.bankId);
-        if (this.connectToBank(this.bankId)) {
-            try {
-                this.sessionKey = this.bankConnector.login(name, residence, password);
-                dashboard.setCustomer(this.bankConnector.getCustomer(this.sessionKey, name, residence));
-                dashboard.setSessionKey(this.sessionKey);
-                dashboard.initDashboard();
-                ReturnObject returnObject = new ReturnObject(true, "Gelukt", "Inloggen is gelukt");
-                returnObject.setSessionKey(this.sessionKey);
-                return returnObject;
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                return new ReturnObject(false, "Inlog fout", "Er is een fout opgetreden bij het inloggen");
-            }
-        } else {
-            return new ReturnObject(false, "Bank verbinding fout", "Er is een fout opgetreden bij het verbinbden met de bank");
+        try {
+            this.sessionKey = this.bankConnector.login(name, residence, password);
+            dashboard.setCustomer(this.bankConnector.getCustomer(this.sessionKey, name, residence));
+            dashboard.setSessionKey(this.sessionKey);
+            dashboard.initDashboard();
+            return new ReturnObject(true, "Gelukt", "Inloggen is gelukt", sessionKey);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return new ReturnObject(false, "Inlog fout", "Er is een fout opgetreden bij het inloggen");
         }
     }
 
-    public void setDashboardBankId(String bankId) throws RemoteException, NotBoundException {
-        this.bankId = bankId;
+    private void setDashboardBankId() {
         dashboard.setBank(bankId);
         dashboard.setLogo();
     }
@@ -128,29 +108,23 @@ public class Controller {
     /**
      * Method to register / create a new customer. Also adds a new bankAccount to the customer.
      *
-     * @param bankId
      * @param name
      * @param residence
      * @param password
      * @return ReturnObject with boolean : success, String title and String body.
      */
-    public ReturnObject registerUser(String bankId, String name, String residence, String password) {
+    public ReturnObject registerUser(String name, String residence, String password) {
         try {
-            if (this.connectToBank(bankId)) {
-                Customer customer = this.bankConnector.createCustomer(name, residence, password);
-                try {
-                    ReturnObject rt = this.login(name, residence, password);
-                    if (rt.isSuccess()) {
-                        this.bankConnector.createBankAccount(this.sessionKey, customer);
-                        return new ReturnObject(true, "Registratie succesvol", "Je Bent succesvol geregistreerd!");
-                    }
-                } catch (IOException | NotBoundException e) {
-                    e.printStackTrace();
-                    return new ReturnObject(false, "Fout bij inloggen", "Er is een fout opgetreden bij het inloggen");
+            Customer customer = this.bankConnector.createCustomer(name, residence, password);
+            try {
+                ReturnObject rt = this.login(name, residence, password);
+                if (rt.isSuccess()) {
+                    this.bankConnector.createBankAccount(this.sessionKey, customer);
+                    return new ReturnObject(true, "Registratie succesvol", "Je Bent succesvol geregistreerd!");
                 }
-
-            } else {
-                return new ReturnObject(false, "Bank verbinding fout", "Er is een fout opgetreden bij het verbinbden met de bank");
+            } catch (IOException | NotBoundException e) {
+                e.printStackTrace();
+                return new ReturnObject(false, "Fout bij inloggen", "Er is een fout opgetreden bij het inloggen");
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -191,5 +165,16 @@ public class Controller {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private boolean connectToBank(String bankId) {
+        boolean result = false;
+        try {
+            result = this.bankConnector.connect(bankId);
+        } catch (IOException | NotBoundException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

@@ -2,18 +2,19 @@ package com.ark.bank;
 
 import com.ark.centralbank.Transaction;
 import fontyspublisher.RemotePublisher;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Rick van der Heijden
  */
-public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin {
+public class GUIConnector extends UnicastRemoteObject implements IBankForClientSession, IBankForClientLogin, Observer {
 
     private IBankController bankController;
     private RemotePublisher remotePublisher;
@@ -27,6 +28,9 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
         String bankId = "";
         if (bankController != null) {
+
+            //TODO: Do this is a better way
+            ((Observable)bankController).addObserver(this);
             bankId = bankController.getBankId();
         }
 
@@ -125,13 +129,7 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
             return false;
         }
 
-        boolean result = bankController.executeTransaction(sessionKey, transaction);
-
-        if (result) {
-            remotePublisher.inform("transactionExecuted", null, null);
-        }
-
-        return result;
+        return bankController.executeTransaction(sessionKey, transaction);
     }
 
     @Override
@@ -150,5 +148,14 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         }
 
         return bankController.logout(sessionKey);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        try {
+            remotePublisher.inform("transactionExecuted", null, null);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }

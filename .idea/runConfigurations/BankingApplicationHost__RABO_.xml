@@ -1,7 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="BankingApplicationHost" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="BankingApplicationHost (RABO)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.ark.bankingapplication.BankingApplicationHost" />
     <module name="BankingApplication" />
+    <option name="PROGRAM_PARAMETERS" value="RABO" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <extension name="coverage">
       <pattern>

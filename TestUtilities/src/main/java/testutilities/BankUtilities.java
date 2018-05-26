@@ -2,7 +2,6 @@ package testutilities;
 
 import com.ark.bank.IBankForCentralBank;
 import com.ark.bank.IBankForClientSession;
-import fontyspublisher.IRemotePublisherForListener;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -25,7 +24,7 @@ public class BankUtilities {
     private static final String JARFILE = "Bank.jar";
     private final Map<String, Process> bankProcesses = new HashMap<>();
 
-    public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) throws IOException {
+    public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) {
         URL wsdlURL = null;
         try {
             wsdlURL = new URL(URLBase + bankId + "Service?wsdl");
@@ -45,8 +44,6 @@ public class BankUtilities {
         waitForConnection();
 
         Registry registry = LocateRegistry.getRegistry("localhost",1099);
-        IRemotePublisherForListener remotePublisher = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-        //remotePublisher.subscribeRemoteListener(this, "fondsen");
         return (IBankForClientSession) registry.lookup("bank" + bankId);
     }
 

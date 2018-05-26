@@ -27,10 +27,6 @@ public class TestBankController {
     private static final String Residence = "TestResidence";
     private final String BankIdInternal = "TEST";
     private final String BankIdExternal = "NONE";
-    private final String accountFromExternal = BankIdExternal + "287493762";
-    private final String accountToExternal   = BankIdExternal + "239475623";
-    private String accountFromInternal;
-    private String accountToInternal;
     private IBankController bankController;
     private String sessionKey;
 
