@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.rmi.NotBoundException;
@@ -24,9 +25,11 @@ public class StartUp extends View {
     @FXML private Button loginButton;
     @FXML private AnchorPane startAnchorPane;
     @FXML private AnchorPane startUp;
-    @FXML private AnchorPane loginAnchorPane;
+    @FXML
+    private VBox loginVBox;
     @FXML private Label goToRegisterPane;
-    @FXML private AnchorPane registerAnchorPane;
+    @FXML
+    private VBox registerVBox;
     @FXML private TextField registernameTextField;
     @FXML private TextField registerResidenceTextField;
     @FXML private PasswordField registerPasswordField;
@@ -132,8 +135,8 @@ public class StartUp extends View {
     }
 
     private void togglePanes() {
-        this.loginAnchorPane.setVisible(!this.loginAnchorPane.visibleProperty().getValue());
-        this.registerAnchorPane.setVisible(!this.registerAnchorPane.visibleProperty().getValue());
+        this.loginVBox.setVisible(!this.loginVBox.visibleProperty().getValue());
+        this.registerVBox.setVisible(!this.registerVBox.visibleProperty().getValue());
     }
 
 

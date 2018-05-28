@@ -12,6 +12,7 @@ public class BankingApplicationHost extends Application {
         List<String> parameters = getParameters().getRaw();
 
         Controller controller = new Controller(stage, parameters.get(0));
+//        Controller controller = new Controller(stage, parameters.get(0));
         controller.start();
     }
 
