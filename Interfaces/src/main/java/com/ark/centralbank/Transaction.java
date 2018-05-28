@@ -1,6 +1,10 @@
 package com.ark.centralbank;
 
 import javax.jws.WebService;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,13 +12,15 @@ import java.util.Date;
  * @author Rick van der Heijden
  */
 @WebService
+@Entity
 public class Transaction implements Serializable {
     private double amount;
     private String description;
     private String accountFrom;
     private String accountTo;
     private Date date;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
     public Transaction() {
     }
