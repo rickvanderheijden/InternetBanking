@@ -23,11 +23,9 @@ public class BankController extends Observable implements IBankController {
     private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
     private final Set<Transaction> transactions = new HashSet<>();
-    private final ICentralBankTransaction centralBank;
 
     public BankController(String bankId) {
         this.bankId = bankId;
-        centralBank = getCentralBankConnection();
     }
 
     @Override
@@ -38,6 +36,7 @@ public class BankController extends Observable implements IBankController {
 
         //TODO: CHECK ONLY DO TRANSACTION IF SESSIONKEY MATCHES ACCOUNT IN TRANSACTION
 
+
         return executeTransaction(transaction, false);
     }
 
@@ -46,45 +45,50 @@ public class BankController extends Observable implements IBankController {
         return executeTransaction(transaction, true);
     }
 
-    private boolean executeTransaction(Transaction transaction, boolean incoming) {
+    private synchronized boolean executeTransaction(Transaction transaction, boolean incoming) {
         if ((transaction == null)
                 || (transaction.getDate() == null)
                 || (transaction.getAccountFrom() == null)
                 || (transaction.getAccountTo() == null)
-                || (transaction.getAmount() <= 0.0)
+                || (transaction.getAmount() <= 0)
                 || (transaction.getDate() == null)
                 || (transaction.getDescription() == null)) {
             return false;
         }
 
-        if (!isBankAccountNumberInUse(incoming ? transaction.getAccountTo() : transaction.getAccountFrom())) {
-            return false;
+        boolean bankAccountToIsLocal = getBankId(transaction.getAccountTo()).equals(getBankId());
+        boolean bankAccountFromIsLocal = getBankId(transaction.getAccountFrom()).equals(getBankId());
+
+
+        if (bankAccountFromIsLocal && bankAccountToIsLocal) {
+            if (!isBankAccountNumberInUse(transaction.getAccountFrom())
+                    || !isBankAccountNumberInUse(transaction.getAccountTo())) {
+                return false;
+            } else {
+                executeTransactionLocalTo(transaction);
+                executeTransactionLocalFrom(transaction);
+            }
         }
 
-        if (!incoming) {
-            if ((centralBank == null || !centralBank.executeTransaction(transaction))) {
+        if (bankAccountFromIsLocal && !bankAccountToIsLocal) {
+            if (!isBankAccountNumberInUse(transaction.getAccountFrom())) {
+                return false;
+            } else {
+                executeTransactionLocalFrom(transaction);
+            }
+        }
+
+        if (!bankAccountFromIsLocal && bankAccountToIsLocal) {
+            if (isBankAccountNumberInUse(transaction.getAccountTo())) {
+                executeTransactionLocalTo(transaction);
+            } else {
                 return false;
             }
         }
 
-        BankAccount bankAccount = null;
-
-        for (BankAccount bankAccountToUse : bankAccounts) {
-            if (bankAccountToUse.getNumber().equals(incoming ? transaction.getAccountTo() : transaction.getAccountFrom())) {
-                bankAccount = bankAccountToUse;
-            }
-        }
-
-        if (bankAccount == null) {
-            return false;
-        }
-
-        if (incoming) {
-            bankAccount.increaseBalance(transaction.getAmount());
-            setChanged();
-            notifyObservers();
-        } else {
-            return bankAccount.decreaseBalance(transaction.getAmount());
+        if (!bankAccountToIsLocal) {
+            ICentralBankTransaction centralBank = getCentralBankConnection();
+            return ((centralBank != null) && centralBank.executeTransaction(transaction));
         }
 
         return true;
@@ -279,6 +283,14 @@ public class BankController extends Observable implements IBankController {
         return bankId;
     }
 
+    private String getBankId(String accountNumber) {
+        if (accountNumber == null) {
+            return null;
+        }
+
+        return accountNumber.length() < 4 ? null : accountNumber.substring(0, 4);
+    }
+
     private String getUnusedBankAccountNumber() {
         String bankAccountNumber = getRandomBankAccountNumber();
         while (isBankAccountNumberInUse(bankAccountNumber)) {
@@ -340,6 +352,26 @@ public class BankController extends Observable implements IBankController {
             return service.getPort(qnamePort, ICentralBankTransaction.class);
         } catch (MalformedURLException | WebServiceException e) {
             return null;
+        }
+    }
+
+    private void executeTransactionLocalTo(Transaction transaction) {
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getNumber().equals(transaction.getAccountTo())) {
+                bankAccount.increaseBalance(transaction.getAmount());
+                setChanged();
+                notifyObservers();
+            }
+        }
+    }
+
+    private void executeTransactionLocalFrom(Transaction transaction) {
+        for (BankAccount bankAccount : bankAccounts) {
+            if (bankAccount.getNumber().equals(transaction.getAccountFrom())) {
+                bankAccount.decreaseBalance(transaction.getAmount());
+                setChanged();
+                notifyObservers();
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import java.util.Date;
  */
 @WebService
 public class Transaction implements Serializable {
-    private double amount;
+    private long amount;
     private String description;
     private String accountFrom;
     private String accountTo;
@@ -19,7 +19,7 @@ public class Transaction implements Serializable {
     public Transaction() {
     }
 
-    public Transaction(double amount, String description, String accountFrom, String accountTo) {
+    public Transaction(long amount, String description, String accountFrom, String accountTo) {
         this.amount = amount;
         this.description = description;
         this.accountFrom = accountFrom;
@@ -61,11 +61,11 @@ public class Transaction implements Serializable {
         return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount);
     }
 
-    public double getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 

@@ -62,7 +62,7 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
             || (transaction.getDate() == null)
             || (transaction.getAccountFrom() == null)
             || (transaction.getAccountTo() == null)
-                || (transaction.getAmount() <= 0.0)
+            || (transaction.getAmount() <= 0)
             || (transaction.getDate() == null)
             || (transaction.getDescription() == null)) {
             return false;
@@ -71,7 +71,7 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
         String bankIdFrom = getBankId(transaction.getAccountFrom());
         String bankIdTo = getBankId(transaction.getAccountTo());
 
-        if (!isBankRegistered(bankIdFrom) || !isBankRegistered(bankIdTo)) {
+        if (!isBankRegistered(bankIdFrom) && !isBankRegistered(bankIdTo)) {
             return false;
         }
 
