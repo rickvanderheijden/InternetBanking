@@ -62,13 +62,13 @@
                           prefWidth="388.0" promptText="Rekeningnummer" styleClass="input"/>
                <TextField fx:id="amountFullTextField" alignment="CENTER_RIGHT" layoutX="431.0" layoutY="106.0"
                           prefHeight="45.0" prefWidth="64.0" promptText="0" styleClass="input"/>
-               <TextArea layoutX="29.0" layoutY="161.0" prefHeight="78.0" prefWidth="535.0" promptText="Omschrijving"
-                         styleClass="input"/>
-               <Button layoutX="29.0" layoutY="251.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="535.0"
-                       styleClass="ark-button" text="Overmaken"/>
                <TextField fx:id="amountCentsTextField" alignment="CENTER_RIGHT" layoutX="514.0" layoutY="106.0"
                           prefHeight="45.0" prefWidth="50.0" promptText="00" styleClass="input"/>
-              <Label layoutX="501.0" layoutY="127.0" text="," textFill="#e7e7e7">
+               <TextArea fx:id="transactionDescriptionTextArea" layoutX="29.0" layoutY="161.0" prefHeight="78.0"
+                         prefWidth="535.0" promptText="Omschrijving" styleClass="input"/>
+               <Button fx:id="transactionButton" layoutX="29.0" layoutY="251.0" mnemonicParsing="false"
+                       prefHeight="40.0" prefWidth="535.0" styleClass="ark-button" text="Overmaken"/>
+               <Label layoutX="501.0" layoutY="125.0" styleClass="text" text="," textFill="#e7e7e7">
                  <font>
                      <Font name="System Bold" size="24.0"/>
                  </font>

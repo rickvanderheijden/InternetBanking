@@ -8,6 +8,8 @@ import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -20,7 +22,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,14 +43,18 @@ public class Dashboard extends View implements IRemotePropertyListener {
     @FXML private ImageView bankLogo;
     @FXML private ImageView logoutImageView;
     @FXML private Button addBankAccountButton;
+    @FXML
+    private Button transactionButton;
     @FXML private Label selectedBankNrLabel;
+    @FXML
+    private TextArea transactionDescriptionTextArea;
 
     private Customer customer = null;
     private BankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
     private String selectedBankAccountNr = null;
-    private final ArrayList<String> transactions = null;
+    private ObservableList<String> transactions = FXCollections.observableArrayList();
     private List<String> bankAccounts = null;
 
 
@@ -76,7 +81,17 @@ public class Dashboard extends View implements IRemotePropertyListener {
         });
         logoutImageView.setOnMouseClicked(e -> doLogout());
         addBankAccountButton.setOnAction(e -> doAddBankAccount());
+        transactionButton.setOnAction(e -> doTransaction());
+        BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
+                {
+                    this.selectedBankAccountNr = newValue;
+                    updateBankAccount();
+                }
+        );
+
+//        transactionListView.getItems().add("Nog geen transacties");
     }
+
 
     public void initDashboard() throws RemoteException, NotBoundException {
         /* TODO: Set customer information, get bankaccounts, if there is only 1, select that one. Show information on dashboard. */
@@ -135,12 +150,21 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
     private void doAddBankAccount() {
+        BankAccount newBankAccount = controller.newBankAccount(this.sessionKey, this.customer);
+        if (newBankAccount != null) {
+            showInfo("BankAccount toegevoegd", "Nieuw bank account is succesvol toegevoegd!");
+            bankAccounts.add(newBankAccount.toString());
+        } else {
+            showWarning("Bank account fout", "Er is een fout opgetreden bij het aanmaken van een nieuw bank account");
+        }
 
     }
 
     public void updateBankAccount() {
         this.selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
-        this.balanceLabel.setText(String.valueOf(this.selectedBankaccount.getBalance()));
+        long balance = this.selectedBankaccount.getBalance();
+        double balanced = balance / 100.0;
+        this.balanceLabel.setText("€" + String.valueOf(balanced));
         this.setTransactions();
     }
 
@@ -155,7 +179,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     public void setBankAccounts() {
         if (this.bankAccounts != null) {
             this.BankAccountsComboBox.getItems().addAll(this.bankAccounts);
-            if (this.bankAccounts.size() == 1) {
+            if (this.bankAccounts.size() > 0) {
                 this.selectedBankAccountNr = this.bankAccounts.get(0);
                 this.selectedBankNrLabel.setText(this.selectedBankAccountNr);
             }
@@ -165,14 +189,48 @@ public class Dashboard extends View implements IRemotePropertyListener {
 
     public void setTransactions() {
         List<Transaction> transactions = this.getTransactions();
+        System.out.println(transactions);
         if (transactions != null) {
             for (Transaction transaction : transactions) {
+                System.out.println(transaction.toString());
                 this.transactions.add(transaction.toString());
             }
-        }
-
-        if (this.transactions != null) {
+//            this.transactionListView.setItems(this.transactions);
+        } else {
+            String test = "Nog een transacties";
+            this.transactions.add(test);
+            System.out.println(this.transactions);
+//            this.transactionListView.getItems().removeAll();
             this.transactionListView.getItems().addAll(this.transactions);
+//            this.transactionListView.setItems(this.transactions);
+        }
+    }
+
+    private void doTransaction() {
+        String toBankAccount = toBankAccountTextField.getText();
+        String fullString = amountFullTextField.getText();
+        String centsString = amountCentsTextField.getText();
+        String description = transactionDescriptionTextArea.getText();
+        long full;
+        long cents;
+        long amount;
+        if (toBankAccount.isEmpty()) {
+            showWarning("Transactie fout", "Vul een rekeningnummer in!");
+
+        } else if (fullString.isEmpty() && centsString.isEmpty()) {
+            showWarning("Transactie fout", "Vul een geldig bedrag in.");
+        } else {
+            full = !fullString.isEmpty() ? Long.parseLong(fullString) : 0;
+            cents = !centsString.isEmpty() ? Long.parseLong(centsString) : 0;
+
+            amount = (full * 100) + cents;
+            Transaction transaction = new Transaction(amount, description, selectedBankAccountNr, toBankAccount);
+            if (controller.executeTransaction(sessionKey, transaction)) {
+                showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + "is overgemaakt aan : " + toBankAccount);
+                this.updateBankAccount();
+            } else {
+                showWarning("Transactie mislukt", "Er is een fout opgetreden bij het verwerken van de transactie, probeer het op een later moment nog eens!");
+            }
         }
     }
 }
