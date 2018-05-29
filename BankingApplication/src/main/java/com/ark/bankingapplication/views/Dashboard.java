@@ -41,11 +41,14 @@ public class Dashboard extends View implements IRemotePropertyListener {
     @FXML private ComboBox<String> BankAccountsComboBox;
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
-    @FXML private ImageView logoutImageView;
     @FXML private Button addBankAccountButton;
     @FXML
     private Button transactionButton;
+    @FXML
+    private Button logoutButton;
     @FXML private Label selectedBankNrLabel;
+    @FXML
+    private Label bankNameLabel;
     @FXML
     private TextArea transactionDescriptionTextArea;
 
@@ -79,7 +82,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
                 }
             }
         });
-        logoutImageView.setOnMouseClicked(e -> doLogout());
+        logoutButton.setOnAction(e -> doLogout());
         addBankAccountButton.setOnAction(e -> doAddBankAccount());
         transactionButton.setOnAction(e -> doTransaction());
         BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
@@ -135,13 +138,10 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
     public void setLogo() {
-        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/"+this.bankId +".png");
+        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png");
         Image image = new Image(file.toURI().toString());
         this.bankLogo.setImage(image);
-        if(this.bankId.equals("ABNA")){
-            this.bankLogo.setFitHeight(60.0);
-            this.bankLogo.setY(20.0);
-        }
+        this.setBankNameLabel(this.bankId);
 
 
     }
@@ -201,7 +201,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
             this.transactions.add(test);
             System.out.println(this.transactions);
 //            this.transactionListView.getItems().removeAll();
-            this.transactionListView.getItems().addAll(this.transactions);
+//            this.transactionListView.getItems().addAll(this.transactions);
 //            this.transactionListView.setItems(this.transactions);
         }
     }
@@ -230,6 +230,16 @@ public class Dashboard extends View implements IRemotePropertyListener {
                 this.updateBankAccount();
             } else {
                 showWarning("Transactie mislukt", "Er is een fout opgetreden bij het verwerken van de transactie, probeer het op een later moment nog eens!");
+            }
+        }
+    }
+
+    public void setBankNameLabel(String bankname) {
+        if (!bankname.isEmpty()) {
+            if (bankname.equals("ABNA")) {
+                bankNameLabel.setText("ABN AMRO");
+            } else {
+                bankNameLabel.setText("Rabobank");
             }
         }
     }
