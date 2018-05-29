@@ -120,7 +120,11 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) {
-        return null;
+        if (bankController == null) {
+            return new ArrayList<>();
+        }
+
+        return bankController.getTransactions(sessionKey, bankAccountNumber);
     }
 
     @Override

@@ -172,4 +172,6 @@ public class TestBankControllerExecuteTransaction {
         sessionKey = bankController.login(Name, Residence, Password);
     }
 
+
+    //TODO: CHECK IF TRANSACTION EXIST AFTER SUCCESFUL. NOT WHEN NOT SUCCESFUL!!
 }

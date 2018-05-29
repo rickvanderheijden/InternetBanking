@@ -32,6 +32,8 @@ public interface IBankController {
 
     boolean registerBank(BankConnectionInfo bankConnectionInfo);
 
+    List<Transaction> getTransactions(String sessionKey, String bankAccountNumber);
+
     //TODO: use this for GUIConnector ??
     //boolean executeTransaction(String sessionKey, Transaction transaction );
 

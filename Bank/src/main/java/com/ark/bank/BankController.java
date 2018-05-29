@@ -86,8 +86,14 @@ public class BankController extends Observable implements IBankController {
             }
         }
 
+        boolean result = true;
+
         if (!bankAccountToIsLocal) {
-            return centralBankConnection.executeTransaction(transaction);
+            result = centralBankConnection.executeTransaction(transaction);
+        }
+
+        if (result) {
+            transactions.add(transaction);
         }
 
         return true;
@@ -287,6 +293,23 @@ public class BankController extends Observable implements IBankController {
     @Override
     public boolean registerBank(BankConnectionInfo bankConnectionInfo) {
         return centralBankConnection.registerBank(bankConnectionInfo);
+    }
+
+    @Override
+    public List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) {
+
+        //TODO: check sessionKey, check null, create test
+
+        List<Transaction> transactionsToReturn = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getAccountFrom().equals(bankAccountNumber)
+                || transaction.getAccountTo().equals(bankAccountNumber)) {
+                transactionsToReturn.add(transaction);
+            }
+        }
+
+        return transactionsToReturn;
     }
 
     private String getBankId(String accountNumber) {
