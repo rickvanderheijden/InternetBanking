@@ -10,9 +10,10 @@ import java.io.Serializable;
 public class BankAccount implements Serializable {
 
     private String number;
-    private double balance = 0.00;
-    private double creditLimit = 100.00;
-    @OneToMany
+    private long balance = 0;
+    private long creditLimit = 10000;
+    @ManyToOne
+
     private Customer owner;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
@@ -33,24 +34,24 @@ public class BankAccount implements Serializable {
         return number;
     }
 
-    public double getBalance() {
+    public long getBalance() {
         return balance;
     }
 
-    public double getCreditLimit() {
+    public long getCreditLimit() {
         return creditLimit;
     }
 
-    public void setCreditLimit(double creditLimit) {
+    public void setCreditLimit(long creditLimit) {
         this.creditLimit = creditLimit;
     }
 
-    public void increaseBalance(double amount) {
+    public void increaseBalance(long amount) {
         balance += amount;
     }
 
-    public boolean decreaseBalance(double amount) {
-        double amountAvailable = balance + creditLimit;
+    public boolean decreaseBalance(long amount) {
+        long amountAvailable = balance + creditLimit;
         if (amount > amountAvailable) {
             return false;
         }
