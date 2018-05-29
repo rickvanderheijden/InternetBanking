@@ -71,7 +71,7 @@ public class TestBankController {
         BankAccount result = bankController.createBankAccount(sessionKey, owner);
         assertThat(result.getNumber(), startsWith(BankIdInternal));
         assertEquals(14, result.getNumber().length());
-        assertEquals(100.0, result.getCreditLimit(), 0.0);
+        assertEquals(10000, result.getCreditLimit());
         assertEquals(owner, result.getOwner());
     }
 
@@ -93,7 +93,7 @@ public class TestBankController {
     @Test
     public void testExecuteTransactionAllValuesNull() {
         createCustomerAndLogin();
-        Transaction transaction = new Transaction(.00, null, null, null);
+        Transaction transaction = new Transaction(0, null, null, null);
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
@@ -101,7 +101,7 @@ public class TestBankController {
     @Test
     public void testExecuteTransactionAccountToNull() {
         createCustomerAndLogin();
-        Transaction transaction = new Transaction(22.95, "Description", "AccountFrom", null);
+        Transaction transaction = new Transaction(2295, "Description", "AccountFrom", null);
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
@@ -109,27 +109,92 @@ public class TestBankController {
     @Test
     public void testExecuteTransactionDescriptionNull() {
         createCustomerAndLogin();
-        Transaction transaction = new Transaction(22.95, null, "AccountFrom", "AccountTo");
+        Transaction transaction = new Transaction(2295, null, "AccountFrom", "AccountTo");
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAmountNull() {
-        Transaction transaction = new Transaction(0.0, "Description", "AccountFrom", "AccountTo");
+        Transaction transaction = new Transaction(0, "Description", "AccountFrom", "AccountTo");
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionValidValues() {
+        Customer customerOne   = bankController.createCustomer("Name1", "Residence1", "Password1");
+        Customer customerTwo   = bankController.createCustomer("Name2", "Residence2", "Password2");
 
-        //TODO: IS THIS CORRECT? MISSES A LOT OF STUFF
-        //TODO: Create stubs and all?
-        createCustomerAndLogin();
-        Transaction transaction = new Transaction(21.0, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
-        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
+        String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
+
+        BankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        BankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
         assertTrue(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals( 2100, bankAccountTwo.getBalance());
+    }
+
+    @Test
+    public void testExecuteTransactionValidValuesMultiThreading() throws InterruptedException {
+        Customer customerOne   = bankController.createCustomer("Name1", "Residence1", "Password1");
+        Customer customerTwo   = bankController.createCustomer("Name2", "Residence2", "Password2");
+        Customer customerThree = bankController.createCustomer("Name3", "Residence3", "Password3");
+
+        String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
+        String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
+        String sessionKeyThree = bankController.login("Name3", "Residence3", "Password3");
+
+        BankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        BankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        BankAccount bankAccountThree = bankController.createBankAccount(sessionKeyThree, customerThree);
+
+        Transaction transactionOne   = new Transaction(10, "This is a test transaction", bankAccountOne.getNumber(), bankAccountThree.getNumber());
+        Transaction transactionTwo   = new Transaction(10, "This is a test transaction", bankAccountTwo.getNumber(), bankAccountThree.getNumber());
+        Transaction transactionThree = new Transaction(10, "This is a test transaction", bankAccountThree.getNumber(), bankAccountOne.getNumber());
+        Transaction transactionFour  = new Transaction(10, "This is a test transaction", bankAccountThree.getNumber(), bankAccountTwo.getNumber());
+
+        Thread threadOne = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                bankController.executeTransaction(sessionKeyOne, transactionOne);
+            }
+        });
+
+        Thread threadTwo = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                bankController.executeTransaction(sessionKeyTwo, transactionTwo);
+            }
+        });
+
+        Thread threadThree = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                bankController.executeTransaction(sessionKeyThree, transactionThree);
+            }
+        });
+
+        Thread threadFour = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                bankController.executeTransaction(sessionKeyThree, transactionFour);
+            }
+        });
+
+        threadOne.start();
+        threadTwo.start();
+        threadThree.start();
+        threadFour.start();
+
+        threadOne.join();
+        threadTwo.join();
+        threadThree.join();
+        threadFour.join();
+
+        assertEquals( 0, bankAccountOne.getBalance());
+        assertEquals( 0, bankAccountTwo.getBalance());
+        assertEquals( 0, bankAccountThree.getBalance());
     }
 
     @Test

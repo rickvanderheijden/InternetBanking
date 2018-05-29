@@ -40,28 +40,28 @@ public class TestBankForCentralBank {
 
     @Test
     public void testExecuteTransactionAllValuesNull() {
-        Transaction transaction = new Transaction(.00, null, null, null);
+        Transaction transaction = new Transaction(0, null, null, null);
         boolean result = bank.executeTransaction(transaction);
         assertFalse(result);
     }
 
         @Test
         public void testExecuteTransactionAccountToNull() {
-        Transaction transaction = new Transaction(22.95, "Description", "AccountFrom", null);
+        Transaction transaction = new Transaction(2295, "Description", "AccountFrom", null);
         boolean result = bank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionDescriptionNull() {
-        Transaction transaction = new Transaction(22.95, null, "AccountFrom", "AccountTo");
+        Transaction transaction = new Transaction(2295, null, "AccountFrom", "AccountTo");
         boolean result = bank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAmountNull() {
-        Transaction transaction = new Transaction(0.0, "Description", "AccountFrom", "AccountTo");
+        Transaction transaction = new Transaction(0, "Description", "AccountFrom", "AccountTo");
         boolean result = bank.executeTransaction(transaction);
         assertFalse(result);
     }
