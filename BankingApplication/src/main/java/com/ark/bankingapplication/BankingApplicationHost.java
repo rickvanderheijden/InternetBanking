@@ -16,7 +16,6 @@ public class BankingApplicationHost extends Application {
         File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + parameters.get(0) + "-ICON.png");
         Image image = new Image(file.toURI().toString());
         stage.getIcons().add(image);
-//        Controller controller = new Controller(stage, parameters.get(0));
         controller.start();
     }
 

@@ -220,8 +220,10 @@ public class StartUp extends View {
         if (!bankname.isEmpty()) {
             if (bankname.equals("ABNA")) {
                 bankNameLabel.setText("ABN AMRO");
-            } else {
+            } else if (bankname.equals("RABO")) {
                 bankNameLabel.setText("Rabobank");
+            } else {
+                bankNameLabel.setText("SNS Bank");
             }
         }
     }

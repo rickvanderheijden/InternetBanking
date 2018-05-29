@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BankHost (SNS, 1201)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.ark.bank.BankHost" />
+    <module name="Bank" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;SNS&quot; &quot;http://localhost:1201/&quot;" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+    <method />
+  </configuration>
+</component>
