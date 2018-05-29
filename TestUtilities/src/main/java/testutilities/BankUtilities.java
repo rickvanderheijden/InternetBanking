@@ -29,6 +29,7 @@ public class BankUtilities {
         try {
             wsdlURL = new URL(URLBase + bankId + "Service?wsdl");
         } catch (MalformedURLException e) {
+            return null;
         }
 
         waitForConnection();
@@ -77,7 +78,7 @@ public class BankUtilities {
 
         //TODO: Replace sleep with valid check.
         try {
-            sleep(1000);
+            sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

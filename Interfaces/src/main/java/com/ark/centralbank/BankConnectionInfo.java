@@ -1,8 +1,11 @@
 package com.ark.centralbank;
 
+import javax.jws.WebService;
+
 /**
  * @author Rick van der Heijden
  */
+@WebService
 public class BankConnectionInfo {
     private String bankId;
     private String URL;

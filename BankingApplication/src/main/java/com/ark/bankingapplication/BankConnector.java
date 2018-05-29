@@ -17,7 +17,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class BankConnector extends UnicastRemoteObject implements IRemotePropertyListener {
+class BankConnector extends UnicastRemoteObject implements IRemotePropertyListener {
 
     private String sessionKey;
     private IBankForClientLogin bankForClientLogin;

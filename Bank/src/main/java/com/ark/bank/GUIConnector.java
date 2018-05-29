@@ -124,7 +124,7 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException {
+    public boolean executeTransaction(String sessionKey, Transaction transaction) {
         if (bankController == null) {
             return false;
         }

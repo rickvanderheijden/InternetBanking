@@ -32,23 +32,23 @@ public class BankAccount implements Serializable {
         return number;
     }
 
-    public long getBalance() {
+    public synchronized long getBalance() {
         return balance;
     }
 
-    public long getCreditLimit() {
+    public synchronized long getCreditLimit() {
         return creditLimit;
     }
 
-    public void setCreditLimit(long creditLimit) {
+    public synchronized void setCreditLimit(long creditLimit) {
         this.creditLimit = creditLimit;
     }
 
-    public void increaseBalance(long amount) {
+    public synchronized void increaseBalance(long amount) {
         balance += amount;
     }
 
-    public boolean decreaseBalance(long amount) {
+    public synchronized boolean decreaseBalance(long amount) {
         long amountAvailable = balance + creditLimit;
         if (amount > amountAvailable) {
             return false;
