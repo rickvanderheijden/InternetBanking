@@ -92,6 +92,9 @@ public class Controller {
         dashboard.setBank(this.bankId);
         try {
             this.sessionKey = this.bankConnector.login(name, residence, password);
+            if (this.sessionKey == null) {
+                return new ReturnObject(false, "Inlog fout", "Inloggegevens zijn onjuist");
+            }
             dashboard.setCustomer(this.bankConnector.getCustomer(this.sessionKey, name, residence));
             dashboard.setSessionKey(this.sessionKey);
             dashboard.initDashboard();
@@ -178,5 +181,23 @@ public class Controller {
         }
 
         return result;
+    }
+
+    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+        try {
+            return this.bankConnector.executeTransaction(sessionKey, transaction);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public BankAccount newBankAccount(String sessionKey, Customer customer) {
+        try {
+            return this.bankConnector.createBankAccount(sessionKey, customer);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
