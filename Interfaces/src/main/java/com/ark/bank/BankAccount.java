@@ -13,8 +13,10 @@ public class BankAccount implements Serializable {
     private long balance = 0;
     private long creditLimit = 10000;
     @ManyToOne
+
     private Customer owner;
-    @Id @GeneratedValue(strategy = GenerationType.AUTO) long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
     public BankAccount(Customer owner, String number) {
         this.owner = owner;
