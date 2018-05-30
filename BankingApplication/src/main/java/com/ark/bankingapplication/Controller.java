@@ -185,9 +185,9 @@ public class Controller {
 
     public boolean executeTransaction(String sessionKey, Transaction transaction) {
         try {
-            Boolean bool = this.bankConnector.executeTransaction(sessionKey, transaction);
-            System.out.println(bool);
-            return this.bankConnector.executeTransaction(sessionKey, transaction);
+            Boolean transactionSuccesfull = this.bankConnector.executeTransaction(sessionKey, transaction);
+            System.out.println("resultaat van de transactie is: " + transactionSuccesfull);
+            return transactionSuccesfull;
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;
