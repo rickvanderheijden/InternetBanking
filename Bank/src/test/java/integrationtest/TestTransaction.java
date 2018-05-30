@@ -14,9 +14,10 @@ import testutilities.CentralBankUtilities;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 //TODO: MOVE TO SEPARATE MODULE?
 
@@ -24,6 +25,7 @@ import static junit.framework.TestCase.assertTrue;
  * @author Rick van der Heijden
  */
 public class TestTransaction {
+    private enum BankId { RABO, ABNA }
     private static final String BankIdRABO = "RABO";
     private static final String URLBaseRABO = "http://localhost:1200/";
     private static final String BankIdABNA = "ABNA";
@@ -34,6 +36,9 @@ public class TestTransaction {
     private static IBankForClientLogin bankForClientLoginRABO;
     private static BankUtilities bankUtilities;
     private static CentralBankUtilities centralBankUtilities;
+    private static List<Customer> customers;
+    private static List<String> sessionKeys;
+    private static List<BankAccount> bankAccounts;
 
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
@@ -49,6 +54,10 @@ public class TestTransaction {
 
         bankForClientLoginABNA = (IBankForClientLogin) bankForClientSessionABNA;
         bankForClientLoginRABO = (IBankForClientLogin) bankForClientSessionRABO;
+
+        customers = new ArrayList<>();
+        sessionKeys = new ArrayList<>();
+        bankAccounts = new ArrayList<>();
     }
 
     @AfterClass
@@ -60,44 +69,96 @@ public class TestTransaction {
 
     @Test
     public void testExecuteTransactionDifferentBanks() throws RemoteException {
-        Customer customerABNA = bankForClientSessionABNA.createCustomer("CustomerNameABNA", "CustomerResidenceABNA", "CustomerPasswordABNA");
-        String sessionIdABNA = bankForClientLoginABNA.login("CustomerNameABNA", "CustomerResidenceABNA", "CustomerPasswordABNA");
-        BankAccount bankAccountABNA = bankForClientSessionABNA.createBankAccount(sessionIdABNA, customerABNA);
+        int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
+        int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
-        Customer customerRABO = bankForClientSessionRABO.createCustomer("CustomerNameRABO", "CustomerResidenceRABO", "CustomerPasswordRABO");
-        String sessionIdRABO = bankForClientLoginRABO.login("CustomerNameRABO", "CustomerResidenceRABO", "CustomerPasswordRABO");
-        BankAccount bankAccountRABO = bankForClientSessionRABO.createBankAccount(sessionIdRABO, customerRABO);
-
-        Transaction transaction = new Transaction(2315, "This is a description", bankAccountABNA.getNumber(), bankAccountRABO.getNumber());
-        boolean result = bankForClientSessionABNA.executeTransaction(sessionIdABNA, transaction);
+        Transaction transaction = new Transaction(2315, "This is a description", bankAccounts.get(indexABNA).getNumber(), bankAccounts.get(indexRABO).getNumber());
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), transaction);
 
         assertTrue(result);
 
-        bankAccountABNA = bankForClientSessionABNA.getBankAccount(sessionIdABNA, bankAccountABNA.getNumber());
-        bankAccountRABO = bankForClientSessionRABO.getBankAccount(sessionIdRABO, bankAccountRABO.getNumber());
-        assertEquals(-2315, bankAccountABNA.getBalance());
-        assertEquals(2315, bankAccountRABO.getBalance());
+        bankAccounts.set(indexABNA, bankForClientSessionABNA.getBankAccount(sessionKeys.get(indexABNA), bankAccounts.get(indexABNA).getNumber()));
+        bankAccounts.set(indexRABO, bankForClientSessionRABO.getBankAccount(sessionKeys.get(indexRABO), bankAccounts.get(indexRABO).getNumber()));
+        assertEquals(-2315, bankAccounts.get(indexABNA).getBalance());
+        assertEquals(2315, bankAccounts.get(indexRABO).getBalance());
     }
 
     @Test
     public void testExecuteTransactionSameBanks() throws RemoteException {
-        Customer customerABNAOne = bankForClientSessionABNA.createCustomer("CustomerNameABNAOne", "CustomerResidenceABNAOne", "CustomerPasswordABNAOne");
-        String sessionIdABNAOne = bankForClientLoginABNA.login("CustomerNameABNAOne", "CustomerResidenceABNAOne", "CustomerPasswordABNAOne");
-        BankAccount bankAccountABNAOne = bankForClientSessionABNA.createBankAccount(sessionIdABNAOne, customerABNAOne);
+        int indexABNAOne = createCustomerAndBankAccount(BankId.ABNA);
+        int indexABNATwo = createCustomerAndBankAccount(BankId.ABNA);
 
-        Customer customerABNATwo = bankForClientSessionABNA.createCustomer("CustomerNameABNATwo", "CustomerResidenceABNATwo", "CustomerPasswordABNATwo");
-        String sessionIdABNATwo = bankForClientLoginABNA.login("CustomerNameABNATwo", "CustomerResidenceABNATwo", "CustomerPasswordABNATwo");
-        BankAccount bankAccountABNATwo = bankForClientSessionABNA.createBankAccount(sessionIdABNATwo, customerABNATwo);
-
-        Transaction transaction = new Transaction(2315, "This is a description", bankAccountABNAOne.getNumber(), bankAccountABNATwo.getNumber());
-        boolean result = bankForClientSessionABNA.executeTransaction(sessionIdABNAOne, transaction);
+        Transaction transaction = new Transaction(2315, "This is a description", bankAccounts.get(indexABNAOne).getNumber(), bankAccounts.get(indexABNATwo).getNumber());
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNAOne), transaction);
 
         assertTrue(result);
 
-        bankAccountABNAOne = bankForClientSessionABNA.getBankAccount(sessionIdABNAOne, bankAccountABNAOne.getNumber());
-        bankAccountABNATwo = bankForClientSessionABNA.getBankAccount(sessionIdABNATwo, bankAccountABNATwo.getNumber());
-        assertEquals(-2315, bankAccountABNAOne.getBalance());
-        assertEquals(2315, bankAccountABNATwo.getBalance());
+        bankAccounts.set(indexABNAOne, bankForClientSessionABNA.getBankAccount(sessionKeys.get(indexABNAOne), bankAccounts.get(indexABNAOne).getNumber()));
+        bankAccounts.set(indexABNATwo, bankForClientSessionABNA.getBankAccount(sessionKeys.get(indexABNATwo), bankAccounts.get(indexABNATwo).getNumber()));
+        assertEquals(-2315, bankAccounts.get(indexABNAOne).getBalance());
+        assertEquals( 2315, bankAccounts.get(indexABNATwo).getBalance());
+    }
+
+    @Test
+    public void testExecuteTransactionFromAccountWithNotEnoughCredit() throws RemoteException {
+        int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
+        int indexRABO = createCustomerAndBankAccount(BankId.RABO);
+
+        long amount = bankAccounts.get(indexABNA).getCreditLimit() + 1;
+
+        Transaction transaction = new Transaction(amount, "This is a description", bankAccounts.get(indexABNA).getNumber(), bankAccounts.get(indexRABO).getNumber());
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), transaction);
+
+        assertFalse(result);
+
+        bankAccounts.set(indexABNA, bankForClientSessionABNA.getBankAccount(sessionKeys.get(indexABNA), bankAccounts.get(indexABNA).getNumber()));
+        bankAccounts.set(indexRABO, bankForClientSessionRABO.getBankAccount(sessionKeys.get(indexRABO), bankAccounts.get(indexRABO).getNumber()));
+        assertEquals(0, bankAccounts.get(indexABNA).getBalance());
+        assertEquals(0, bankAccounts.get(indexRABO).getBalance());
+    }
+
+    @Test
+    public void testExecuteTransactionToUnavailableAccount() throws RemoteException {
+        int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
+        int indexRABO = createCustomerAndBankAccount(BankId.RABO);
+
+        Transaction transaction = new Transaction(1500, "This is a description", bankAccounts.get(indexABNA).getNumber(), "INVALIDACCOUNT");
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), transaction);
+
+        assertFalse(result);
+
+        bankAccounts.set(indexABNA, bankForClientSessionABNA.getBankAccount(sessionKeys.get(indexABNA), bankAccounts.get(indexABNA).getNumber()));
+        bankAccounts.set(indexRABO, bankForClientSessionRABO.getBankAccount(sessionKeys.get(indexRABO), bankAccounts.get(indexRABO).getNumber()));
+        assertEquals(0, bankAccounts.get(indexABNA).getBalance());
+        assertEquals(0, bankAccounts.get(indexRABO).getBalance());
+    }
+
+    private int createCustomerAndBankAccount(BankId bankId) throws RemoteException {
+
+        IBankForClientLogin bankForClientLogin = null;
+        IBankForClientSession bankForClientSession = null;
+
+        switch (bankId) {
+            case ABNA:
+                bankForClientLogin = bankForClientLoginABNA;
+                bankForClientSession = bankForClientSessionABNA;
+                break;
+            case RABO:
+                bankForClientLogin = bankForClientLoginRABO;
+                bankForClientSession = bankForClientSessionRABO;
+                break;
+        }
+
+        int index = customers.size();
+        Customer customer = bankForClientSession.createCustomer("CustomerName" + index, "CustomerResidence" + index, "CustomerPassword" + index);
+        String sessionKey = bankForClientLogin.login("CustomerName" + index, "CustomerResidence" + index, "CustomerPassword" + index);
+        BankAccount bankAccount = bankForClientSession.createBankAccount(sessionKey, customer);
+
+        customers.add(customer);
+        sessionKeys.add(sessionKey);
+        bankAccounts.add(bankAccount);
+
+        return index;
     }
 }
 

@@ -28,7 +28,7 @@ public class TestGUIConnector {
 
     @Before
     public void setUp() throws RemoteException {
-        bankController = new BankController(BankIdInternal);
+        bankController = new BankController(BankIdInternal, null);
         guiConnector = new GUIConnector(bankController);
         guiConnector.createCustomer(Name, Residence, Password);
         sessionKey = guiConnector.login(Name, Residence, Password);

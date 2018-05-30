@@ -84,6 +84,18 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
         return bankForCentralBankTo.executeTransaction(transaction);
     }
 
+    @Override
+    public boolean isValidBankAccountNumber(String bankAccountNumber) {
+        String bankId = getBankId(bankAccountNumber);
+        IBankForCentralBank bankForCentralBank = getBankConnection(getBankURL(bankId));
+
+        if (bankForCentralBank == null) {
+            return false;
+        }
+
+        return bankForCentralBank.isValidBankAccountNumber(bankAccountNumber);
+    }
+
     private IBankForCentralBank getBankConnection(String bankURL) {
         URL wsdlURL;
         try {

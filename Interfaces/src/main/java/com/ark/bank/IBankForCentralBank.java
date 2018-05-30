@@ -10,4 +10,5 @@ import javax.jws.WebService;
 @WebService
 public interface IBankForCentralBank {
     boolean executeTransaction(Transaction transaction);
+    boolean isValidBankAccountNumber(String bankAccountNumber);
 }

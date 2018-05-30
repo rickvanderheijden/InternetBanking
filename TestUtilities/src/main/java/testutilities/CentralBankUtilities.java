@@ -20,10 +20,12 @@ public class CentralBankUtilities {
     private Service service;
     private QName qnamePort;
 
+    //TODO: Make shared CentralBankConnection??
     public ICentralBankTransaction getCentralBankTransaction() {
         return service.getPort(qnamePort, ICentralBankTransaction.class);
     }
 
+    //TODO: REMOVE. This won't work. See CentralBankConnection.
     public ICentralBankRegister getCentralBankRegister() {
         return service.getPort(qnamePort, ICentralBankRegister.class);
     }
@@ -55,6 +57,7 @@ public class CentralBankUtilities {
         try {
             wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
         } catch (MalformedURLException e) {
+            return;
         }
 
         QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");

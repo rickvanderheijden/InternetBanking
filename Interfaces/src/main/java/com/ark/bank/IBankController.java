@@ -1,5 +1,6 @@
 package com.ark.bank;
 
+import com.ark.centralbank.BankConnectionInfo;
 import com.ark.centralbank.Transaction;
 
 import java.util.List;
@@ -27,9 +28,13 @@ public interface IBankController {
     boolean refreshSession(String sessionKey);
     boolean terminateSession(String sessionKey);
     String getBankId();
+    boolean isValidBankAccountNumber(String bankAccountNumber);
 
+    boolean registerBank(BankConnectionInfo bankConnectionInfo);
 
-    //TODO: use this for GUIConnector
+    List<Transaction> getTransactions(String sessionKey, String bankAccountNumber);
+
+    //TODO: use this for GUIConnector ??
     //boolean executeTransaction(String sessionKey, Transaction transaction );
 
 }
