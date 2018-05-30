@@ -48,7 +48,6 @@ public class StartUp extends View {
         this.loginButton.setOnAction(event -> {
             doLogin();
         });
-
         this.registerButton.setOnAction(e -> doRegister());
         this.goToRegisterPane.setOnMouseClicked(e -> togglePanes());
         this.toLoginPane.setOnMouseClicked(e -> togglePanes());
@@ -208,12 +207,11 @@ public class StartUp extends View {
     }
 
     public void setLogo(String bankId) {
-        System.out.println("aangeroepen");
         File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + bankId + "-ICON.png");
         Image image = new Image(file.toURI().toString());
-        System.out.println(image);
         this.bankLogo.setImage(image);
         this.setBankNameLabel(bankId);
+        this.fillInputs(bankId);
     }
 
     public void setBankNameLabel(String bankname) {
@@ -226,6 +224,43 @@ public class StartUp extends View {
                 bankNameLabel.setText("SNS Bank");
             }
         }
+    }
+
+    public void fillInputs(String bankName) {
+        String name = "";
+        String residence = "";
+        String password = "";
+        switch (bankName) {
+            case "ABNA":
+                name = "Arthur";
+                residence = "Zaltbommel";
+                password = "arthur123";
+                break;
+
+            case "RABO":
+                name = "Rick";
+                residence = "Beek en Donk";
+                password = "rick123";
+                break;
+
+            case "SNS":
+                name = "Koen";
+                residence = "Eindhoven";
+                password = "koen123";
+                break;
+            default:
+                name = "Arthur";
+                residence = "Zaltbommel";
+                password = "arthur123";
+                break;
+        }
+        this.residenceTextField.setText(residence);
+        this.usernameTextField.setText(name);
+        this.passwordField.setText(password);
+        this.registernameTextField.setText(name);
+        this.registerResidenceTextField.setText(residence);
+        this.registerPasswordField.setText(password);
+        this.registerPasswordCheckPasswordField.setText(password);
     }
 
 

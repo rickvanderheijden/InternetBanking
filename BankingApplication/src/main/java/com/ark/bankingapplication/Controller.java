@@ -71,7 +71,7 @@ public class Controller {
     public void showStartUp() {
         hideAllViews();
         startUp.show();
-        startUp.clearInputs();
+//        startUp.clearInputs();
     }
 
     private void hideAllViews() {
@@ -125,7 +125,7 @@ public class Controller {
                 ReturnObject rt = this.login(name, residence, password);
                 if (rt.isSuccess()) {
                     this.bankConnector.createBankAccount(this.sessionKey, customer);
-                    return new ReturnObject(true, "Registratie succesvol", "Je Bent succesvol geregistreerd!");
+                    return new ReturnObject(true, "Registratie succesvol", "Je bent succesvol geregistreerd!");
                 }
             } catch (IOException | NotBoundException e) {
                 e.printStackTrace();
@@ -185,6 +185,8 @@ public class Controller {
 
     public boolean executeTransaction(String sessionKey, Transaction transaction) {
         try {
+            Boolean bool = this.bankConnector.executeTransaction(sessionKey, transaction);
+            System.out.println(bool);
             return this.bankConnector.executeTransaction(sessionKey, transaction);
         } catch (RemoteException e) {
             e.printStackTrace();
