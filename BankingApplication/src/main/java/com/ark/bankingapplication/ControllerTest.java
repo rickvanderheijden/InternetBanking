@@ -114,7 +114,7 @@ public class ControllerTest {
         BankAccount result = bankConnector.getBankAccount(sessionKey, bankAccount.getNumber());
         Assert.assertEquals(result, bankAccount);
     }
-    
+
 
 
 }
