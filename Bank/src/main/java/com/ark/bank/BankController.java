@@ -210,6 +210,17 @@ public class BankController extends Observable implements IBankController {
     }
 
     @Override
+    public Customer getCustomer(String sessionKey, String name, String residence) {
+        if (isSessionActive(sessionKey)) {
+            refreshSession(sessionKey);
+        } else {
+            return null;
+        }
+
+        return getCustomer(name, residence);
+    }
+
+    @Override
     public Customer createCustomer(String name, String residence, String password) {
         //TODO: Override equals
         if ((name == null) || name.isEmpty()
@@ -231,15 +242,27 @@ public class BankController extends Observable implements IBankController {
         return customer;
     }
 
-    @Override
-    public Customer getCustomer(String sessionKey, String name, String residence) {
-        if (isSessionActive(sessionKey)) {
-            refreshSession(sessionKey);
-        } else {
-            return null;
+    public boolean removeCustomer(String sessionKey, String name, String residence) {
+        if ((sessionKey == null) || sessionKey.isEmpty() || !isSessionActive(sessionKey)
+            || (name == null) || name.isEmpty()
+            || (residence == null) || residence.isEmpty()) {
+            return false;
         }
 
-        return getCustomer(name, residence);
+        Session session = getSession(sessionKey);
+        if ((session.getCustomerName() != name) || (session.getCustomerResidence() != residence)) {
+            return false;
+        }
+
+        for (Customer customer : customers) {
+            if ((customer.getName().equals(name))
+                    && customer.getResidence().equals(residence)) {
+                customers.remove(customer);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
