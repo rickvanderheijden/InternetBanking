@@ -64,7 +64,7 @@ public class Transaction implements Serializable {
      */
     @Override
     public String toString() {
-        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount);
+        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0);
     }
 
     public long getAmount() {
