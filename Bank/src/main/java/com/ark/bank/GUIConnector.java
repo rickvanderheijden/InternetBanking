@@ -111,7 +111,11 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public boolean removeCustomer(String sessionKey, String name, String residence) {
-        return false;
+        if (bankController == null) {
+            return false;
+        }
+
+        return bankController.removeCustomer(sessionKey, name, residence);
     }
 
     @Override

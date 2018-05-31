@@ -130,6 +130,106 @@ public class TestBankControllerCustomer {
         assertTrue(result.isPasswordValid(Password));
     }
 
+    @Test
+    public void testRemoveCustomerValidValues() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, Name, Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertTrue(result);
+        assertNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerSessionKeyNull() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(null, Name, Residence);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testRemoveCustomerSessionKeyEmpty() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer("", Name, Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerSessionKeyInvalid() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer("InvalidSessionKey", Name, Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerNameNull() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, null, Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerNameEmpty() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, "", Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerNameInvalid() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, "InvalidName", Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerResidenceNull() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, Name, null);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerResidenceEmpty() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, Name, "");
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerResidenceInvalid() {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, Name, "InvalidResidence");
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
+    @Test
+    public void testRemoveCustomerSessionKeyOfOtherCustomer() {
+        createCustomerAndLogin();
+        bankController.createCustomer("Name2", "Residence2", "Password2");
+        String sessionKey2 = bankController.login("Name2", "Residence2", "Password2");
+
+        boolean result = bankController.removeCustomer(sessionKey2, Name, Residence);
+        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
+        assertFalse(result);
+        assertNotNull(customer);
+    }
+
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);
         sessionKey = bankController.login(Name, Residence, Password);
