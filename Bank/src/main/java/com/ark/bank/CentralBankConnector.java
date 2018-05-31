@@ -9,6 +9,7 @@ import javax.xml.ws.Endpoint;
 /**
  * @author Rick van der Heijden
  */
+@SuppressWarnings("WeakerAccess")
 @WebService(serviceName = "BankService", portName = "BankPort")
 public class CentralBankConnector implements IBankForCentralBank {
     private IBankController bankController;
@@ -31,13 +32,12 @@ public class CentralBankConnector implements IBankForCentralBank {
         }
     }
 
-    private boolean registerBank() {
-        if (bankController == null) {
-            return false;
-        }
+    private void registerBank() {
+        if (bankController != null) {
 
-        BankConnectionInfo bankConnectionInfo = new BankConnectionInfo(bankId, URLBase + bankId);
-        return bankController.registerBank(bankConnectionInfo);
+            BankConnectionInfo bankConnectionInfo = new BankConnectionInfo(bankId, URLBase + bankId);
+            bankController.registerBank(bankConnectionInfo);
+        }
     }
 
     @Override

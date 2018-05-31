@@ -17,7 +17,7 @@ public class TestBankControllerLoginLogout {
     private static final String Name = "TestName";
     private static final String Password = "TestPassword";
     private static final String Residence = "TestResidence";
-    private final String BankIdInternal = "TEST";
+    private static final String BankIdInternal = "TEST";
     private IBankController bankController;
     private String sessionKey;
 

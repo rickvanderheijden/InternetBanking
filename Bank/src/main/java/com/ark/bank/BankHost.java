@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 /**
  * @author Rick van der Heijden
  */
+@SuppressWarnings("unused")
 class BankHost {
 
     private static String BankId = "RABO";

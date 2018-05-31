@@ -250,7 +250,7 @@ public class BankController extends Observable implements IBankController {
         }
 
         Session session = getSession(sessionKey);
-        if ((session.getCustomerName() != name) || (session.getCustomerResidence() != residence)) {
+        if (!session.getCustomerName().equals(name) || !session.getCustomerResidence().equals(residence)) {
             return false;
         }
 
@@ -414,7 +414,7 @@ public class BankController extends Observable implements IBankController {
         }
     }
 
-    private boolean executeTransactionLocalFrom(Transaction transaction) {
+    private void executeTransactionLocalFrom(Transaction transaction) {
         for (BankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(transaction.getAccountFrom())) {
                 boolean result = bankAccount.decreaseBalance(transaction.getAmount());
@@ -422,11 +422,9 @@ public class BankController extends Observable implements IBankController {
                     setChanged();
                     notifyObservers();
                 }
-                return result;
+                return;
             }
         }
-
-        return false;
     }
 
     private boolean sessionKeyMatchesBankAccountNumber(String sessionKey, String bankAccountNumber) {
