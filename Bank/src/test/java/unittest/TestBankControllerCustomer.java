@@ -18,7 +18,7 @@ public class TestBankControllerCustomer {
     private static final String Name = "TestName";
     private static final String Password = "TestPassword";
     private static final String Residence = "TestResidence";
-    private final String BankIdInternal = "TEST";
+    private static final String BankIdInternal = "TEST";
     private IBankController bankController;
     private String sessionKey;
 
@@ -34,56 +34,47 @@ public class TestBankControllerCustomer {
 
     @Test
     public void testCreateCustomerAllValuesNull() {
-        Customer result = bankController.createCustomer(null, null, null);
-        assertNull(result);
+        testCreateCustomer(null, null, null, false);
     }
 
     @Test
     public void testCreateCustomerAllValuesEmpty() {
-        Customer result = bankController.createCustomer("", "", "");
-        assertNull(result);
+        testCreateCustomer("", "", "", false);
     }
 
     @Test
     public void testCreateCustomerNameNull() {
-        Customer result = bankController.createCustomer(null, Residence, Password);
-        assertNull(result);
+        testCreateCustomer(null, Residence, Password, false);
     }
 
     @Test
     public void testCreateCustomerNameEmpty() {
-        Customer result = bankController.createCustomer("", Residence, Password);
-        assertNull(result);
+        testCreateCustomer("", Residence, Password, false);
     }
 
     @Test
     public void testCreateCustomerPasswordNull() {
-        Customer result = bankController.createCustomer(Name, Residence, null);
-        assertNull(result);
+        testCreateCustomer(Name, Residence, null, false);
     }
 
     @Test
     public void testCreateCustomerPasswordEmpty() {
-        Customer result = bankController.createCustomer(Name, Residence, "");
-        assertNull(result);
+        testCreateCustomer(Name, Residence, "", false);
     }
 
     @Test
     public void testCreateCustomerResidenceNull() {
-        Customer result = bankController.createCustomer(Name, null, Password);
-        assertNull(result);
+        testCreateCustomer(Name, null, Password, false);
     }
 
     @Test
     public void testCreateCustomerResidenceEmpty() {
-        Customer result = bankController.createCustomer(Name, "", Password);
-        assertNull(result);
+        testCreateCustomer(Name, "", Password, false);
     }
 
     @Test
     public void testCreateCustomerValidValues() {
-        Customer result = bankController.createCustomer(Name, Residence, Password);
-        assertNotNull(result);
+        Customer result = testCreateCustomer(Name, Residence, Password, true);
         assertEquals(Name, result.getName());
         assertEquals(Residence, result.getResidence());
         assertTrue(result.isPasswordValid(Password));
@@ -91,40 +82,33 @@ public class TestBankControllerCustomer {
 
     @Test
     public void testCreateCustomerAlreadyExists() {
-        Customer result = bankController.createCustomer(Name, Residence, Password);
-        assertNotNull(result);
-        result = bankController.createCustomer(Name, Residence, Password);
-        assertNull(result);
+        testCreateCustomer(Name, Residence, Password, true);
+        testCreateCustomer(Name, Residence, Password, false);
     }
 
     @Test
     public void TestGetCustomerInvalidName() {
-        bankController.createCustomer(Name, Residence, Password);
-        String sessionKey = bankController.login(Name, Residence, Password);
-        Customer result = bankController.getCustomer(sessionKey, "WrongName", Residence);
-        assertNull(result);
+        createCustomerAndLogin();
+        checkGetCustomer(sessionKey, "WrongName", Residence, false);
     }
 
     @Test
     public void TestGetCustomerInvalidResidence() {
-        bankController.createCustomer(Name, Residence, Password);
-        String sessionKey = bankController.login(Name, Residence, Password);
-        Customer result = bankController.getCustomer(sessionKey, Name, "InvalidResidence");
-        assertNull(result);
+        createCustomerAndLogin();
+        checkGetCustomer(sessionKey, Name, "InvalidResidence", false);
     }
 
     @Test
     public void TestGetCustomerExpiredSession() {
         createCustomerAndLogin();
         bankController.terminateSession(sessionKey);
-        Customer result = bankController.getCustomer(sessionKey, Name, Residence);
-        assertNull(result);
+        checkGetCustomer(sessionKey, Name, Residence, false);
     }
 
     @Test
     public void testGetCustomerValidValues() {
         createCustomerAndLogin();
-        Customer result = bankController.getCustomer(sessionKey, Name, Residence);
+        Customer result = checkGetCustomer(sessionKey, Name, Residence, true);
         assertEquals(Name, result.getName());
         assertEquals(Residence, result.getResidence());
         assertTrue(result.isPasswordValid(Password));
@@ -141,24 +125,25 @@ public class TestBankControllerCustomer {
 
     @Test
     public void testRemoveCustomerSessionKeyNull() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(null, Name, Residence);
-        assertFalse(result);
+        testRemoveCustomer(null, Name, Residence);
     }
 
     @Test
     public void testRemoveCustomerSessionKeyEmpty() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer("", Name, Residence);
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer("", Name, Residence);
     }
 
     @Test
     public void testRemoveCustomerSessionKeyInvalid() {
+        testRemoveCustomer("InvalidSessionKey", Name, Residence);
+    }
+
+    @Test
+    public void testRemoveCustomerSessionExpired() {
         createCustomerAndLogin();
-        boolean result = bankController.removeCustomer("InvalidSessionKey", Name, Residence);
+        bankController.terminateSession(sessionKey);
+        boolean result = bankController.removeCustomer(sessionKey, Name, Residence);
+        sessionKey = bankController.login(Name, Residence, Password);
         Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
         assertFalse(result);
         assertNotNull(customer);
@@ -166,56 +151,32 @@ public class TestBankControllerCustomer {
 
     @Test
     public void testRemoveCustomerNameNull() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(sessionKey, null, Residence);
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer(sessionKey, null, Residence);
     }
 
     @Test
     public void testRemoveCustomerNameEmpty() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(sessionKey, "", Residence);
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer(sessionKey, "", Residence);
     }
 
     @Test
     public void testRemoveCustomerNameInvalid() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(sessionKey, "InvalidName", Residence);
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer(sessionKey, "InvalidName", Residence);
     }
 
     @Test
     public void testRemoveCustomerResidenceNull() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(sessionKey, Name, null);
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer(sessionKey, Name, null);
     }
 
     @Test
     public void testRemoveCustomerResidenceEmpty() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(sessionKey, Name, "");
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer(sessionKey, Name, "");
     }
 
     @Test
     public void testRemoveCustomerResidenceInvalid() {
-        createCustomerAndLogin();
-        boolean result = bankController.removeCustomer(sessionKey, Name, "InvalidResidence");
-        Customer customer = bankController.getCustomer(sessionKey, Name, Residence);
-        assertFalse(result);
-        assertNotNull(customer);
+        testRemoveCustomer(sessionKey, Name, "InvalidResidence");
     }
 
     @Test
@@ -233,5 +194,33 @@ public class TestBankControllerCustomer {
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);
         sessionKey = bankController.login(Name, Residence, Password);
+    }
+
+    private Customer testCreateCustomer(String name, String residence, String password, boolean expectedResult) {
+        Customer customer = bankController.createCustomer(name, residence, password);
+        checkIfCustomerIsNull(customer, !expectedResult);
+        return customer;
+    }
+
+    private Customer checkGetCustomer(String sessionKey, String name, String residence, boolean expectedResult) {
+        Customer customer = bankController.getCustomer(sessionKey, name, residence);
+        checkIfCustomerIsNull(customer, !expectedResult);
+        return customer;
+    }
+
+    private void testRemoveCustomer(String sessionKey, String name, String residence) {
+        createCustomerAndLogin();
+        boolean result = bankController.removeCustomer(sessionKey, name, residence);
+        Customer customer = bankController.getCustomer(this.sessionKey, Name, Residence);
+        assertFalse(result);
+        checkIfCustomerIsNull(customer, false);
+    }
+
+    private void checkIfCustomerIsNull(Customer customer, boolean expectedNull) {
+        if (expectedNull) {
+            assertNull(customer);
+        } else {
+            assertNotNull(customer);
+        }
     }
 }
