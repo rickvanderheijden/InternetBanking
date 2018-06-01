@@ -12,7 +12,7 @@
     <AnchorPane fx:id="dashboardPane" layoutY="1.0" prefHeight="960.0" prefWidth="1679.0" styleClass="anchorpane">
         <AnchorPane prefHeight="150.0" prefWidth="1680.0" styleClass="header-bar" AnchorPane.leftAnchor="0.0">
             <ImageView fx:id="bankLogo" fitHeight="110.0" fitWidth="137.0" layoutX="20.0" layoutY="20.0"
-                       pickOnBounds="true" preserveRatio="true" styleClass="logo"/>
+                       pickOnBounds="true" preserveRatio="true"/>
             <Button fx:id="logoutButton" layoutX="1519.0" layoutY="55.0" mnemonicParsing="false" prefHeight="40.0"
                     prefWidth="137.0" styleClass="ark-button" text="Uitloggen"/>
             <Label fx:id="bankNameLabel" layoutX="157.0" layoutY="49.0" prefHeight="93.0" prefWidth="470.0"
