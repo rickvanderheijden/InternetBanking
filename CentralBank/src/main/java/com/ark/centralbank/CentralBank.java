@@ -133,6 +133,7 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
         return null;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isBankRegistered(String bankId) {
         if ((bankId == null) || bankId.isEmpty()) {
             return false;
