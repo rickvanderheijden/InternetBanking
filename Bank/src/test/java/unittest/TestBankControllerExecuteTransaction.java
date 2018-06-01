@@ -2,10 +2,7 @@ package unittest;
 
 import com.ark.Customer;
 import com.ark.bank.*;
-import com.ark.bank.IBankController;
 import com.ark.Transaction;
-import com.ark.bank.IBankAccount;
-import com.ark.centralbank.ICentralBankTransaction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

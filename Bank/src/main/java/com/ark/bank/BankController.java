@@ -56,53 +56,21 @@ public class BankController extends Observable implements IBankController {
         boolean bankAccountToIsLocal = getBankId(transaction.getAccountTo()).equals(getBankId());
         boolean bankAccountFromIsLocal = getBankId(transaction.getAccountFrom()).equals(getBankId());
 
-        if (bankAccountFromIsLocal && bankAccountToIsLocal) {
-            if (!isBankAccountNumberInUse(transaction.getAccountFrom())
-                    || !isBankAccountNumberInUse(transaction.getAccountTo())
-                    || !isBankAccountBalanceSufficient(transaction.getAccountFrom(), transaction.getAmount())) {
-                return false;
+        if (bankAccountFromIsLocal) {
+            if (bankAccountToIsLocal) {
+                return executeTransactionLocalFromLocalTo(transaction);
             } else {
-                executeTransactionLocalTo(transaction);
-                executeTransactionLocalFrom(transaction);
+                return executeTransactionLocalFromOtherTo(transaction);
             }
         }
-
-        //TODO: MAYBE WE CAN JUST DO THE TRANSACTION REMOTE?? IF IT FAILS, DONT DO THE REST
-        if (bankAccountFromIsLocal && !bankAccountToIsLocal) {
-            if (!isBankAccountNumberInUse(transaction.getAccountFrom())
-                    || !isBankAccountBalanceSufficient(transaction.getAccountFrom(), transaction.getAmount())
-                    || !centralBankConnection.isValidBankAccountNumber(transaction.getAccountTo())) {
-                return false;
-            } else {
-                executeTransactionLocalFrom(transaction);
-            }
+        else {
+            return executeTransactionLocalToOtherFrom(transaction);
         }
-
-        if (!bankAccountFromIsLocal && bankAccountToIsLocal) {
-            if (isBankAccountNumberInUse(transaction.getAccountTo())
-                && centralBankConnection.isValidBankAccountNumber(transaction.getAccountFrom())) {
-                executeTransactionLocalTo(transaction);
-            } else {
-                return false;
-            }
-        }
-
-        boolean result = true;
-
-        if (!bankAccountToIsLocal) {
-            result = centralBankConnection.executeTransaction(transaction);
-        }
-
-        if (result) {
-            transactions.add(transaction);
-        }
-
-        return true;
     }
 
     @Override
     public boolean isSessionActive(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (isNullOrEmpty(sessionKey)) {
             return false;
         }
 
@@ -117,7 +85,7 @@ public class BankController extends Observable implements IBankController {
 
     @Override
     public boolean refreshSession(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (isNullOrEmpty(sessionKey)) {
             return false;
         }
 
@@ -132,7 +100,7 @@ public class BankController extends Observable implements IBankController {
 
     @Override
     public synchronized boolean terminateSession(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (isNullOrEmpty(sessionKey)) {
             return false;
         }
 
@@ -149,7 +117,7 @@ public class BankController extends Observable implements IBankController {
     @Override
     public IBankAccount createBankAccount(String sessionKey, Customer owner) {
 
-        if ((owner == null) || (sessionKey == null) || sessionKey.isEmpty()) {
+        if ((owner == null) || isNullOrEmpty(sessionKey)) {
             return null;
         }
 
@@ -224,9 +192,7 @@ public class BankController extends Observable implements IBankController {
     @Override
     public Customer createCustomer(String name, String residence, String password) {
         //TODO: Override equals
-        if ((name == null) || name.isEmpty()
-                || (password == null) || password.isEmpty()
-                || (residence == null) || residence.isEmpty()) {
+        if (isNullOrEmpty(name) || isNullOrEmpty(password) || isNullOrEmpty(residence)) {
             return null;
         }
 
@@ -244,22 +210,18 @@ public class BankController extends Observable implements IBankController {
     }
 
     public boolean removeCustomer(String sessionKey, String name, String residence) {
-        if ((sessionKey == null) || sessionKey.isEmpty() || !isSessionActive(sessionKey)
-            || (name == null) || name.isEmpty()
-            || (residence == null) || residence.isEmpty()) {
+        if (!isSessionActive(sessionKey) || isNullOrEmpty(name) || isNullOrEmpty(residence)) {
             return false;
         }
 
         Session session = getSession(sessionKey);
-        if (!session.getCustomerName().equals(name) || !session.getCustomerResidence().equals(residence)) {
-            return false;
-        }
-
-        for (Customer customer : customers) {
-            if ((customer.getName().equals(name))
-                    && customer.getResidence().equals(residence)) {
-                customers.remove(customer);
-                return true;
+        if (session.getCustomerName().equals(name) && session.getCustomerResidence().equals(residence)) {
+            for (Customer customer : customers) {
+                if ((customer.getName().equals(name))
+                        && customer.getResidence().equals(residence)) {
+                    customers.remove(customer);
+                    return true;
+                }
             }
         }
 
@@ -392,7 +354,7 @@ public class BankController extends Observable implements IBankController {
     }
 
     private Session getSession(String sessionKey) {
-        if ((sessionKey == null) || sessionKey.isEmpty()) {
+        if (isNullOrEmpty(sessionKey)) {
             return null;
         }
 
@@ -428,8 +390,50 @@ public class BankController extends Observable implements IBankController {
         }
     }
 
+    private boolean executeTransactionLocalFromLocalTo(Transaction transaction) {
+        if (isBankAccountNumberInUse(transaction.getAccountFrom())
+                && isBankAccountNumberInUse(transaction.getAccountTo())
+                && isBankAccountBalanceSufficient(transaction.getAccountFrom(), transaction.getAmount())) {
+            executeTransactionLocalTo(transaction);
+            executeTransactionLocalFrom(transaction);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean executeTransactionLocalFromOtherTo(Transaction transaction) {
+        if (isBankAccountNumberInUse(transaction.getAccountFrom())
+                && centralBankConnection.isValidBankAccountNumber(transaction.getAccountTo())
+                && isBankAccountBalanceSufficient(transaction.getAccountFrom(), transaction.getAmount())) {
+            executeTransactionLocalFrom(transaction);
+
+            if (centralBankConnection.executeTransaction(transaction)) {
+                transactions.add(transaction);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean executeTransactionLocalToOtherFrom(Transaction transaction) {
+        if (isBankAccountNumberInUse(transaction.getAccountTo())
+                && centralBankConnection.isValidBankAccountNumber(transaction.getAccountFrom())) {
+            executeTransactionLocalTo(transaction);
+            transactions.add(transaction);
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean sessionKeyMatchesBankAccountNumber(String sessionKey, String bankAccountNumber) {
         List<String> bankAccountNumbers = getBankAccountNumbers(sessionKey);
         return bankAccountNumbers.contains(bankAccountNumber);
+    }
+
+    private boolean isNullOrEmpty(String string) {
+        return ((string == null) || string.isEmpty());
     }
 }
