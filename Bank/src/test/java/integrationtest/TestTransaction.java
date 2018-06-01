@@ -1,10 +1,9 @@
 package integrationtest;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.Customer;
+import com.ark.*;
+import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
-import com.ark.centralbank.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,7 +37,7 @@ public class TestTransaction {
     private static CentralBankUtilities centralBankUtilities;
     private static List<Customer> customers;
     private static List<String> sessionKeys;
-    private static List<BankAccount> bankAccounts;
+    private static List<IBankAccount> bankAccounts;
 
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
@@ -152,7 +151,7 @@ public class TestTransaction {
         int index = customers.size();
         Customer customer = bankForClientSession.createCustomer("CustomerName" + index, "CustomerResidence" + index, "CustomerPassword" + index);
         String sessionKey = bankForClientLogin.login("CustomerName" + index, "CustomerResidence" + index, "CustomerPassword" + index);
-        BankAccount bankAccount = bankForClientSession.createBankAccount(sessionKey, customer);
+        IBankAccount bankAccount = bankForClientSession.createBankAccount(sessionKey, customer);
 
         customers.add(customer);
         sessionKeys.add(sessionKey);

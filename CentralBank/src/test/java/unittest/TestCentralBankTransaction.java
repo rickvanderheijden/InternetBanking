@@ -1,6 +1,10 @@
 package unittest;
 
+import com.ark.BankConnectionInfo;
+import com.ark.Transaction;
 import com.ark.centralbank.*;
+import com.ark.centralbank.ICentralBankRegister;
+import com.ark.centralbank.ICentralBankTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

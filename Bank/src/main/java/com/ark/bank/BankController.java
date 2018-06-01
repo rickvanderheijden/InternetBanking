@@ -1,7 +1,8 @@
 package com.ark.bank;
 
-import com.ark.centralbank.BankConnectionInfo;
-import com.ark.centralbank.Transaction;
+import com.ark.Customer;
+import com.ark.BankConnectionInfo;
+import com.ark.Transaction;
 
 import java.util.*;
 
@@ -14,7 +15,7 @@ public class BankController extends Observable implements IBankController {
     private static final int DefaultSessionTime = 90000;
     private final Random random = new Random();
     private final String bankId;
-    private final Set<BankAccount> bankAccounts = new HashSet<>();
+    private final Set<IBankAccount> bankAccounts = new HashSet<>();
     private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
     private final Set<Transaction> transactions = new HashSet<>();
@@ -146,7 +147,7 @@ public class BankController extends Observable implements IBankController {
 
     //TODO: Do not use Customer?
     @Override
-    public BankAccount createBankAccount(String sessionKey, Customer owner) {
+    public IBankAccount createBankAccount(String sessionKey, Customer owner) {
 
         if ((owner == null) || (sessionKey == null) || sessionKey.isEmpty()) {
             return null;
@@ -158,13 +159,13 @@ public class BankController extends Observable implements IBankController {
             return null;
         }
 
-        BankAccount bankAccount = new BankAccount(owner, getUnusedBankAccountNumber());
+        IBankAccount bankAccount = new BankAccount(owner, getUnusedBankAccountNumber());
         bankAccounts.add(bankAccount);
         return bankAccount;
     }
 
     @Override
-    public BankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
+    public IBankAccount getBankAccount(String sessionKey, String bankAccountNumber) {
         if (isSessionActive(sessionKey)) {
             refreshSession(sessionKey);
         } else {
@@ -177,7 +178,7 @@ public class BankController extends Observable implements IBankController {
 
         Session session = getSession(sessionKey);
 
-        for (BankAccount bankAccount : bankAccounts) {
+        for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(bankAccountNumber)
                     && bankAccount.getOwner().getName().equals(session.getCustomerName())
                     && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
@@ -199,7 +200,7 @@ public class BankController extends Observable implements IBankController {
 
         Session session = getSession(sessionKey);
 
-        for (BankAccount bankAccount : bankAccounts) {
+        for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getOwner().getName().equals(session.getCustomerName())
                     && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
                 bankAccountsToReturn.add(bankAccount.getNumber());
@@ -370,7 +371,7 @@ public class BankController extends Observable implements IBankController {
     }
 
     private boolean isBankAccountNumberInUse(String bankAccountNumber) {
-        for (BankAccount bankAccount : bankAccounts) {
+        for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(bankAccountNumber)) {
                 return true;
             }
@@ -380,7 +381,7 @@ public class BankController extends Observable implements IBankController {
     }
 
     private boolean isBankAccountBalanceSufficient(String bankAccountNumber, long amount) {
-        for (BankAccount bankAccount : bankAccounts) {
+        for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(bankAccountNumber)) {
                 long available = bankAccount.getBalance() + bankAccount.getCreditLimit();
                 return (amount <= available);
@@ -405,7 +406,7 @@ public class BankController extends Observable implements IBankController {
     }
 
     private void executeTransactionLocalTo(Transaction transaction) {
-        for (BankAccount bankAccount : bankAccounts) {
+        for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(transaction.getAccountTo())) {
                 bankAccount.increaseBalance(transaction.getAmount());
                 setChanged();
@@ -415,7 +416,7 @@ public class BankController extends Observable implements IBankController {
     }
 
     private void executeTransactionLocalFrom(Transaction transaction) {
-        for (BankAccount bankAccount : bankAccounts) {
+        for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(transaction.getAccountFrom())) {
                 boolean result = bankAccount.decreaseBalance(transaction.getAmount());
                 if (result) {

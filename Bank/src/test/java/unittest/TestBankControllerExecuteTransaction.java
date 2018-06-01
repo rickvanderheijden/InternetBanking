@@ -1,10 +1,10 @@
 package unittest;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.BankController;
-import com.ark.bank.Customer;
+import com.ark.Customer;
+import com.ark.bank.*;
 import com.ark.bank.IBankController;
-import com.ark.centralbank.Transaction;
+import com.ark.Transaction;
+import com.ark.bank.IBankAccount;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,8 +81,8 @@ public class TestBankControllerExecuteTransaction {
         String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
         String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
 
-        BankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
-        BankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
 
         Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
         boolean result = bankController.executeTransaction(sessionKeyTwo, transaction);
@@ -99,8 +99,8 @@ public class TestBankControllerExecuteTransaction {
         String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
         String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
 
-        BankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
-        BankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
 
         Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
         boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
@@ -119,9 +119,9 @@ public class TestBankControllerExecuteTransaction {
         String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
         String sessionKeyThree = bankController.login("Name3", "Residence3", "Password3");
 
-        BankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
-        BankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
-        BankAccount bankAccountThree = bankController.createBankAccount(sessionKeyThree, customerThree);
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        IBankAccount bankAccountThree = bankController.createBankAccount(sessionKeyThree, customerThree);
 
         Transaction transactionOne   = new Transaction(10, "This is a test transaction", bankAccountOne.getNumber(), bankAccountThree.getNumber());
         Transaction transactionTwo   = new Transaction(10, "This is a test transaction", bankAccountTwo.getNumber(), bankAccountThree.getNumber());

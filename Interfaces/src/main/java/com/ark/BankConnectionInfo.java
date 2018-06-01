@@ -1,4 +1,4 @@
-package com.ark.centralbank;
+package com.ark;
 
 import javax.jws.WebService;
 

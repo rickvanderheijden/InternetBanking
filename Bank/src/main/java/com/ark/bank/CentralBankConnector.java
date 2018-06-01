@@ -1,7 +1,7 @@
 package com.ark.bank;
 
-import com.ark.centralbank.BankConnectionInfo;
-import com.ark.centralbank.Transaction;
+import com.ark.BankConnectionInfo;
+import com.ark.Transaction;
 
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;

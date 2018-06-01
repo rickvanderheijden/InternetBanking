@@ -1,8 +1,8 @@
 package com.ark.bankingapplication;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.Customer;
-import com.ark.centralbank.Transaction;
+import com.ark.Customer;
+import com.ark.bank.IBankAccount;
+import com.ark.Transaction;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -20,10 +20,10 @@ public class ControllerTest {
     private static BankConnector bankConnector;
     private static String sessionKey;
     private static Customer customer;
-    private static BankAccount bankAccount;
+    private static IBankAccount bankAccount;
     private static String sesBKey;
     private static Customer custB;
-    private static BankAccount bankAccB;
+    private static IBankAccount bankAccB;
 
     @BeforeClass
     public static void setUpClass() throws RemoteException, NotBoundException {
@@ -110,8 +110,7 @@ public class ControllerTest {
 
     @Test
     public void getBankAccountInformation() throws RemoteException {
-
-        BankAccount result = bankConnector.getBankAccount(sessionKey, bankAccount.getNumber());
+        IBankAccount result = bankConnector.getBankAccount(sessionKey, bankAccount.getNumber());
         Assert.assertEquals(result, bankAccount);
     }
 

@@ -1,7 +1,7 @@
 package componenttest;
 
 import com.ark.bank.IBankForCentralBank;
-import com.ark.centralbank.Transaction;
+import com.ark.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

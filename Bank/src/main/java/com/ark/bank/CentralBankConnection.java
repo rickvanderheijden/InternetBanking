@@ -1,9 +1,9 @@
 package com.ark.bank;
 
-import com.ark.centralbank.BankConnectionInfo;
+import com.ark.BankConnectionInfo;
 import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
-import com.ark.centralbank.Transaction;
+import com.ark.Transaction;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;

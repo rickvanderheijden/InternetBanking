@@ -1,5 +1,6 @@
 package com.ark.centralbank;
 
+import com.ark.*;
 import com.ark.bank.IBankForCentralBank;
 
 import javax.jws.WebService;

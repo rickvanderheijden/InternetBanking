@@ -1,4 +1,4 @@
-package com.ark.bank;
+package com.ark;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

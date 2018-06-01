@@ -1,6 +1,8 @@
 package com.ark.bank;
 
-import com.ark.centralbank.Transaction;
+import com.ark.Customer;
+import com.ark.Transaction;
+import com.ark.bank.IBankAccount;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -41,7 +43,7 @@ public interface IBankForClientSession extends Remote {
      * @return The newly created bank account. Will be null if creation is not successful.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    BankAccount createBankAccount(String sessionKey, Customer owner) throws RemoteException;
+    IBankAccount createBankAccount(String sessionKey, Customer owner) throws RemoteException;
 
     /**
      * Creates a new customer. The combination of the name and residence should be unique.
@@ -88,7 +90,7 @@ public interface IBankForClientSession extends Remote {
      * @return The requested bank account. Will be null if parameters are not valid.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    BankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
+    IBankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
 
     /**
      * Gets a list of transactions of a bank account (both incoming and uitgoing).
