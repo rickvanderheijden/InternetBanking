@@ -38,10 +38,6 @@ public class TestBankControllerBankAccount {
         bankController = null;
     }
 
-
-    //TODO: Test BankAccount variations. but where?
-    //TODO: Need stubs to check for scenario's (other banks, etc)
-
     @Test
     public void testCreateBankAccountSessionKeyNullOwnerNull() {
         IBankAccount result = bankController.createBankAccount(null, null);
@@ -64,8 +60,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testCreateBankAccount() {
-        Customer owner = bankController.createCustomer(Name, Residence, Password);
-        sessionKey = bankController.login(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount result = bankController.createBankAccount(sessionKey, owner);
         assertThat(result.getNumber(), startsWith(BankIdInternal));
         assertEquals(   14, result.getNumber().length());
@@ -75,8 +70,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testCreateBankAccountInvalidSession() {
-        Customer owner = bankController.createCustomer(Name, Residence, Password);
-        sessionKey = bankController.login(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount result = bankController.createBankAccount("InvalidSession", owner);
         assertNull(result);
     }
@@ -93,8 +87,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountBankAccountNumberNull() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         bankController.createBankAccount(sessionKey, owner);
         IBankAccount result = bankController.getBankAccount(sessionKey, null);
         assertNull(result);
@@ -111,8 +104,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountBankAccountNumberInvalid() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         bankController.createBankAccount(sessionKey, owner);
         IBankAccount result = bankController.getBankAccount(sessionKey, "InvalidNumber");
         assertNull(result);
@@ -120,8 +112,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountSessionExpired() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
         bankController.terminateSession(sessionKey);
         IBankAccount result = bankController.getBankAccount(sessionKey, bankAccount.getNumber());
@@ -130,8 +121,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountSessionInvalid() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
         IBankAccount result = bankController.getBankAccount("InvalidSession", bankAccount.getNumber());
         assertNull(result);
@@ -148,8 +138,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountSessionNull() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
         IBankAccount result = bankController.getBankAccount(null, bankAccount.getNumber());
         assertNull(result);
@@ -170,8 +159,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountNumbersValidValuesOneAccount() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
         List<String> bankAccountNumbers = bankController.getBankAccountNumbers(sessionKey);
         assertEquals(1, bankAccountNumbers.size());
@@ -180,8 +168,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountNumbersValidValuesFiveAccounts() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         IBankAccount bankAccount1 = bankController.createBankAccount(sessionKey, owner);
         IBankAccount bankAccount2 = bankController.createBankAccount(sessionKey, owner);
         IBankAccount bankAccount3 = bankController.createBankAccount(sessionKey, owner);
@@ -198,8 +185,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountNumbersOtherOwner() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         bankController.createBankAccount(sessionKey, owner);
 
         bankController.createCustomer("OtherName", "OtherResidence", "OtherPassword");
@@ -211,8 +197,7 @@ public class TestBankControllerBankAccount {
 
     @Test
     public void testGetBankAccountNumbersExpiredSession() {
-        createCustomerAndLogin();
-        Customer owner = new Customer(Name, Residence, Password);
+        Customer owner = createCustomerAndLogin();
         bankController.createBankAccount(sessionKey, owner);
 
         bankController.terminateSession(sessionKey);
@@ -220,8 +205,25 @@ public class TestBankControllerBankAccount {
         assertEquals(0, bankAccountNumbers.size());
     }
 
-    private void createCustomerAndLogin() {
-        bankController.createCustomer(Name, Residence, Password);
+    @Test
+    public void testIsValidBankAccountNumberValidNumber() {
+        Customer owner = createCustomerAndLogin();
+        IBankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+        boolean result = bankController.isValidBankAccountNumber(bankAccount.getNumber());
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsValidBankAccountNumber() {
+        createCustomerAndLogin();
+        boolean result = bankController.isValidBankAccountNumber("InvalidNumber");
+        assertFalse(result);
+    }
+
+    private Customer createCustomerAndLogin() {
+        Customer customer = bankController.createCustomer(Name, Residence, Password);
         sessionKey = bankController.login(Name, Residence, Password);
+
+        return customer;
     }
 }
