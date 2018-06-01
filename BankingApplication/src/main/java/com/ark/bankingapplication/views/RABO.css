@@ -1,8 +1,10 @@
 /** GLOBALS **/
+/*noinspection ALL*/
 .success {
     -fx-border-color: green;
 }
 
+/*noinspection ALL*/
 .error {
     -fx-border-color: red;
 }

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
  * @author Rick van der Heijden
  */
 public class TestBankForCentralBank {
+
     private static final String BankId = "RABO";
     private static final String URLBase = "http://localhost:1200/";
     private static IBankForCentralBank bank;

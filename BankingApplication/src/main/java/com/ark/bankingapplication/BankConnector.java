@@ -19,7 +19,6 @@ import java.util.List;
 
 class BankConnector extends UnicastRemoteObject implements IRemotePropertyListener {
 
-    private String sessionKey;
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
     private RemotePublisher remotePublisher;
@@ -30,9 +29,6 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
         remotePublisher.registerProperty("updateBankAccount");
     }
 
-    public String getSessionKey() {
-        return sessionKey;
-    }
 
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
@@ -45,19 +41,6 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
 
         return ((bankForClientLogin != null) && (bankForClientSession != null));
     }
-
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
-    public IBankForClientSession getIBankForClientSession() {
-        return bankForClientSession;
-    }
-
-    public IBankForClientLogin getIBankForClientLogin() {
-        return bankForClientLogin;
-    }
-
 
     public String login(String name, String residence, String password) throws RemoteException {
         if (this.bankForClientLogin == null) {

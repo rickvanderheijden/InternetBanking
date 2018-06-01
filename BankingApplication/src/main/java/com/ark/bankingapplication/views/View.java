@@ -5,17 +5,16 @@ import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
+
 import java.io.IOException;
 
 public abstract class View extends AnchorPane {
 
     Controller controller;
-    private String bank = null;
 
-    public View(String resource) throws ControlNotLoadedException {
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource(resource));
+    View(String resource) throws ControlNotLoadedException {
 
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(resource));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {
@@ -27,20 +26,18 @@ public abstract class View extends AnchorPane {
     public void show() {
         setVisible(true);
     }
-
     public void hide() {
         setVisible(false);
     }
-
     public void setController(Controller controller) {
         this.controller = controller;
     }
 
-    protected void showWarning(String title, String text){
+    void showWarning(String title, String text) {
         this.showAlert(title, text, Alert.AlertType.WARNING);
     }
 
-    protected void showInfo(String title, String text){
+    void showInfo(String title, String text) {
         this.showAlert(title, text, Alert.AlertType.INFORMATION);
     }
 
@@ -52,13 +49,10 @@ public abstract class View extends AnchorPane {
         alert.show();
     }
 
-    public String getBank(){
-        return this.bank;
-    }
-
-    public void setBank(String bank) {
-        this.bank = bank;
-
-    }
+// --Commented out by Inspection START (1-6-2018 12:11):
+//    public void setBank(String bank) {
+//
+//    }
+// --Commented out by Inspection STOP (1-6-2018 12:11)
 
 }

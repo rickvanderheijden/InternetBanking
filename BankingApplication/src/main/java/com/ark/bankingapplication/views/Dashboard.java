@@ -7,8 +7,8 @@ import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
 import com.ark.centralbank.Transaction;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @author Arthur
  */
+@SuppressWarnings("unused")
 public class Dashboard extends View implements IRemotePropertyListener {
 
     @FXML private Label nameLabel;
@@ -37,7 +38,6 @@ public class Dashboard extends View implements IRemotePropertyListener {
     @FXML private TextField toBankAccountTextField;
     @FXML private TextField amountFullTextField;
     @FXML private TextField amountCentsTextField;
-    public ObservableList<Transaction> readOnly;
     @FXML private ComboBox<String> BankAccountsComboBox;
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
@@ -51,41 +51,33 @@ public class Dashboard extends View implements IRemotePropertyListener {
     private Button logoutButton;
     @FXML
     private Label bankNameLabel;
+    @FXML
+    private TextArea transactionDescriptionTextArea;
 
     private Customer customer = null;
-    private BankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
     private String selectedBankAccountNr = null;
-    @FXML
-    private TextArea transactionDescriptionTextArea;
+
     private TransactionList transactions;
     private List<String> bankAccounts = null;
+    private ObservableList<String> bankAccouts = FXCollections.observableArrayList();
 
-
-    public Dashboard( ) throws ControlNotLoadedException {
+    public Dashboard() throws ControlNotLoadedException {
         super("Dashboard.fxml");
 
-        amountFullTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    amountFullTextField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
+        amountFullTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                amountFullTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
-        amountCentsTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    amountCentsTextField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
+        amountCentsTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                amountCentsTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
         logoutButton.setOnAction(e -> doLogout());
-        addBankAccountButton.setOnAction(e -> doAddBankAccount());
+        this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
         transactionButton.setOnAction(e -> doTransaction());
         BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
                 {
@@ -95,7 +87,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
                 }
         );
         this.transactions = new TransactionList();
-        this.transactionListView = new ListView<Transaction>(this.transactions.getReadOnlyList());
+        this.transactionListView = new ListView<>(this.transactions.getReadOnlyList());
     }
 
 
@@ -122,8 +114,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
      */
     private List<Transaction> getTransactions() {
         if (this.sessionKey != null) {
-            List<Transaction> returnList = controller.getTransactions(sessionKey, selectedBankAccountNr);
-            return returnList;
+            return controller.getTransactions(sessionKey, selectedBankAccountNr);
         }
         return null;
     }
@@ -164,9 +155,9 @@ public class Dashboard extends View implements IRemotePropertyListener {
 
     }
 
-    public void updateBankAccount() {
-        this.selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
-        long balance = this.selectedBankaccount.getBalance();
+    private void updateBankAccount() {
+        BankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
+        long balance = selectedBankaccount.getBalance();
         double balanced = balance / 100.0;
         this.balanceLabel.setText("€" + String.valueOf(balanced));
         this.setTransactions();
@@ -180,7 +171,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
 
-    public void setBankAccounts() {
+    private void setBankAccounts() {
         if (this.bankAccounts != null) {
             this.BankAccountsComboBox.getItems().addAll(this.bankAccounts);
             if (this.bankAccounts.size() > 0) {
@@ -191,7 +182,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
 
-    public void setTransactions() {
+    private void setTransactions() {
         if (this.getTransactions() != null) {
             for (Transaction transaction : this.getTransactions()) {
                 System.out.println(transaction.toString());
@@ -205,8 +196,8 @@ public class Dashboard extends View implements IRemotePropertyListener {
 //            this.transactionListView.setItems(this.transactions);
         }
         if (this.transactions.getSize() > 0) {
-            this.readOnly = transactions.getReadOnlyList();
-            this.transactionListView.setItems(this.readOnly);
+            ObservableList<Transaction> readOnly = transactions.getReadOnlyList();
+            this.transactionListView.setItems(readOnly);
             //this.transactionListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         }
 
@@ -241,20 +232,25 @@ public class Dashboard extends View implements IRemotePropertyListener {
         }
     }
 
-    public void setBankNameLabel(String bankname) {
+    @SuppressWarnings("Duplicates")
+    private void setBankNameLabel(String bankname) {
         if (!bankname.isEmpty()) {
-            if (bankname.equals("ABNA")) {
-                bankNameLabel.setText("ABN AMRO");
-            } else if (bankname.equals("RABO")) {
-                bankNameLabel.setText("Rabobank");
-            } else {
-                bankNameLabel.setText("SNS Bank");
+            switch (bankname) {
+                case "ABNA":
+                    bankNameLabel.setText("ABN AMRO");
+                    break;
+                case "RABO":
+                    bankNameLabel.setText("Rabobank");
+                    break;
+                default:
+                    bankNameLabel.setText("SNS Bank");
+                    break;
             }
         }
     }
 
     private void selectedTransactionChanged(ObservableValue<? extends Transaction> ov, Transaction oldTransaction, Transaction newTransaction) {
-        // TODO: toon foto info
+        // TODO: toon transaction info
         System.out.println(newTransaction);
 
     }

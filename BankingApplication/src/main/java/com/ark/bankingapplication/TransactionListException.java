@@ -1,6 +1,6 @@
 package com.ark.bankingapplication;
 
-public class TransactionListException extends Exception {
+class TransactionListException extends Exception {
 
     /**
      * Constructs a new exception with the specified detail message.  The
