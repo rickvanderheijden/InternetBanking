@@ -29,13 +29,13 @@ public class ControllerTest {
     public static void setUpClass() throws RemoteException, NotBoundException {
         bankConnector = new BankConnector();
         bankConnector.connect(BankIdInternal);
-        customer = bankConnector.createCustomer(Name, Residence, Password);
+        Customer customer = bankConnector.createCustomer(Name, Residence, Password);
         sessionKey = bankConnector.login(Name, Residence, Password);
         bankAccount = bankConnector.createBankAccount(sessionKey, customer);
 
         //create contra account to execute transaction
-        custB = bankConnector.createCustomer("Tester", "plaatsnaam", "wachtwoord128");
-        sesBKey = bankConnector.login("Test", "plaats", "wachtwoord");
+        Customer custB = bankConnector.createCustomer("Tester", "plaatsnaam", "wachtwoord128");
+        String sesBKey = bankConnector.login("Test", "plaats", "wachtwoord");
         bankAccB = bankConnector.createBankAccount(sesBKey, custB);
 
     }

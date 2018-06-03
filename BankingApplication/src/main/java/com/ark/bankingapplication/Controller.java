@@ -26,6 +26,7 @@ public class Controller {
     private final String bankId;
     private String sessionKey;
     private Customer customer;
+    private BankAccount bankAccount;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
@@ -49,10 +50,6 @@ public class Controller {
 
         startUp.show();
         dashboard.hide();
-    }
-
-    public Customer getCustomer() {
-        return customer;
     }
 
     private void setControls(Scene scene) {
@@ -98,7 +95,7 @@ public class Controller {
             dashboard.setCustomer(this.bankConnector.getCustomer(this.sessionKey, name, residence));
             dashboard.setSessionKey(this.sessionKey);
             dashboard.initDashboard();
-            return new ReturnObject(true, "Gelukt", "Inloggen is gelukt", sessionKey);
+            return new ReturnObject(true, "Gelukt", "Inloggen is gelukt");
         } catch (RemoteException e) {
             e.printStackTrace();
             return new ReturnObject(false, "Inlog fout", "Er is een fout opgetreden bij het inloggen");
@@ -113,14 +110,14 @@ public class Controller {
     /**
      * Method to register / create a new customer. Also adds a new bankAccount to the customer.
      *
-     * @param name
-     * @param residence
-     * @param password
+     * @param name Name of the customer
+     * @param residence Residence of the person
+     * @param password Password of the person
      * @return ReturnObject with boolean : success, String title and String body.
      */
     public ReturnObject registerUser(String name, String residence, String password) {
         try {
-            Customer customer = this.bankConnector.createCustomer(name, residence, password);
+            this.customer = this.bankConnector.createCustomer(name, residence, password);
             try {
                 ReturnObject rt = this.login(name, residence, password);
                 if (rt.isSuccess()) {
@@ -141,8 +138,8 @@ public class Controller {
     /**
      * Method to get all the transactions of the given bankAccountNumber
      *
-     * @param sessionKey
-     * @param bankNumber
+     * @param sessionKey The sessionkey of the logged in customer.
+     * @param bankNumber The Banknumber of the BankAccount.
      * @return List of Transactions
      */
     public List<Transaction> getTransactions(String sessionKey, String bankNumber) {
@@ -172,6 +169,7 @@ public class Controller {
         }
     }
 
+    @SuppressWarnings("unused")
     private boolean connectToBank(String bankId) {
         boolean result = false;
         try {
@@ -179,7 +177,6 @@ public class Controller {
         } catch (IOException | NotBoundException e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
@@ -201,5 +198,13 @@ public class Controller {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Scene getScene() {
+        return this.scene;
+    }
+
+    public Customer getCustomer() {
+        return this.customer;
     }
 }

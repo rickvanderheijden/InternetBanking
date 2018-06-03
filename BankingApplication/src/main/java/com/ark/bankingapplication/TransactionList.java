@@ -5,33 +5,34 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+@SuppressWarnings("ALL")
 public class TransactionList {
 
-    private ObservableList<Transaction> transactions;
+    private final ObservableList<Transaction> transactions;
     private ObservableList<Transaction> readOnly;
 
     public TransactionList() {
         this.transactions = FXCollections.observableArrayList();
+        //noinspection unchecked
         transactions.addListener(new ListChangeListener() {
 
             @Override
             public void onChanged(ListChangeListener.Change change) {
                 System.out.println("Detected a change! ");
+                readOnly = FXCollections.unmodifiableObservableList(transactions);
             }
         });
         this.readOnly = FXCollections.unmodifiableObservableList(transactions);
     }
 
-    public boolean add(Transaction object) {
+    public void add(Transaction object) {
         if (object == null) {
-            return false;
+            return;
         }
 
         try {
             transactions.add(object);
-            return true;
         } catch (Exception e) {
-            return false;
         }
     }
 

@@ -15,8 +15,10 @@ import javafx.scene.layout.VBox;
 import java.io.File;
 import java.rmi.NotBoundException;
 
+@SuppressWarnings("unused")
 public class StartUp extends View {
 
+    private boolean registerSuccessful = false;
 
     @FXML private TextField usernameTextField;
     @FXML private TextField residenceTextField;
@@ -45,9 +47,7 @@ public class StartUp extends View {
     public StartUp() throws ControlNotLoadedException {
         super("StartUp.fxml");
 
-        this.loginButton.setOnAction(event -> {
-            doLogin();
-        });
+        this.loginButton.setOnAction(event -> doLogin());
         this.registerButton.setOnAction(e -> doRegister());
         this.goToRegisterPane.setOnMouseClicked(e -> togglePanes());
         this.toLoginPane.setOnMouseClicked(e -> togglePanes());
@@ -148,8 +148,8 @@ public class StartUp extends View {
         String password = this.passwordField.getText();
         String residence = this.residenceTextField.getText();
 
-        if(username.isEmpty() || password.isEmpty() || residence.isEmpty())
-        {
+        if(username.isEmpty() || password.isEmpty() || residence.isEmpty()) {
+            showWarning("Inlog fout", "Inloggen mislukt!");
             this.errorMessageLabel.setText("Er is iets fout gegaan, niet alle velden zijn ingevuld");
             this.errorMessageLabel.setVisible(true);
         }else {
@@ -163,6 +163,7 @@ public class StartUp extends View {
                 showInfo(returnObject.getTitle(), returnObject.getBody());
                 controller.showDashboard();
             } else {
+                showWarning(returnObject.getTitle(), returnObject.getBody());
                 this.errorMessageLabel.setText(returnObject.getBody());
                 this.errorMessageLabel.setVisible(true);
             }
@@ -171,6 +172,7 @@ public class StartUp extends View {
     }
 
     private void doRegister() {
+        this.errorMessageLabel.setVisible(false);
         String name = this.registernameTextField.getText();
         String residence = this.registerResidenceTextField.getText();
         String password = this.registerPasswordField.getText();
@@ -181,11 +183,20 @@ public class StartUp extends View {
                 ReturnObject returnObject = controller.registerUser(name, residence, password);
                 if (returnObject.isSuccess()) {
                     showInfo(returnObject.getTitle(), returnObject.getBody());
+                    this.registerSuccessful = true;
                     togglePanes();
                 } else {
                     showWarning(returnObject.getTitle(), returnObject.getBody());
                 }
+            } else {
+                showWarning("Fout bij registreren", "Wachtwoorden komen niet overeen!");
+                this.errorMessageLabel.setText("Er is iets fout gegaan, Wachtwoorden komen niet overeen");
+                this.errorMessageLabel.setVisible(true);
             }
+        } else {
+            showWarning("Fout bij registreren", "Vul waardes in!");
+            this.errorMessageLabel.setText("Er is iets fout gegaan, niet alle velden zijn ingevuld");
+            this.errorMessageLabel.setVisible(true);
         }
     }
 
@@ -214,22 +225,27 @@ public class StartUp extends View {
         this.fillInputs(bankId);
     }
 
-    public void setBankNameLabel(String bankname) {
+    @SuppressWarnings("Duplicates")
+    private void setBankNameLabel(String bankname) {
         if (!bankname.isEmpty()) {
-            if (bankname.equals("ABNA")) {
-                bankNameLabel.setText("ABN AMRO");
-            } else if (bankname.equals("RABO")) {
-                bankNameLabel.setText("Rabobank");
-            } else {
-                bankNameLabel.setText("SNS Bank");
+            switch (bankname) {
+                case "ABNA":
+                    bankNameLabel.setText("ABN AMRO");
+                    break;
+                case "RABO":
+                    bankNameLabel.setText("Rabobank");
+                    break;
+                default:
+                    bankNameLabel.setText("SNS Bank");
+                    break;
             }
         }
     }
 
     public void fillInputs(String bankName) {
-        String name = "";
-        String residence = "";
-        String password = "";
+        String name;
+        String residence;
+        String password;
         switch (bankName) {
             case "ABNA":
                 name = "Arthur";
@@ -263,5 +279,8 @@ public class StartUp extends View {
         this.registerPasswordCheckPasswordField.setText(password);
     }
 
+    public boolean getRegisterSuccessful() {
+        return this.registerSuccessful;
+    }
 
 }
