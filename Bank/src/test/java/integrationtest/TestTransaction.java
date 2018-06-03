@@ -99,7 +99,7 @@ public class TestTransaction {
     }
 
     @Test
-    public void testExecuteTransactionFromAccountWithNotEnoughCredit() throws RemoteException {
+    public void testExecuteTransactionDifferentBanksFromAccountWithNotEnoughCredit() throws RemoteException {
         int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
         int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
@@ -117,7 +117,7 @@ public class TestTransaction {
     }
 
     @Test
-    public void testExecuteTransactionToUnavailableAccount() throws RemoteException {
+    public void testExecuteTransactionDifferentBanksToUnavailableAccount() throws RemoteException {
         int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
         int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
