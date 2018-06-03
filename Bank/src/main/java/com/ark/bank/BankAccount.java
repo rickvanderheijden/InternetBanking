@@ -19,13 +19,19 @@ public class BankAccount implements IBankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
-    public BankAccount(Customer owner, String number) {
+    /**
+     * Creates an instance of BankAccount.
+     * @param owner The owner of the bank account. Can not be null.
+     * @param number The bank account number. Can not be null or empty.
+     * @throws IllegalArgumentException if owner is null or number is null or empty.
+     */
+    public BankAccount(Customer owner, String number) throws IllegalArgumentException {
+        if ((owner == null) || (number == null) || number.isEmpty()) {
+            throw new IllegalArgumentException("Argument can not be null or empty");
+        }
+
         this.owner = owner;
         this.number = number;
-    }
-
-    @SuppressWarnings("unused")
-    public BankAccount(){
     }
 
     @Override

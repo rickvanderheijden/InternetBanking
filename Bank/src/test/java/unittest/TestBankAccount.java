@@ -41,6 +41,21 @@ public class TestBankAccount {
         assertNotNull(result);
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void testConstructorOwnerNull() {
+        bankAccount = new BankAccount(null, BankAccountNumber);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testConstructorBankAccountNumberNull() {
+        bankAccount = new BankAccount(Owner, null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testConstructorBankAccountNumberEmpty() {
+        bankAccount = new BankAccount(Owner, "");
+    }
+
     @Test
     public void testGetCreditLimitDefaultValue() {
         assertEquals(10000, bankAccount.getCreditLimit());

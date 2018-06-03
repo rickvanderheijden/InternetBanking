@@ -11,16 +11,43 @@ import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-class CentralBankConnection {
+class CentralBankConnection implements ICentralBankConnection {
 
     private final ICentralBankTransaction centralBankTransaction;
     private final ICentralBankRegister centralBankRegister;
     private Service service;
     private QName qnamePort;
 
-    public CentralBankConnection() {
+    public CentralBankConnection()  {
         this.centralBankTransaction = getCentralBankTransaction();
         this.centralBankRegister = getCentralBankRegister();
+    }
+
+    @Override
+    public boolean isValidBankAccountNumber(String accountNumber) {
+        if (centralBankTransaction == null) {
+            return false;
+        }
+
+        return centralBankTransaction.isValidBankAccountNumber(accountNumber);
+    }
+
+    @Override
+    public boolean executeTransaction(Transaction transaction) {
+        if (centralBankTransaction == null) {
+            return false;
+        }
+
+        return centralBankTransaction.executeTransaction(transaction);
+    }
+
+    @Override
+    public boolean registerBank(BankConnectionInfo bankConnectionInfo) {
+        if (centralBankRegister == null) {
+            return false;
+        }
+
+        return centralBankRegister.registerBank(bankConnectionInfo);
     }
 
     private boolean createCentralBankConnection() {
@@ -50,29 +77,5 @@ class CentralBankConnection {
         }
 
         return null;
-    }
-
-    public boolean isValidBankAccountNumber(String accountNumber) {
-        if (centralBankTransaction == null) {
-            return false;
-        }
-
-        return centralBankTransaction.isValidBankAccountNumber(accountNumber);
-    }
-
-    public boolean executeTransaction(Transaction transaction) {
-        if (centralBankTransaction == null) {
-            return false;
-        }
-
-        return centralBankTransaction.executeTransaction(transaction);
-    }
-
-    public boolean registerBank(BankConnectionInfo bankConnectionInfo) {
-        if (centralBankRegister == null) {
-            return false;
-        }
-
-        return centralBankRegister.registerBank(bankConnectionInfo);
     }
 }

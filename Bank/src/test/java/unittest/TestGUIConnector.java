@@ -7,6 +7,7 @@ import com.ark.bank.IBankController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import unittest.stubs.CentralBankConnectionStub;
 
 import java.rmi.RemoteException;
 
@@ -28,7 +29,7 @@ public class TestGUIConnector {
 
     @Before
     public void setUp() throws RemoteException {
-        bankController = new BankController(BankIdInternal, null);
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
         guiConnector = new GUIConnector(bankController);
         guiConnector.createCustomer(Name, Residence, Password);
         sessionKey = guiConnector.login(Name, Residence, Password);

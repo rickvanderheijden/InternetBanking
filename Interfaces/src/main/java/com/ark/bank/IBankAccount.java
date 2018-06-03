@@ -7,7 +7,7 @@ import java.io.Serializable;
 public interface IBankAccount extends Serializable {
     /**
      * Gets the owner (Customer) of the bank account.
-     * @return The owner of the bank account. Can be null.
+     * @return The owner of the bank account.
      */
     Customer getOwner();
 

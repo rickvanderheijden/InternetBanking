@@ -19,9 +19,18 @@ public class BankController extends Observable implements IBankController {
     private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
     private final Set<Transaction> transactions = new HashSet<>();
-    private final CentralBankConnection centralBankConnection;
+    private final ICentralBankConnection centralBankConnection;
 
-    public BankController(String bankId, CentralBankConnection centralBankConnection) {
+    /**
+     * Creates an instance of BankController
+     * @param bankId The id of the bank. Can not be null or empty.
+     * @param centralBankConnection Connection to the central bank. Can not be null.
+     */
+    public BankController(String bankId, ICentralBankConnection centralBankConnection) throws IllegalArgumentException {
+        if (isNullOrEmpty(bankId) || (centralBankConnection == null)) {
+            throw new IllegalArgumentException("Argument can not be null or empty");
+        }
+
         this.bankId = bankId;
         this.centralBankConnection = centralBankConnection;
     }
