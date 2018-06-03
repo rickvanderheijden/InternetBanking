@@ -28,7 +28,7 @@ public class BankController extends Observable implements IBankController {
      */
     public BankController(String bankId, ICentralBankConnection centralBankConnection) throws IllegalArgumentException {
         if (isNullOrEmpty(bankId) || (centralBankConnection == null)) {
-            throw new IllegalArgumentException("Argument can not be null or empty");
+            throw new IllegalArgumentException();
         }
 
         this.bankId = bankId;

@@ -28,7 +28,7 @@ public class Session {
         if ((sessionTime < 0)
             || (customerName == null) || customerName.isEmpty()
             || (customerResidence == null) || customerResidence.isEmpty()){
-            throw new IllegalArgumentException("Argument can not be null or empty");
+            throw new IllegalArgumentException();
         }
 
         this.sessionTime = sessionTime;

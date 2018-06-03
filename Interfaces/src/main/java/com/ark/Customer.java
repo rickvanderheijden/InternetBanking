@@ -22,12 +22,15 @@ public class Customer implements Serializable {
         if ((name == null) || name.isEmpty()
             || (residence == null) || residence.isEmpty()
             || (password == null) || password.isEmpty()) {
-            throw new IllegalArgumentException("Argument can not be null or empty");
+            throw new IllegalArgumentException();
         }
 
         this.name = name;
         this.password = password;
         this.residence = residence;
+    }
+
+    public Customer() {
     }
 
     /**

@@ -57,15 +57,7 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
 
     @Override
     public boolean executeTransaction(Transaction transaction) {
-
-        //TODO: Do we want to do the check here, or leave it to the bank itself?
-        if ((transaction == null)
-            || (transaction.getDate() == null)
-            || (transaction.getAccountFrom() == null)
-            || (transaction.getAccountTo() == null)
-            || (transaction.getAmount() <= 0)
-            || (transaction.getDate() == null)
-            || (transaction.getDescription() == null)) {
+        if (transaction == null) {
             return false;
         }
 

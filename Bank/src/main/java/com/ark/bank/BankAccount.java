@@ -27,7 +27,7 @@ public class BankAccount implements IBankAccount {
      */
     public BankAccount(Customer owner, String number) throws IllegalArgumentException {
         if ((owner == null) || (number == null) || number.isEmpty()) {
-            throw new IllegalArgumentException("Argument can not be null or empty");
+            throw new IllegalArgumentException();
         }
 
         this.owner = owner;

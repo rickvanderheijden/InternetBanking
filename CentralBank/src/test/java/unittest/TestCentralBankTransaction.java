@@ -35,38 +35,8 @@ public class TestCentralBankTransaction {
         assertFalse(result);
     }
 
-    @Test
-    public void testExecuteTransactionAllValuesNull() {
-        Transaction transaction = new Transaction(0, null, null, null);
-        boolean result = centralBank.executeTransaction(transaction);
-        assertFalse(result);
-    }
 
-    @Test
-    public void testExecuteTransactionAccountToNull() {
-        Transaction transaction = new Transaction(2295, "Description", "AccountFrom", null);
-        boolean result = centralBank.executeTransaction(transaction);
-        assertFalse(result);
-    }
-
-    @Test
-    public void testExecuteTransactionDescriptionNull() {
-        Transaction transaction = new Transaction(2295, null, "AccountFrom", "AccountTo");
-        boolean result = centralBank.executeTransaction(transaction);
-        assertFalse(result);
-    }
-
-    @Test
-    public void testExecuteTransactionAmountNull() {
-        Transaction transaction = new Transaction(0, "Description", "AccountFrom", "AccountTo");
-        boolean result = centralBank.executeTransaction(transaction);
-        assertFalse(result);
-    }
-
-
-
-
-    //TODO: DO THESE IN INTEGRATION TEST
+    //TODO: DO THESE IN INTEGRATION TEST ??
     @Test
     public void testExecuteTransactionValidValuesBothNotRegistered() {
         Transaction transaction = new Transaction(2100, "This is a test transaction", "ABNA0123456789", "RABO0123456789");

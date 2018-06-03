@@ -44,15 +44,17 @@ public class TestBankControllerExecuteTransaction {
     @Test
     public void testExecuteTransactionAllValuesNull() {
         createCustomerAndLogin();
-        Transaction transaction = new Transaction(0, null, null, null);
+        Transaction transaction = new Transaction();
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
+
     @Test
     public void testExecuteTransactionAccountToNull() {
         createCustomerAndLogin();
-        Transaction transaction = new Transaction(2295, "Description", "AccountFrom", null);
+        Transaction transaction = new Transaction();
+        setTransactionValues(transaction, 2295, "Description", "AccountFrom", null);
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
@@ -60,14 +62,16 @@ public class TestBankControllerExecuteTransaction {
     @Test
     public void testExecuteTransactionDescriptionNull() {
         createCustomerAndLogin();
-        Transaction transaction = new Transaction(2295, null, "AccountFrom", "AccountTo");
+        Transaction transaction = new Transaction();
+        setTransactionValues(transaction, 2295, null, "AccountFrom", "AccountTo");
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAmountNull() {
-        Transaction transaction = new Transaction(0, "Description", "AccountFrom", "AccountTo");
+        Transaction transaction = new Transaction();
+        setTransactionValues(transaction, 0, "Description", "AccountFrom", "AccountTo");
         boolean result = bankController.executeTransaction(sessionKey, transaction);
         assertFalse(result);
     }
@@ -169,6 +173,13 @@ public class TestBankControllerExecuteTransaction {
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);
         sessionKey = bankController.login(Name, Residence, Password);
+    }
+
+    private void setTransactionValues(Transaction transaction, long amount, String description, String accountFrom, String accountTo) {
+        if (amount > 0)          { transaction.setAmount(amount);           }
+        if (description != null) { transaction.setDescription(description); }
+        if (accountFrom != null) { transaction.setAccountFrom(accountFrom); }
+        if (accountTo   != null) { transaction.setAccountTo(accountTo);     }
     }
 
     //TODO: CHECK IF TRANSACTION EXIST AFTER SUCCESFUL. NOT WHEN NOT SUCCESFUL!!

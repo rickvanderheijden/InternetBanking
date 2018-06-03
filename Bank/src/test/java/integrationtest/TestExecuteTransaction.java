@@ -23,7 +23,7 @@ import static junit.framework.TestCase.*;
 /**
  * @author Rick van der Heijden
  */
-public class TestTransaction {
+public class TestExecuteTransaction {
     private enum BankId { RABO, ABNA }
     private static final String BankIdRABO = "RABO";
     private static final String URLBaseRABO = "http://localhost:1200/";
