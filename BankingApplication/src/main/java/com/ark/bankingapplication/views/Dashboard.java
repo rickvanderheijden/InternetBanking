@@ -157,7 +157,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
     private void updateBankAccount() {
-        BankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
+        IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
         long balance = selectedBankaccount.getBalance();
         double balanced = balance / 100.0;
         this.balanceLabel.setText("€" + String.valueOf(balanced));

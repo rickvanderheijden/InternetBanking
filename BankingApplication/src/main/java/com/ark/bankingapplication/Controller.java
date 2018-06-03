@@ -26,7 +26,7 @@ public class Controller {
     private final String bankId;
     private String sessionKey;
     private Customer customer;
-    private BankAccount bankAccount;
+    private IBankAccount bankAccount;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
