@@ -9,7 +9,7 @@
         <module name="Bank" />
         <module name="BankingApplication" />
         <module name="CentralBank" />
-        <module name="Interfaces" />
+        <module name="SharedInterfaces" />
         <module name="TestUtilities" />
       </profile>
     </annotationProcessing>

@@ -1,6 +1,6 @@
 package unittest;
 
-import com.ark.centralbank.BankConnectionInfo;
+import com.ark.BankConnectionInfo;
 import com.ark.centralbank.CentralBank;
 import com.ark.centralbank.ICentralBankRegister;
 import org.junit.AfterClass;

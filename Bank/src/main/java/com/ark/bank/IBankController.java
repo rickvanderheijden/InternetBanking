@@ -1,7 +1,8 @@
 package com.ark.bank;
 
-import com.ark.centralbank.BankConnectionInfo;
-import com.ark.centralbank.Transaction;
+import com.ark.Customer;
+import com.ark.BankConnectionInfo;
+import com.ark.Transaction;
 
 import java.util.List;
 
@@ -18,8 +19,8 @@ public interface IBankController {
     boolean removeCustomer(String sessionKey, String name, String residence);
 
     //TODO: Is owner needed? Only sessionKey?
-    BankAccount createBankAccount(String sessionKey, Customer owner);
-    BankAccount getBankAccount(String sessionKey, String bankAccountNumber);
+    IBankAccount createBankAccount(String sessionKey, Customer owner);
+    IBankAccount getBankAccount(String sessionKey, String bankAccountNumber);
 
     List<String> getBankAccountNumbers(String sessionKey);
     boolean executeTransaction(Transaction transaction);

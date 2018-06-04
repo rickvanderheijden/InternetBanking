@@ -5,6 +5,7 @@ import com.ark.bank.IBankController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import unittest.stubs.CentralBankConnectionStub;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -23,7 +24,7 @@ public class TestBankControllerLoginLogout {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, null);
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
     }
 
     @After

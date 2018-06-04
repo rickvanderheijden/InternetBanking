@@ -1,6 +1,6 @@
 package com.ark.bankingapplication;
 
-import com.ark.centralbank.Transaction;
+import com.ark.Transaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;

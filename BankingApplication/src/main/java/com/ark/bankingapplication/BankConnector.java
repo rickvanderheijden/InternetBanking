@@ -1,10 +1,9 @@
 package com.ark.bankingapplication;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.Customer;
+import com.ark.*;
+import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
-import com.ark.centralbank.Transaction;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
 import fontyspublisher.RemotePublisher;
@@ -58,7 +57,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
         return this.bankForClientSession.createCustomer(name, residence, password);
     }
 
-    public BankAccount createBankAccount(String sessionKey, Customer customer) throws RemoteException {
+    public IBankAccount createBankAccount(String sessionKey, Customer customer) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
         }
@@ -97,7 +96,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
         return this.bankForClientSession.getCustomer(sessionKey, name, residence);
     }
 
-    public BankAccount getBankAccount(String sessionKey, String bankAccountNr) throws RemoteException {
+    public IBankAccount getBankAccount(String sessionKey, String bankAccountNr) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
         }

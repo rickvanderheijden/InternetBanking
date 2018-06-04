@@ -1,10 +1,10 @@
 package com.ark.bankingapplication.views;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.Customer;
+import com.ark.Customer;
+import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.TransactionList;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
-import com.ark.centralbank.Transaction;
+import com.ark.Transaction;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
 import javafx.beans.value.ObservableValue;
@@ -55,6 +55,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     private TextArea transactionDescriptionTextArea;
 
     private Customer customer = null;
+    private IBankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
     private String selectedBankAccountNr = null;
@@ -145,7 +146,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
     private void doAddBankAccount() {
-        BankAccount newBankAccount = controller.newBankAccount(this.sessionKey, this.customer);
+        IBankAccount newBankAccount = controller.newBankAccount(this.sessionKey, this.customer);
         if (newBankAccount != null) {
             showInfo("BankAccount toegevoegd", "Nieuw bank account is succesvol toegevoegd!");
             bankAccounts.add(newBankAccount.toString());
@@ -156,7 +157,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
     }
 
     private void updateBankAccount() {
-        BankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
+        IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
         long balance = selectedBankaccount.getBalance();
         double balanced = balance / 100.0;
         this.balanceLabel.setText("€" + String.valueOf(balanced));

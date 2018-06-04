@@ -15,7 +15,22 @@ public class Session {
     private boolean active;
     private final UUID key = UUID.randomUUID();
 
-    public Session(int sessionTime, String customerName, String customerResidence) {
+    /**
+     * Creates an instance of Session.
+     * @param sessionTime Time after which the session will expire, in milliseconds. Can not be zero or negative.
+     * @param customerName Name of the customer. Can not be null or empty.
+     * @param customerResidence Residence of the customer. Can not be null or empty.
+     * @throws IllegalArgumentException if <tt>sessionTime</tt> is zero or negative, <tt>customerName</tt> is null or empty,
+     * or if customerResidence is null or empty.
+     */
+    public Session(int sessionTime, String customerName, String customerResidence) throws IllegalArgumentException {
+
+        if ((sessionTime < 0)
+            || (customerName == null) || customerName.isEmpty()
+            || (customerResidence == null) || customerResidence.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+
         this.sessionTime = sessionTime;
         this.customerName = customerName;
         this.customerResidence = customerResidence;

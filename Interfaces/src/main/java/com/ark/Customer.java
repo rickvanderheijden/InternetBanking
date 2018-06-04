@@ -1,4 +1,4 @@
-package com.ark.bank;
+package com.ark;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,13 +18,19 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
-    public Customer(String name, String residence, String password) {
+    public Customer(String name, String residence, String password) throws IllegalArgumentException {
+        if ((name == null) || name.isEmpty()
+            || (residence == null) || residence.isEmpty()
+            || (password == null) || password.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         this.name = name;
         this.password = password;
         this.residence = residence;
     }
 
-    public Customer(){
+    public Customer() {
     }
 
     /**

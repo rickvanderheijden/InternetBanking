@@ -1,5 +1,7 @@
 package com.ark.centralbank;
 
+import com.ark.Transaction;
+
 import javax.jws.WebService;
 
 /**

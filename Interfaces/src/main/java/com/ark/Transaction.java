@@ -1,4 +1,4 @@
-package com.ark.centralbank;
+package com.ark;
 
 import javax.jws.WebService;
 import javax.persistence.Entity;
@@ -25,7 +25,21 @@ public class Transaction implements Serializable {
     public Transaction() {
     }
 
-    public Transaction(long amount, String description, String accountFrom, String accountTo) {
+    /**
+     * Creates an instance of Transaction
+     * @param amount The amount of the transaction. Can not be zero of negative.
+     * @param description The description of the transaction. Can not null or empty.
+     * @param accountFrom The account from which the amount is deducted. Can not null or empty.
+     * @param accountTo The account to which the amount is transfered. Can not null or empty.
+     */
+    public Transaction(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
+        if ((amount <= 0)
+            || (description == null) || description.isEmpty()
+            || (accountFrom == null) || accountFrom.isEmpty()
+            || (accountTo == null) || accountTo.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         this.amount = amount;
         this.description = description;
         this.accountFrom = accountFrom;

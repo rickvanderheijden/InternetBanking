@@ -1,10 +1,9 @@
 package integrationtest;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.Customer;
+import com.ark.*;
+import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
-import com.ark.centralbank.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import static junit.framework.TestCase.*;
 /**
  * @author Rick van der Heijden
  */
-public class TestTransaction {
+public class TestExecuteTransaction {
     private enum BankId { RABO, ABNA }
     private static final String BankIdRABO = "RABO";
     private static final String URLBaseRABO = "http://localhost:1200/";
@@ -38,7 +37,7 @@ public class TestTransaction {
     private static CentralBankUtilities centralBankUtilities;
     private static List<Customer> customers;
     private static List<String> sessionKeys;
-    private static List<BankAccount> bankAccounts;
+    private static List<IBankAccount> bankAccounts;
 
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
@@ -100,7 +99,7 @@ public class TestTransaction {
     }
 
     @Test
-    public void testExecuteTransactionFromAccountWithNotEnoughCredit() throws RemoteException {
+    public void testExecuteTransactionDifferentBanksFromAccountWithNotEnoughCredit() throws RemoteException {
         int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
         int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
@@ -118,7 +117,7 @@ public class TestTransaction {
     }
 
     @Test
-    public void testExecuteTransactionToUnavailableAccount() throws RemoteException {
+    public void testExecuteTransactionDifferentBanksToUnavailableAccount() throws RemoteException {
         int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
         int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
@@ -152,7 +151,7 @@ public class TestTransaction {
         int index = customers.size();
         Customer customer = bankForClientSession.createCustomer("CustomerName" + index, "CustomerResidence" + index, "CustomerPassword" + index);
         String sessionKey = bankForClientLogin.login("CustomerName" + index, "CustomerResidence" + index, "CustomerPassword" + index);
-        BankAccount bankAccount = bankForClientSession.createBankAccount(sessionKey, customer);
+        IBankAccount bankAccount = bankForClientSession.createBankAccount(sessionKey, customer);
 
         customers.add(customer);
         sessionKeys.add(sessionKey);
