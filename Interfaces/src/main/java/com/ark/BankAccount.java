@@ -1,6 +1,7 @@
-package com.ark.bank;
+package com.ark;
 
 import com.ark.Customer;
+import com.ark.bank.IBankAccount;
 
 import javax.persistence.*;
 
@@ -14,7 +15,6 @@ public class BankAccount implements IBankAccount {
     private long balance = 0;
     private long creditLimit = 10000;
     @ManyToOne
-
     private Customer owner;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
