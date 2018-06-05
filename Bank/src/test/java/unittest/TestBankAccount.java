@@ -1,6 +1,6 @@
 package unittest;
 
-import com.ark.bank.BankAccount;
+import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.bank.IBankAccount;
 import org.junit.After;
