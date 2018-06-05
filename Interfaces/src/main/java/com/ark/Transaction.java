@@ -9,10 +9,10 @@ import java.util.Date;
  */
 @WebService
 public class Transaction implements Serializable {
-    Transaction_ent trans;
+    TransactionEntity trans;
 
     public Transaction() {
-        this.trans = new Transaction_ent();
+        this.trans = new TransactionEntity();
     }
 
     /**
@@ -23,7 +23,7 @@ public class Transaction implements Serializable {
      * @param accountTo The account to which the amount is transfered. Can not null or empty.
      */
     public Transaction(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
-        this.trans = new Transaction_ent(amount, description, accountFrom, accountTo);
+        this.trans = new TransactionEntity(amount, description, accountFrom, accountTo);
     }
 
 

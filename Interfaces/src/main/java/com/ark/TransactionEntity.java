@@ -11,7 +11,7 @@ import java.util.Date;
  * @author Koen Sengers
  */
 @Entity
-public class Transaction_ent implements Serializable {
+public class TransactionEntity implements Serializable {
     private long amount;
     private String description;
     private String accountFrom;
@@ -20,18 +20,15 @@ public class Transaction_ent implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
-    public Transaction_ent() {
-    }
-
     /**
-     * Creates an instance of Transaction_ent
+     * Creates an instance of TransactionEntity
      * This is the entity for Transaction
      * @param amount The amount of the transaction. Can not be zero of negative.
      * @param description The description of the transaction. Can not null or empty.
      * @param accountFrom The account from which the amount is deducted. Can not null or empty.
      * @param accountTo The account to which the amount is transfered. Can not null or empty.
      */
-    public Transaction_ent(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
+    public TransactionEntity(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
         if ((amount <= 0)
                 || (description == null) || description.isEmpty()
                 || (accountFrom == null) || accountFrom.isEmpty()
@@ -44,6 +41,9 @@ public class Transaction_ent implements Serializable {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = new Date();
+    }
+
+    public TransactionEntity() {
     }
 
     /**
