@@ -9,9 +9,12 @@
         <module name="Bank" />
         <module name="BankingApplication" />
         <module name="CentralBank" />
-        <module name="SharedInterfaces" />
+        <module name="Interfaces" />
         <module name="TestUtilities" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="SharedInterfaces" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

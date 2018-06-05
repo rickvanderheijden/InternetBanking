@@ -3,8 +3,8 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Bank_jar</output-path>
     <root id="archive" name="Bank.jar">
       <element id="module-output" name="Bank" />
-      <element id="module-output" name="SharedInterfaces" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/FontysPublisher.jar" path-in-jar="/" />
+      <element id="module-output" name="Interfaces" />
     </root>
   </artifact>
 </component>
