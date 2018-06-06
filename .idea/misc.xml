@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <pattern value="com.ark.bank.CentralBankConnector" method="CentralBankConnector" />
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/out/javadoc" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -12,6 +18,7 @@
         <option value="$PROJECT_DIR$/Interfaces/pom.xml" />
         <option value="$PROJECT_DIR$/BankingApplication/pom.xml" />
         <option value="$PROJECT_DIR$/TestUtilities/pom.xml" />
+        <option value="$PROJECT_DIR$/Shared/pom.xml" />
       </list>
     </option>
   </component>

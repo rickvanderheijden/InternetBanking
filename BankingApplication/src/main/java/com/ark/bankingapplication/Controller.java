@@ -1,10 +1,10 @@
 package com.ark.bankingapplication;
 
-import com.ark.bank.BankAccount;
-import com.ark.bank.Customer;
+import com.ark.Customer;
+import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
-import com.ark.centralbank.Transaction;
+import com.ark.Transaction;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,7 +26,7 @@ public class Controller {
     private final String bankId;
     private String sessionKey;
     private Customer customer;
-    private BankAccount bankAccount;
+    private IBankAccount bankAccount;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
@@ -160,7 +160,7 @@ public class Controller {
         return null;
     }
 
-    public BankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNr) {
+    public IBankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNr) {
         try {
             return this.bankConnector.getBankAccount(sessionKey, selectedBankAccountNr);
         } catch (RemoteException e) {
@@ -191,7 +191,7 @@ public class Controller {
         }
     }
 
-    public BankAccount newBankAccount(String sessionKey, Customer customer) {
+    public IBankAccount newBankAccount(String sessionKey, Customer customer) {
         try {
             return this.bankConnector.createBankAccount(sessionKey, customer);
         } catch (RemoteException e) {

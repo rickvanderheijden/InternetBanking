@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 /**
  * @author Rick van der Heijden
  */
+@SuppressWarnings("unused")
 class BankHost {
 
     private static String BankId = "RABO";
@@ -23,7 +24,7 @@ class BankHost {
         // Welcome message
         System.out.println("Bank is running: " + BankId);
 
-        CentralBankConnection centralBankConnection = new CentralBankConnection();
+        ICentralBankConnection centralBankConnection = new CentralBankConnection();
         IBankController bankController = new BankController(BankId, centralBankConnection);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);

@@ -13,5 +13,8 @@
         <module name="TestUtilities" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="SharedInterfaces" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
