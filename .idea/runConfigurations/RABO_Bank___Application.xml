@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RABO Bank + Application" type="Multirun" factoryName="Multirun" separateTabs="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0">
+    <runConfiguration name="BankHost (RABO, 1200)" type="Application" />
+    <runConfiguration name="BankingApplicationHost (RABO)" type="Application" />
+    <method />
+  </configuration>
+</component>
