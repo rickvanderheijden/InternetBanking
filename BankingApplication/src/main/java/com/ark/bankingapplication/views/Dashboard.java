@@ -44,16 +44,12 @@ public class Dashboard extends View implements IRemotePropertyListener {
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
     @FXML private Button addBankAccountButton;
-    protected ListProperty<Transaction> listProperty = new SimpleListProperty<Transaction>();
-    @FXML
-    private ListView<Transaction> transactionListView;
+    @FXML private ListView<Transaction> transactionsListView;
     @FXML private Label selectedBankNrLabel;
-    @FXML
-    private Button transactionButton;
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private Label bankNameLabel;
+    @FXML private Button transactionButton;
+    @FXML private Button logoutButton;
+    @FXML private Label bankNameLabel;
+    @FXML private TextArea transactionDescriptionTextArea;
 
     private Customer customer = null;
     private IBankAccount selectedBankaccount = null;
@@ -64,8 +60,8 @@ public class Dashboard extends View implements IRemotePropertyListener {
     private TransactionList transactions;
     private List<String> bankAccounts = null;
     private ObservableList<String> bankAccouts = FXCollections.observableArrayList();
-    @FXML
-    private TextArea transactionDescriptionTextArea;
+
+    protected ListProperty<Transaction> listProperty = new SimpleListProperty<Transaction>();
 
     public Dashboard() throws ControlNotLoadedException {
         super("Dashboard.fxml");
@@ -91,7 +87,8 @@ public class Dashboard extends View implements IRemotePropertyListener {
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
         System.out.println(this.transactions.getReadOnlyList());
-//        this.transactionListView.setItems(this.transactions.getReadOnlyList());
+
+        this.transactionsListView.setItems(this.transactions.getReadOnlyList());
 //        this.transactionListView = new ListView<>(this.transactions.getReadOnlyList());
     }
 
@@ -207,7 +204,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
         }
         if (this.transactions.getSize() > 0) {
             ObservableList<Transaction> readOnly = transactions.getReadOnlyList();
-            this.transactionListView.setItems(readOnly);
+            this.transactionsListView.setItems(readOnly);
             //this.transactionListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         }
 
