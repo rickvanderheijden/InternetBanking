@@ -6,7 +6,7 @@ import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
-import fontyspublisher.RemotePublisher;
+import javafx.application.Platform;
 
 import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
@@ -20,19 +20,16 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
 
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
-    private RemotePublisher remotePublisher;
+    private Controller controller;
 
-    public BankConnector() throws RemoteException {
+    public BankConnector(Controller controller) throws RemoteException {
         super();
-        remotePublisher = new RemotePublisher();
-        remotePublisher.registerProperty("updateBankAccount");
+        this.controller = controller;
     }
-
 
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         IRemotePublisherForListener remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-        registry.rebind("bankPublisherForClient" + bankId, remotePublisher);
         remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted");
 
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
@@ -105,6 +102,8 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
 
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-        //DO STUFF
+        if (propertyChangeEvent.getPropertyName().equals("transactionExecuted")) {
+            controller.transactionExecuted();
+        }
     }
 }

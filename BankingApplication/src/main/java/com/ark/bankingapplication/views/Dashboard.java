@@ -5,8 +5,6 @@ import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.TransactionList;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
-import fontyspublisher.IRemotePropertyListener;
-import fontyspublisher.IRemotePublisherForListener;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
@@ -17,13 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
-import java.beans.PropertyChangeEvent;
 import java.io.File;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.List;
 
 
@@ -33,7 +25,7 @@ import java.util.List;
  * @author Arthur
  */
 @SuppressWarnings("unused")
-public class Dashboard extends View implements IRemotePropertyListener {
+public class Dashboard extends View {
 
     @FXML private Label nameLabel;
     @FXML private Label balanceLabel;
@@ -89,15 +81,10 @@ public class Dashboard extends View implements IRemotePropertyListener {
         System.out.println(this.transactions.getReadOnlyList());
 
         this.transactionsListView.setItems(this.transactions.getReadOnlyList());
-//        this.transactionListView = new ListView<>(this.transactions.getReadOnlyList());
     }
 
-
-    public void initDashboard() throws RemoteException, NotBoundException {
+    public void initDashboard() {
         /* TODO: Set customer information, get bankaccounts, if there is only 1, select that one. Show information on dashboard. */
-        Registry registry = LocateRegistry.getRegistry("localhost", 1099);
-        IRemotePublisherForListener remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisherForClient" + bankId);
-//        remotePublisherForListener.subscribeRemoteListener((IRemotePropertyListener) remotePublisherForListener, "updateBankAccount");
 
         if (this.customer != null && this.sessionKey != null) {
             this.nameLabel.setText(customer.getName());
@@ -109,7 +96,6 @@ public class Dashboard extends View implements IRemotePropertyListener {
         }
 
     }
-
 
     /**
      * Get all  transactions
@@ -159,7 +145,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
 
     }
 
-    private void updateBankAccount() {
+    public void updateBankAccount() {
         IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
         long balance = selectedBankaccount.getBalance();
         double balanced = balance / 100.0;
@@ -167,14 +153,6 @@ public class Dashboard extends View implements IRemotePropertyListener {
         this.selectedBankNrLabel.setText(selectedBankAccountNr);
         this.setTransactions();
     }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-        //DO STUFF
-        System.out.println("transactie geregistreerd");
-        this.updateBankAccount();
-    }
-
 
     private void setBankAccounts() {
         if (this.bankAccounts != null) {
@@ -187,7 +165,6 @@ public class Dashboard extends View implements IRemotePropertyListener {
             }
         }
     }
-
 
     private void setTransactions() {
         if (this.getTransactions() != null) {

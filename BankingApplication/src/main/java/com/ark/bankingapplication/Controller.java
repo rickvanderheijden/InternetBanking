@@ -5,6 +5,7 @@ import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
 import com.ark.Transaction;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class Controller {
     private final Stage stage;
-    private final BankConnector bankConnector = new BankConnector();
+    private final BankConnector bankConnector;
 
     private Scene scene;
     private StartUp startUp;
@@ -26,11 +27,11 @@ public class Controller {
     private final String bankId;
     private String sessionKey;
     private Customer customer;
-    private IBankAccount bankAccount;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
         this.bankId = bankId;
+        this.bankConnector = new BankConnector(this);
     }
 
     public void start() throws IOException {
@@ -85,7 +86,7 @@ public class Controller {
         this.scene.getStylesheets().add(getClass().getResource("views/"+stylesheet).toExternalForm());
     }
 
-    public ReturnObject login(String name, String residence, String password) throws NotBoundException{
+    public ReturnObject login(String name, String residence, String password) {
         dashboard.setBank(this.bankId);
         try {
             this.sessionKey = this.bankConnector.login(name, residence, password);
@@ -124,7 +125,7 @@ public class Controller {
                     this.bankConnector.createBankAccount(this.sessionKey, customer);
                     return new ReturnObject(true, "Registratie succesvol", "Je bent succesvol geregistreerd!");
                 }
-            } catch (IOException | NotBoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 return new ReturnObject(false, "Fout bij inloggen", "Er is een fout opgetreden bij het inloggen");
             }
@@ -206,5 +207,9 @@ public class Controller {
 
     public Customer getCustomer() {
         return this.customer;
+    }
+
+    public void transactionExecuted() {
+        Platform.runLater(() -> dashboard.updateBankAccount());
     }
 }

@@ -153,12 +153,8 @@ public class StartUp extends View {
             this.errorMessageLabel.setText("Er is iets fout gegaan, niet alle velden zijn ingevuld");
             this.errorMessageLabel.setVisible(true);
         }else {
-            ReturnObject returnObject = new ReturnObject(false, "Inlog fout", "Er is een fout opgetreden bij het inloggen");
-            try {
-                returnObject = controller.login(username, residence, password);
-            } catch (NotBoundException e) {
-                e.printStackTrace();
-            }
+            ReturnObject returnObject = controller.login(username, residence, password);
+
             if (returnObject.isSuccess()) {
                 showInfo(returnObject.getTitle(), returnObject.getBody());
                 controller.showDashboard();
@@ -259,7 +255,7 @@ public class StartUp extends View {
                 password = "rick123";
                 break;
 
-            case "SNS":
+            case "SNSB":
                 name = "Koen";
                 residence = "Eindhoven";
                 password = "koen123";
