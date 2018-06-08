@@ -255,9 +255,6 @@ public class StartUpTest extends ApplicationTest {
         int newSize = bankAccountsList.getItems().size();
         System.out.println(newSize);
         Assert.assertEquals("Size of bankAccountsList should be 1 greater then " + StartSize, (StartSize + 1), newSize);
-//        Assert.assertEquals("Bankname should be: ABN AMRO", "ABN AMRO", bankName.getText());
-//        Assert.assertEquals("balance should be: €0.0", "€0.0", balance.getText());
-//        Assert.assertEquals("Name should be: Arthur " , "Arthur", Name.getText());
     }
 
 }

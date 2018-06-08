@@ -1,12 +1,14 @@
 package com.ark.bankingapplication.views;
 
 import com.ark.Customer;
+import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.TransactionList;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
-import com.ark.Transaction;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,17 +44,16 @@ public class Dashboard extends View implements IRemotePropertyListener {
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
     @FXML private Button addBankAccountButton;
+    protected ListProperty<Transaction> listProperty = new SimpleListProperty<Transaction>();
     @FXML
     private ListView<Transaction> transactionListView;
+    @FXML private Label selectedBankNrLabel;
     @FXML
     private Button transactionButton;
-    @FXML private Label selectedBankNrLabel;
     @FXML
     private Button logoutButton;
     @FXML
     private Label bankNameLabel;
-    @FXML
-    private TextArea transactionDescriptionTextArea;
 
     private Customer customer = null;
     private IBankAccount selectedBankaccount = null;
@@ -63,6 +64,8 @@ public class Dashboard extends View implements IRemotePropertyListener {
     private TransactionList transactions;
     private List<String> bankAccounts = null;
     private ObservableList<String> bankAccouts = FXCollections.observableArrayList();
+    @FXML
+    private TextArea transactionDescriptionTextArea;
 
     public Dashboard() throws ControlNotLoadedException {
         super("Dashboard.fxml");
@@ -80,15 +83,16 @@ public class Dashboard extends View implements IRemotePropertyListener {
         logoutButton.setOnAction(e -> doLogout());
         this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
         transactionButton.setOnAction(e -> doTransaction());
-        BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
-                {
-                    this.selectedBankAccountNr = newValue;
-                    this.setTransactions();
-                    updateBankAccount();
-                }
-        );
+        BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            this.selectedBankAccountNr = newValue;
+            this.setTransactions();
+            updateBankAccount();
+        });
         this.transactions = new TransactionList();
-        this.transactionListView = new ListView<>(this.transactions.getReadOnlyList());
+        this.transactions.add(new Transaction());
+        System.out.println(this.transactions.getReadOnlyList());
+//        this.transactionListView.setItems(this.transactions.getReadOnlyList());
+//        this.transactionListView = new ListView<>(this.transactions.getReadOnlyList());
     }
 
 
@@ -106,6 +110,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
                 this.updateBankAccount();
             }
         }
+
     }
 
 
@@ -149,7 +154,8 @@ public class Dashboard extends View implements IRemotePropertyListener {
         IBankAccount newBankAccount = controller.newBankAccount(this.sessionKey, this.customer);
         if (newBankAccount != null) {
             showInfo("BankAccount toegevoegd", "Nieuw bank account is succesvol toegevoegd!");
-            bankAccounts.add(newBankAccount.toString());
+            bankAccounts.add(newBankAccount.getNumber());
+            this.setBankAccounts();
         } else {
             showWarning("Bank account fout", "Er is een fout opgetreden bij het aanmaken van een nieuw bank account");
         }
@@ -161,6 +167,7 @@ public class Dashboard extends View implements IRemotePropertyListener {
         long balance = selectedBankaccount.getBalance();
         double balanced = balance / 100.0;
         this.balanceLabel.setText("€" + String.valueOf(balanced));
+        this.selectedBankNrLabel.setText(selectedBankAccountNr);
         this.setTransactions();
     }
 
@@ -174,8 +181,10 @@ public class Dashboard extends View implements IRemotePropertyListener {
 
     private void setBankAccounts() {
         if (this.bankAccounts != null) {
+            this.BankAccountsComboBox.getItems().clear();
             this.BankAccountsComboBox.getItems().addAll(this.bankAccounts);
             if (this.bankAccounts.size() > 0) {
+                this.BankAccountsComboBox.setValue(this.bankAccounts.get(0));
                 this.selectedBankAccountNr = this.bankAccounts.get(0);
                 this.selectedBankNrLabel.setText(this.selectedBankAccountNr);
             }
