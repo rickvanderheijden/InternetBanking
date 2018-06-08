@@ -62,7 +62,7 @@ public class BankUtilities {
         String jarPath;
         String jrePath = System.getProperty("java.home");
         String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.indexOf("win") >= 0) {
+        if (OS.contains("win")) {
             jarPath = "..\\out\\artifacts\\Bank_jar\\";
             javaPath = jrePath + "\\bin\\java.exe";
         } else {
