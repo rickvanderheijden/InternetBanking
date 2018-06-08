@@ -147,11 +147,13 @@ public class Dashboard extends View {
 
     public void updateBankAccount() {
         IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
-        long balance = selectedBankaccount.getBalance();
-        double balanced = balance / 100.0;
-        this.balanceLabel.setText("€" + String.valueOf(balanced));
-        this.selectedBankNrLabel.setText(selectedBankAccountNr);
-        this.setTransactions();
+        if (selectedBankaccount != null) {
+            long balance = selectedBankaccount.getBalance();
+            double balanced = balance / 100.0;
+            this.balanceLabel.setText("€" + String.valueOf(balanced));
+            this.selectedBankNrLabel.setText(selectedBankAccountNr);
+            this.setTransactions();
+        }
     }
 
     private void setBankAccounts() {
