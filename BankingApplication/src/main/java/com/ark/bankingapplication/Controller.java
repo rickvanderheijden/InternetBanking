@@ -119,6 +119,9 @@ public class Controller {
     public ReturnObject registerUser(String name, String residence, String password) {
         try {
             this.customer = this.bankConnector.createCustomer(name, residence, password);
+            if (this.customer == null) {
+                return new ReturnObject(false, "Registratie fout", "Er is een fout opgetreden tijdens de registratie!");
+            }
             try {
                 ReturnObject rt = this.login(name, residence, password);
                 if (rt.isSuccess()) {

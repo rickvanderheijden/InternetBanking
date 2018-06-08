@@ -1,6 +1,5 @@
 package com.ark;
 
-import javax.jws.WebService;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +10,6 @@ import java.util.Date;
 /**
  * @author Rick van der Heijden
  */
-@WebService
 @Entity
 public class Transaction implements Serializable {
     private long amount;
