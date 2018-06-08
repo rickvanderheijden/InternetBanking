@@ -76,10 +76,9 @@ public class Dashboard extends View {
             this.setTransactions();
             updateBankAccount();
         });
+        this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
-        System.out.println(this.transactions.getReadOnlyList());
-
         this.transactionsListView.setItems(this.transactions.getReadOnlyList());
     }
 
@@ -238,6 +237,10 @@ public class Dashboard extends View {
     private void selectedTransactionChanged(ObservableValue<? extends Transaction> ov, Transaction oldTransaction, Transaction newTransaction) {
         // TODO: toon transaction info
         System.out.println(newTransaction);
+        System.out.println("click");
 
+    }
+    private void selectedTransaction(){
+        System.out.println("hoi");
     }
 }
