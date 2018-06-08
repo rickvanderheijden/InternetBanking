@@ -15,7 +15,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.Currency;
 import java.util.List;
 
 
@@ -149,7 +152,9 @@ public class Dashboard extends View {
         if (selectedBankaccount != null) {
             long balance = selectedBankaccount.getBalance();
             double balanced = balance / 100.0;
-            this.balanceLabel.setText("€" + String.valueOf(balanced));
+            String balanceText = this.customFormat(balanced);
+//            this.balanceLabel.setText("€" + String.valueOf(balanced));
+            this.balanceLabel.setText("€" + balanceText);
             this.selectedBankNrLabel.setText(selectedBankAccountNr);
             this.setTransactions();
         }
@@ -169,6 +174,7 @@ public class Dashboard extends View {
 
     private void setTransactions() {
         if (this.getTransactions() != null) {
+            this.transactions.clear();
             for (Transaction transaction : this.getTransactions()) {
                 System.out.println(transaction.toString());
                 this.transactions.add(transaction);
@@ -240,7 +246,12 @@ public class Dashboard extends View {
         System.out.println("click");
 
     }
-    private void selectedTransaction(){
-        System.out.println("hoi");
+
+    public String customFormat(double value) {
+        DecimalFormat df = new DecimalFormat("#######0.00");
+        df.setCurrency(Currency.getInstance("EUR"));
+        String output = df.format(value);
+        return output;
     }
+
 }
