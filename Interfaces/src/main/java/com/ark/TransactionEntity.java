@@ -1,31 +1,50 @@
 package com.ark;
 
-import javax.jws.WebService;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Rick van der Heijden
+ * @author Koen Sengers
  */
-@WebService
-public class Transaction implements Serializable {
-    TransactionEntity trans;
-
-    public Transaction() {
-        this.trans = new TransactionEntity();
-    }
+@Entity
+public class TransactionEntity implements Serializable {
+    private long amount;
+    private String description;
+    private String accountFrom;
+    private String accountTo;
+    private Date date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
     /**
-     * Creates an instance of Transaction
+     * Creates an instance of TransactionEntity
+     * This is the entity for Transaction
      * @param amount The amount of the transaction. Can not be zero of negative.
      * @param description The description of the transaction. Can not null or empty.
      * @param accountFrom The account from which the amount is deducted. Can not null or empty.
      * @param accountTo The account to which the amount is transfered. Can not null or empty.
      */
-    public Transaction(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
-        this.trans = new TransactionEntity(amount, description, accountFrom, accountTo);
+    public TransactionEntity(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
+        if ((amount <= 0)
+                || (description == null) || description.isEmpty()
+                || (accountFrom == null) || accountFrom.isEmpty()
+                || (accountTo == null) || accountTo.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        this.amount = amount;
+        this.description = description;
+        this.accountFrom = accountFrom;
+        this.accountTo = accountTo;
+        this.date = new Date();
     }
 
+    public TransactionEntity() {
+    }
 
     /**
      * Returns a string representation of the object.
@@ -33,40 +52,46 @@ public class Transaction implements Serializable {
      */
     @Override
     public String toString() {
-        return this.trans.toString();
+        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0);
     }
 
     /**
-     * Gets the amount of the transaction_entity.
+     * Gets the amount of the transaction.
      * @return The amount of the transaction in cents.
      */
     public long getAmount() {
-        return this.trans.getAmount();
+        return amount;
     }
 
     /**
-     * Sets the amount of the transaction_entity.
+     * Sets the amount of the transaction.
      * @param amount The amount in cents. Can not be negative.
      * @return True if the amount has been set succesfully, false otherwise.
      */
     public boolean setAmount(long amount) {
-        return this.trans.setAmount(amount);
+        if (amount < 0) {
+            return false;
+        }
+
+        this.amount = amount;
+
+        return true;
     }
 
     /**
-     * Gets the description of the transaction_entity.
+     * Gets the description of the transaction.
      * @return The desciption of the transaction. This can be null or empty.
      */
     public String getDescription() {
-        return this.trans.getDescription();
+        return description;
     }
 
     /**
-     * Sets the description of the transaction_entity.
+     * Sets the description of the transaction.
      * @param description The desciption of the transaction. This can be null or empty.
      */
     public void setDescription(String description) {
-        this.trans.setDescription(description);
+        this.description = description;
     }
 
     /**
@@ -74,7 +99,7 @@ public class Transaction implements Serializable {
      * @return The bank account number.
      */
     public String getAccountFrom() {
-        return this.trans.getAccountFrom();
+        return accountFrom;
     }
 
     /**
@@ -82,7 +107,7 @@ public class Transaction implements Serializable {
      * @param accountFrom The bank account number.
      */
     public void setAccountFrom(String accountFrom) {
-        this.trans.setAccountFrom(accountFrom);
+        this.accountFrom = accountFrom;
     }
 
     /**
@@ -90,7 +115,7 @@ public class Transaction implements Serializable {
      * @return The bank account number.
      */
     public String getAccountTo() {
-        return this.trans.getAccountTo();
+        return accountTo;
     }
 
     /**
@@ -98,22 +123,22 @@ public class Transaction implements Serializable {
      * @param accountTo The bank account number.
      */
     public void setAccountTo(String accountTo) {
-        this.trans.setAccountTo(accountTo);
+        this.accountTo = accountTo;
     }
 
     /**
-     * Gets the date of the transaction_entity.
+     * Gets the date of the transaction.
      * @return Date of the transaction.
      */
     public Date getDate() {
-        return this.trans.getDate();
+        return date;
     }
 
     /**
-     * Gets the date of the transaction_entity.
+     * Gets the date of the transaction.
      * @param date The date of the transaction.
      */
     public void setDate(Date date) {
-        this.trans.setDate(date);
+        this.date = date;
     }
 }
