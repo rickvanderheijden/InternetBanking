@@ -95,6 +95,34 @@ public class TestBankControllerExecuteTransaction {
     }
 
     @Test
+    public void testExecuteTransactionSameCustomerDifferentBankAccount() {
+        Customer customer = bankController.createCustomer("Name1", "Residence1", "Password1");
+        String sessionKey = bankController.login("Name1", "Residence1", "Password1");
+
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKey, customer);
+        IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKey, customer);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        assertTrue(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals( 2100, bankAccountTwo.getBalance());
+    }
+
+    @Test
+    public void testExecuteTransactionSameCustomerSameBankAccount() {
+        Customer customer = bankController.createCustomer("Name1", "Residence1", "Password1");
+        String sessionKey = bankController.login("Name1", "Residence1", "Password1");
+
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKey, customer);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountOne.getNumber());
+        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        assertFalse(result);
+        assertEquals( 0, bankAccountOne.getBalance());
+    }
+
+    @Test
     public void testExecuteTransactionValidValues() {
         Customer customerOne   = bankController.createCustomer("Name1", "Residence1", "Password1");
         Customer customerTwo   = bankController.createCustomer("Name2", "Residence2", "Password2");

@@ -59,7 +59,8 @@ public class BankController extends Observable implements IBankController {
                 || (transaction.getAccountTo() == null)
                 || (transaction.getAmount() <= 0)
                 || (transaction.getDate() == null)
-                || (transaction.getDescription() == null)) {
+                || (transaction.getDescription() == null)
+                || (transaction.getAccountFrom().equals(transaction.getAccountTo()))){
             return false;
         }
 
