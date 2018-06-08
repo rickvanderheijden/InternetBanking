@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CentralBank + RABO + SNS" type="Multirun" factoryName="Multirun" separateTabs="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="1">
+    <runConfiguration name="CentralBank" type="Application" />
+    <runConfiguration name="BankHost (RABO, 1200)" type="Application" />
+    <runConfiguration name="BankHost (SNS, 1201)" type="Application" />
+    <runConfiguration name="BankingApplicationHost (RABO)" type="Application" />
+    <runConfiguration name="BankingApplicationHost (SNS)" type="Application" />
+    <method />
+  </configuration>
+</component>
