@@ -188,7 +188,7 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
                 }
             }
 
-            if (arg instanceof SessionTerminated){
+            if (arg instanceof TransactionExecuted){
                 try {
                     remotePublisher.inform("transactionExecuted", null, null);
                 } catch (RemoteException e) {
