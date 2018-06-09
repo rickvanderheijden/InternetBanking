@@ -162,12 +162,13 @@ public class BankController extends Observable implements Observer, IBankControl
         }
 
         Session session = getSession(sessionKey);
-
-        for (IBankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getNumber().equals(bankAccountNumber)
-                    && bankAccount.getOwner().getName().equals(session.getCustomerName())
-                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
-                return bankAccount;
+        if  (session != null) {
+            for (IBankAccount bankAccount : bankAccounts) {
+                if (bankAccount.getNumber().equals(bankAccountNumber)
+                        && bankAccount.getOwner().getName().equals(session.getCustomerName())
+                        && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+                    return bankAccount;
+                }
             }
         }
 
@@ -301,16 +302,16 @@ public class BankController extends Observable implements Observer, IBankControl
 
     @Override
     public List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) {
-
-        //TODO: check sessionKey, check null, create test
-
         List<Transaction> transactionsToReturn = new ArrayList<>();
 
-        for (Transaction transaction : transactions) {
-            if (transaction.getAccountFrom().equals(bankAccountNumber)
-                || transaction.getAccountTo().equals(bankAccountNumber)) {
-                transactionsToReturn.add(transaction);
+        if (isSessionActive(sessionKey) && isBankAccountNumberInUse(bankAccountNumber)) {
+            for (Transaction transaction : transactions) {
+                if (transaction.getAccountFrom().equals(bankAccountNumber)
+                        || transaction.getAccountTo().equals(bankAccountNumber)) {
+                    transactionsToReturn.add(transaction);
+                }
             }
+
         }
 
         return transactionsToReturn;
@@ -351,6 +352,10 @@ public class BankController extends Observable implements Observer, IBankControl
     }
 
     private boolean isBankAccountNumberInUse(String bankAccountNumber) {
+        if (isNullOrEmpty(bankAccountNumber)) {
+            return false;
+        }
+
         for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(bankAccountNumber)) {
                 return true;
@@ -361,6 +366,10 @@ public class BankController extends Observable implements Observer, IBankControl
     }
 
     private boolean isBankAccountBalanceSufficient(String bankAccountNumber, long amount) {
+        if (isNullOrEmpty(bankAccountNumber) || (amount <= 0)) {
+            return false;
+        }
+
         for (IBankAccount bankAccount : bankAccounts) {
             if (bankAccount.getNumber().equals(bankAccountNumber)) {
                 long available = bankAccount.getBalance() + bankAccount.getCreditLimit();

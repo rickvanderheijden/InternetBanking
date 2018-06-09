@@ -1,6 +1,6 @@
 package com.ark.bank;
 
-public class TransactionExecuted {
+class TransactionExecuted {
     public TransactionExecuted() {
     }
 }

@@ -1,7 +1,7 @@
 package com.ark.bank;
 
 public class SessionTerminated {
-    private String sessionKey;
+    private final String sessionKey;
 
     public SessionTerminated(String sessionkey) {
         this.sessionKey = sessionkey;

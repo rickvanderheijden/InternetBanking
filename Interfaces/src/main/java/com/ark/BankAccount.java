@@ -60,7 +60,7 @@ public class BankAccount implements IBankAccount {
             return false;
         }
 
-        this.creditLimit = creditLimit; //.set(creditLimit);
+        this.creditLimit = creditLimit;
 
         return true;
     }

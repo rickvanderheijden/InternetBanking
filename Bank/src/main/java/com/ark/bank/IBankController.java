@@ -87,5 +87,5 @@ public interface IBankController {
      * Done here as the interface cannot extend.
      * @param o an observer to be added.
      */
-    public void addObserver(Observer o);
+    void addObserver(Observer o);
 }

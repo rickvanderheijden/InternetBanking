@@ -123,7 +123,7 @@ public class TestSession implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if (o instanceof Session) {
-            if ((arg != null) && (arg instanceof SessionTerminated)) {
+            if (arg instanceof SessionTerminated) {
                 sessionTerminatedReceived++;
             }
         }
