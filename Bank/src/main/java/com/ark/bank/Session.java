@@ -26,7 +26,7 @@ public class Session extends Observable {
      */
     public Session(int sessionTime, String customerName, String customerResidence) throws IllegalArgumentException {
 
-        if ((sessionTime < 0)
+        if ((sessionTime <= 0)
             || (customerName == null) || customerName.isEmpty()
             || (customerResidence == null) || customerResidence.isEmpty()){
             throw new IllegalArgumentException();
