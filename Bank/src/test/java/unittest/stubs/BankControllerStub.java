@@ -119,4 +119,9 @@ public class BankControllerStub implements IBankController {
     @Override
     public void addObserver(Observer o) {
     }
+
+    @Override
+    public boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) {
+        return false;
+    }
 }

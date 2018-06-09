@@ -105,6 +105,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getPropertyName().equals("transactionExecuted")) {
+
             controller.transactionExecuted();
         } else if (propertyChangeEvent.getPropertyName().equals("sessionTerminated")) {
             System.out.println("sessionTerminated");
