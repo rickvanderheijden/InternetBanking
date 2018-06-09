@@ -9,10 +9,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.File;
@@ -47,28 +52,18 @@ public class Dashboard extends View {
     @FXML private TextArea transactionDescriptionTextArea;
 
     //Credit limit
-    @FXML
-    private Button creditLimitButton;
-    @FXML
-    private TextField creditLimitTextfield;
+    @FXML private Button creditLimitButton;
+    @FXML private TextField creditLimitTextfield;
 
     //Transaction Popup
-    @FXML
-    private AnchorPane TrasactionPopupAnchorPane;
-    @FXML
-    private Label transactionTypeLabel;
-    @FXML
-    private Label fromAccountLabel;
-    @FXML
-    private Label toAccountLabel;
-    @FXML
-    private Label descriptionLabel;
-    @FXML
-    private Label dateLabel;
-    @FXML
-    private Label TransactionAmountLabel;
-    @FXML
-    private Button closeButton;
+    @FXML private AnchorPane TrasactionPopupAnchorPane;
+    @FXML private Label transactionTypeLabel;
+    @FXML private Label fromAccountLabel;
+    @FXML private Label toAccountLabel;
+    @FXML private Label descriptionLabel;
+    @FXML private Label dateLabel;
+    @FXML private Label TransactionAmountLabel;
+    @FXML private Button closeButton;
 
     private Customer customer = null;
     private IBankAccount selectedBankaccount = null;
@@ -120,6 +115,18 @@ public class Dashboard extends View {
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
         this.transactionsListView.setItems(this.transactions.getReadOnlyList());
+        this.selectedBankNrLabel.setOnMouseClicked(event -> {
+            if(event.getButton().equals(MouseButton.PRIMARY)){
+                if(event.getClickCount() == 2){
+                    System.out.println("double clicked");
+                    final Clipboard clipboard = Clipboard.getSystemClipboard();
+                    final ClipboardContent content = new ClipboardContent();
+                    content.putString(this.selectedBankAccountNr);
+                    clipboard.setContent(content);
+                    showInfo("Bankrekening gekopieerd", "Bankrekening nummer gekopieerd naar clipboard: " + content.getString());
+                }
+            }
+        });
     }
 
 
