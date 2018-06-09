@@ -32,6 +32,7 @@ public class Persistence {
 
 
     public synchronized boolean persist(Object object) {
+        if (object.equals(null)) { return false; }
         boolean result = false;
         emp.getTransaction().begin();
         try {
@@ -47,6 +48,8 @@ public class Persistence {
     }
 
     public Customer getPersistCustomer(String name, String residence) {
+        if (name.equals(null) || residence.equals(null)){ return null; }
+
         emc.getTransaction().begin();
         try {
             return (Customer) emc.createQuery("SELECT c FROM Customer c WHERE c.name = :value1 AND c.residence = :value2").setParameter("value1", name).setParameter("value2", residence).getSingleResult();
@@ -59,6 +62,7 @@ public class Persistence {
     }
 
     public List<BankAccount> getPersistTransaction(Customer c) {
+        if (c.equals(null)) { return null; }
         emb.getTransaction().begin();
         try {
             return (List<BankAccount>) emb.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", c).getResultList();
@@ -71,7 +75,7 @@ public class Persistence {
     }
 
     public synchronized boolean delete(Object object) {
-        if (object == null) { return false; }
+        if (object.equals(null)) { return false; }
         boolean result = false;
         emd.getTransaction().begin();
         try {
