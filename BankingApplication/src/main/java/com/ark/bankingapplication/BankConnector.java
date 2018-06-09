@@ -1,5 +1,6 @@
 package com.ark.bankingapplication;
 
+import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
@@ -31,6 +32,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         IRemotePublisherForListener remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
         remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted");
+        remotePublisherForListener.subscribeRemoteListener(this, "sessionTerminated");
 
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
         bankForClientSession = (IBankForClientSession) registry.lookup("bank" + bankId);
@@ -104,6 +106,9 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getPropertyName().equals("transactionExecuted")) {
             controller.transactionExecuted();
+        } else if (propertyChangeEvent.getPropertyName().equals("sessionTerminated")) {
+            System.out.println("sessionTerminated");
+            controller.sessionTerminated();
         }
     }
 
@@ -112,5 +117,12 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
             return false;
         }
         return this.bankForClientLogin.logout(sessionKey);
+    }
+
+    public boolean setCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) throws RemoteException {
+        if (this.bankForClientSession == null) {
+            return false;
+        }
+        return this.bankForClientSession.setCreditLimit(sessionKey, (BankAccount) selectedBankaccount, limit);
     }
 }

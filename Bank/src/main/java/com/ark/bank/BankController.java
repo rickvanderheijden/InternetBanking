@@ -1,8 +1,8 @@
 package com.ark.bank;
 
 import com.ark.BankAccount;
-import com.ark.Customer;
 import com.ark.BankConnectionInfo;
+import com.ark.Customer;
 import com.ark.Transaction;
 
 import java.util.*;
@@ -472,4 +472,17 @@ public class BankController extends Observable implements Observer, IBankControl
             notifyObservers(arg);
         }
     }
+
+    @Override
+    public boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) {
+        if (!isSessionActive(sessionKey)
+                || (bankAccount == null)
+                || !sessionKeyMatchesBankAccountNumber(sessionKey, bankAccount.getNumber())
+                || limit < 0) {
+            return false;
+        }
+        return bankAccount.setCreditLimit(limit);
+
+    }
+
 }
