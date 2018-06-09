@@ -5,9 +5,6 @@ import com.ark.Transaction;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Koen Sengers
@@ -20,6 +17,9 @@ public class Persistence {
     private EntityManager emc;
     private EntityManager emb;
 
+    /**
+     * Creates a instance of Persistence object
+     */
     public Persistence(){
         this.emf = javax.persistence.Persistence.createEntityManagerFactory("bank");
         this.emp = emf.createEntityManager();
@@ -29,8 +29,11 @@ public class Persistence {
 
     }
 
-
-
+    /**
+     * Persist a object to the database
+     * @param object any object that is a entity. Can not be null.
+     * @return boolean true if succesfull else false
+     */
     public synchronized boolean persist(Object object) {
         if (object.equals(null)) { return false; }
         boolean result = false;
@@ -47,6 +50,12 @@ public class Persistence {
         }
     }
 
+    /**
+     * Retreives the customer from the database.
+     * @param name The name of the customer. Can not be null.
+     * @param residence The residence of the customer. Can not be null.
+     * @return The customer if found, else null
+     */
     public Customer getPersistCustomer(String name, String residence) {
         if (name.equals(null) || residence.equals(null)){ return null; }
 
@@ -61,6 +70,11 @@ public class Persistence {
         }
     }
 
+    /**
+     * Retreives the transactions of a customer.
+     * @param c The customer from whom the bankaccounts will be retreived. Can not be null.
+     * @return A list of bankaccounts if present, else null.
+     */
     public List<BankAccount> getPersistTransaction(Customer c) {
         if (c.equals(null)) { return null; }
         emb.getTransaction().begin();
@@ -74,6 +88,11 @@ public class Persistence {
         }
     }
 
+    /**
+     * Deletes an object from the database
+     * @param object Any object that is an entity. Can not be null.
+     * @return Boolean true if successfull, else false.
+     */
     public synchronized boolean delete(Object object) {
         if (object.equals(null)) { return false; }
         boolean result = false;
