@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.ark.bankingapplication.views.Dashboard?>
+<?import com.ark.bankingapplication.views.StartUp?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" prefHeight="960" prefWidth="1230.0"
+            xmlns="http://javafx.com/javafx/8.0.121" fx:controller="com.ark.bankingapplication.views.Root">
+    <StartUp/>
+    <Dashboard/>
+</AnchorPane>

@@ -1,0 +1,101 @@
+/** GLOBALS  **/
+/*noinspection ALL*/
+.success {
+    -fx-border-color: green;
+}
+
+/*noinspection ALL*/
+.error {
+    -fx-border-color: red;
+}
+
+.error-message {
+    -fx-border-color: #ff0000;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-text-fill: #ff0000;
+}
+
+.header-bar {
+    -fx-background-color: #ffffff;
+}
+
+.title-bar {
+    -fx-background-color: #562772;
+    -fx-text-fill: #ffffff;
+}
+
+.anchorpane {
+    -fx-background-color: #f2f2f2;
+}
+
+.anchorpane {
+    -fx-text-fill: #333333;
+}
+
+.bankName {
+    -fx-text-fill: #562772;
+    -fx-font-weight: bold;
+}
+
+.title {
+    -fx-text-fill: #562772;
+}
+
+.text {
+    -fx-text-fill: #585858
+}
+
+.link {
+    -fx-text-fill: #562772;
+}
+
+/** List Styling **/
+.list {
+    -fx-background-color: transparent;
+    -fx-border-color: #562772;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+/** Input styling **/
+.transparent-input, .input {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-border-radius: 5px;
+    -fx-text-inner-color: #333333;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #333333;
+    -fx-fill: #333333;
+    -fx-border-width: 1;
+    -fx-border-color: #562772;
+}
+
+.transparent-input:focused, .input:focused {
+    -fx-border-color: #562772;
+    -fx-text-inner-color: #562772;
+}
+
+/** Button styling **/
+.ark-button {
+    -fx-background-color: #f59c00;
+    -fx-border-radius: 5px;
+    -fx-text-fill: #fff;
+}
+
+.ark-button:hover {
+    -fx-opacity: 0.5;
+}
+
+/*************************************
+ ********   STARTUP SCREEN    ********
+ *************************************/
+#AnchorPane {
+    -fx-background-color: #fff;
+}
+
+.transaction-anchorpane {
+    -fx-background-color: #fff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
+
+

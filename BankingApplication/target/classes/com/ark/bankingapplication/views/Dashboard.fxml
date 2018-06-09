@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<fx:root fx:id="dashboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="960.0" prefWidth="1230.0" type="javafx.scene.layout.AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <AnchorPane fx:id="dashboardPane" layoutY="1.0" prefHeight="960.0" prefWidth="1230.0" styleClass="anchorpane">
+        <AnchorPane prefHeight="150.0" prefWidth="1230.0" styleClass="header-bar" AnchorPane.leftAnchor="0.0">
+            <ImageView fx:id="bankLogo" fitHeight="110.0" fitWidth="137.0" layoutX="20.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
+            <Button fx:id="logoutButton" layoutX="1046.0" layoutY="55.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="137.0" styleClass="ark-button" text="Uitloggen" />
+            <Label fx:id="bankNameLabel" layoutX="157.0" layoutY="49.0" prefHeight="93.0" prefWidth="470.0" styleClass="bankName" text="BankNaam">
+                <padding>
+                    <Insets left="20.0" />
+                </padding>
+                <font>
+                    <Font size="64.0" />
+                </font>
+            </Label>
+       </AnchorPane>
+        <HBox layoutY="150.0" prefHeight="809.0" prefWidth="1230.0">
+            <AnchorPane prefHeight="810.0" prefWidth="630.0">
+                <Label fx:id="nameLabel" layoutX="40.0" layoutY="70.0" prefHeight="70.0" prefWidth="550.0" styleClass="title" text="Naam" textFill="#e7e7e7" wrapText="true">
+            <font>
+                <Font size="48.0" />
+            </font>
+         </Label>
+                <Label fx:id="balanceLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="400.0" layoutY="134.0" prefHeight="94.0" prefWidth="219.0" styleClass="title" text="SALDO" textAlignment="CENTER" textFill="#e7e7e7" wrapText="true">
+                    <font>
+                        <Font name="System Bold" size="48.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="BankAccountsComboBox" layoutX="40.0" layoutY="228.0" prefHeight="40.0" prefWidth="574.0" promptText="Kies een rekeningnummer" styleClass="transparent-input" />
+                <Button fx:id="addBankAccountButton" layoutX="20.0" layoutY="409.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="350.0" styleClass="ark-button" text="Nieuwe rekening aanmaken" wrapText="true" />
+                <Label fx:id="selectedBankNrLabel" layoutX="40.0" layoutY="153.0" prefHeight="64.0" prefWidth="421.0" styleClass="title" text="BankrekeningNummer">
+               <font>
+                  <Font size="43.0" />
+               </font></Label>
+                <Label prefHeight="50.0" prefWidth="630.0" styleClass="title-bar" text="Rekening gevevens" textFill="#e7e7e7">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+                </Label>
+                <Label layoutY="312.0" prefHeight="50.0" prefWidth="630.0" styleClass="title-bar" text="Rekening instellingen" textFill="#e7e7e7">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                </Label>
+                <Button fx:id="creditLimitButton" layoutX="134.0" layoutY="474.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="238.0" styleClass="ark-button" text="Krediet imiet aanpassen" />
+                <TextField fx:id="creditLimitTextfield" layoutX="20.0" layoutY="474.0" prefHeight="40.0" prefWidth="100.0" promptText="Credit limiet" styleClass="input" />
+      </AnchorPane>
+            <AnchorPane prefHeight="810.0" prefWidth="600.0">
+                <Label prefHeight="50.0" prefWidth="600.0" styleClass="title-bar" text="Geld Overmaken" textFill="#e7e7e7">
+                 <font>
+                     <Font size="24.0" />
+                 </font>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+              </Label>
+                <TextField fx:id="toBankAccountTextField" layoutX="29.0" layoutY="65.0" prefHeight="45.0" prefWidth="382.0" promptText="Rekeningnummer" styleClass="input" />
+                <TextField fx:id="amountFullTextField" alignment="CENTER_RIGHT" layoutX="418.0" layoutY="66.0" prefHeight="45.0" prefWidth="64.0" promptText="0" styleClass="input" />
+                <TextField fx:id="amountCentsTextField" alignment="CENTER_RIGHT" layoutX="499.0" layoutY="66.0" prefHeight="45.0" prefWidth="50.0" promptText="00" styleClass="input" />
+                <TextArea fx:id="transactionDescriptionTextArea" layoutX="29.0" layoutY="120.0" prefHeight="78.0" prefWidth="520.0" promptText="Omschrijving" styleClass="input" />
+                <Button fx:id="transactionButton" layoutX="29.0" layoutY="229.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="520.0" styleClass="ark-button" text="Overmaken" />
+                <Label layoutX="488.0" layoutY="85.0" styleClass="text" text="," textFill="#e7e7e7">
+                 <font>
+                     <Font name="System Bold" size="24.0" />
+                 </font>
+              </Label>
+                <Label layoutY="312.0" prefHeight="50.0" prefWidth="600.0" styleClass="title-bar" text="Transacties">
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <ListView fx:id="transactionsListView" layoutX="42.0" layoutY="409.0" prefHeight="378.0" prefWidth="520.0" styleClass="list" />
+           </AnchorPane>
+   </HBox>
+    </AnchorPane>
+    <AnchorPane fx:id="TrasactionPopupAnchorPane" layoutX="480.0" layoutY="500.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0" styleClass="transaction-anchorpane" visible="false" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+        <children>
+            <GridPane layoutY="70.0" prefHeight="224.0" prefWidth="350.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="112.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="238.0" minWidth="10.0" prefWidth="238.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="115.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="180.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="180.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label prefHeight="32.0" prefWidth="86.0" styleClass="text" text="Transactie type: ">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="transactionTypeLabel" styleClass="text" text="Label" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Van:" GridPane.rowIndex="3">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="fromAccountLabel" prefHeight="17.0" prefWidth="140.0" styleClass="text" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Naar:" GridPane.rowIndex="4">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="toAccountLabel" prefHeight="17.0" prefWidth="151.0" styleClass="text" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Bedrag: " GridPane.rowIndex="2">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="dateLabel" styleClass="text" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Datum: " GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="TransactionAmountLabel" styleClass="text" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <GridPane.margin>
+                            <Insets left="20.0" />
+                        </GridPane.margin>
+                    </Label>
+                </children>
+            </GridPane>
+            <Button fx:id="closeButton" layoutX="285.0" layoutY="12.0" mnemonicParsing="false" styleClass="ark-button" text="Sluiten" />
+            <Label prefHeight="50.0" prefWidth="272.0" styleClass="title" text="Transactie Details">
+                <padding>
+                    <Insets left="20.0" />
+                </padding>
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Label>
+            <Label fx:id="descriptionLabel" layoutX="16.0" layoutY="290.0" prefHeight="35.0" prefWidth="320.0" styleClass="text" text="Label" />
+        </children>
+    </AnchorPane>
+</fx:root>
