@@ -24,12 +24,12 @@ public class TestSession implements Observer {
     private static final String Residence = "Residence";
     private final int sessionTime = 400;
     private final int sessionTimeDelta = sessionTime / 2;
-    private int terminatedReceived;
+    private int sessionTerminatedReceived;
     private Session session;
 
     @Before
     public void setUp() {
-        terminatedReceived = 0;
+        sessionTerminatedReceived = 0;
         session = new Session(sessionTime, Name, Residence);
         session.addObserver(this);
     }
@@ -57,7 +57,7 @@ public class TestSession implements Observer {
         assertTrue(session.refresh());
         sleep(sessionTime - sessionTimeDelta);
         assertTrue(session.isActive());
-        assertEquals(0, terminatedReceived);
+        assertEquals(0, sessionTerminatedReceived);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TestSession implements Observer {
         sleep(sessionTime + sessionTimeDelta);
         assertFalse(session.refresh());
         assertFalse(session.isActive());
-        assertEquals(1, terminatedReceived);
+        assertEquals(1, sessionTerminatedReceived);
     }
 
     @Test
@@ -73,14 +73,14 @@ public class TestSession implements Observer {
         sleep(sessionTime - sessionTimeDelta);
         assertTrue(session.terminate());
         assertFalse(session.isActive());
-        assertEquals(1, terminatedReceived);
+        assertEquals(1, sessionTerminatedReceived);
     }
 
     @Test
     public void testTerminateAfterTimeOut() throws InterruptedException {
         sleep(sessionTime + sessionTimeDelta);
         assertFalse(session.terminate());
-        assertEquals(1, terminatedReceived);
+        assertEquals(1, sessionTerminatedReceived);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class TestSession implements Observer {
     public void testGetSessionKeyAfterTimeOut() throws InterruptedException {
         sleep(sessionTime + sessionTimeDelta);
         assertNull(session.getSessionKey());
-        assertEquals(1, terminatedReceived);
+        assertEquals(1, sessionTerminatedReceived);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TestSession implements Observer {
     public void update(Observable o, Object arg) {
         if (o instanceof Session) {
             if ((arg != null) && (arg instanceof SessionTerminated)) {
-                terminatedReceived++;
+                sessionTerminatedReceived++;
             }
         }
     }
