@@ -3,9 +3,8 @@ package unittest;
 import com.ark.BankConnectionInfo;
 import com.ark.centralbank.CentralBank;
 import com.ark.centralbank.ICentralBankRegister;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import unittest.stubs.BankConnectionStub;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -17,13 +16,13 @@ public class TestCentralBankRegister {
 
     private static ICentralBankRegister centralBank;
 
-    @BeforeClass
-    public static void setUpClass() {
-        centralBank = new CentralBank();
+    @Before
+    public void setUp() {
+        centralBank = new CentralBank(new BankConnectionStub());
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @After
+    public void tearDown() {
         centralBank = null;
     }
 
@@ -60,6 +59,13 @@ public class TestCentralBankRegister {
         centralBank.registerBank(bankConnectionInfo);
 
         boolean result = centralBank.registerBank(bankConnectionInfo);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testUnregisterBankNoBankConnection() {
+        centralBank = new CentralBank(null);
+        boolean result = centralBank.unregisterBank("BANK3");
         assertFalse(result);
     }
 
