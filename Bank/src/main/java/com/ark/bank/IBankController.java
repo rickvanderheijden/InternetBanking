@@ -5,6 +5,7 @@ import com.ark.BankConnectionInfo;
 import com.ark.Transaction;
 
 import java.util.List;
+import java.util.Observer;
 
 /**
  * @author Rick van der Heijden
@@ -25,6 +26,12 @@ public interface IBankController {
     List<String> getBankAccountNumbers(String sessionKey);
     boolean executeTransaction(Transaction transaction);
     boolean executeTransaction(String sessionKey, Transaction transaction);
+
+    /**
+     * Set the default time (in milliseconds) in which the session will expire.
+     * @param sessionTime The time in which the session will expire.
+     */
+    void setSessionTime(int sessionTime);
 
     /**
      * Checks if the session is still active.
@@ -74,4 +81,11 @@ public interface IBankController {
      * @return List of transactions. Will be empty (not null) if parameters are not valid.
      */
     List<Transaction> getTransactions(String sessionKey, String bankAccountNumber);
+
+    /**
+     * Adds an observer to the object. Normally done by extending the class with the Observable class.
+     * Done here as the interface cannot extend.
+     * @param o an observer to be added.
+     */
+    public void addObserver(Observer o);
 }
