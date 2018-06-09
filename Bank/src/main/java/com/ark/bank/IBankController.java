@@ -88,6 +88,7 @@ public interface IBankController {
      * Done here as the interface cannot extend.
      * @param o an observer to be added.
      */
+
     public void addObserver(Observer o);
 
     /**
@@ -99,4 +100,5 @@ public interface IBankController {
      * @return True if the limit has been changed, false otherwise
      */
     boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit);
+
 }

@@ -80,6 +80,10 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public IBankAccount createBankAccount(String sessionKey, Customer owner) {
+        if (bankController == null) {
+            return null;
+        }
+
         return bankController.createBankAccount(sessionKey, owner);
     }
 
@@ -101,9 +105,6 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         return bankController.createCustomer(name, residence, password);
     }
 
-
-    //TODO: ONLY FOR CURRENT CUSTOMER? IN THAT CASE, NAME AND RESIDENCE CAN BE REMOVED
-    @Override
     public Customer getCustomer(String sessionKey, String name, String residence) {
         if (bankController == null) {
             return null;
