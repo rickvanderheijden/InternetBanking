@@ -1,13 +1,8 @@
 package com.ark.centralbank;
 
 import com.ark.*;
-import com.ark.bank.IBankForCentralBank;
 
 import javax.jws.WebService;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +13,21 @@ import java.util.List;
 public class CentralBank implements ICentralBankRegister, ICentralBankTransaction {
 
     private final List<BankConnectionInfo> bankConnectionInfos = new ArrayList<>();
+    private IBankConnection bankConnection;
 
     public CentralBank() {
+    }
+
+    public CentralBank(IBankConnection bankConnection) {
+        this.bankConnection = bankConnection;
     }
     
     @Override
     public boolean registerBank(BankConnectionInfo bankConnectionInfo) {
-
-        if (bankConnectionInfo == null
-                || bankConnectionInfo.getBankId() == null
-                || bankConnectionInfo.getURL() == null) {
+        if ((bankConnection == null)
+                || (bankConnectionInfo == null)
+                || (bankConnectionInfo.getBankId() == null)
+                || (bankConnectionInfo.getURL() == null)) {
             return false;
         }
 
@@ -38,26 +38,26 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
             }
         }
 
-        bankConnectionInfos.add(bankConnectionInfo);
-        return true;
+        if (bankConnection.registerBank(bankConnectionInfo)) {
+            bankConnectionInfos.add(bankConnectionInfo);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     public boolean unregisterBank(String bankId) {
-        for (BankConnectionInfo info : bankConnectionInfos) {
-            if (info.getBankId().equals(bankId)) {
-                bankConnectionInfos.remove(info);
-                return true;
-            }
+        if (bankConnection == null) {
+            return false;
         }
 
-        return false;
-
+        return bankConnection.unregisterBank(bankId);
     }
 
     @Override
     public boolean executeTransaction(Transaction transaction) {
-        if (transaction == null) {
+        if ((bankConnection == null) || (transaction == null)) {
             return false;
         }
 
@@ -68,40 +68,16 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
             return false;
         }
 
-        IBankForCentralBank bankForCentralBankTo = getBankConnection(getBankURL(bankIdTo));
-
-        if (bankForCentralBankTo == null) {
-            return false;
-        }
-
-        return bankForCentralBankTo.executeTransaction(transaction);
+        return bankConnection.executeTransaction(bankIdTo, transaction);
     }
 
     @Override
     public boolean isValidBankAccountNumber(String bankAccountNumber) {
-        String bankId = getBankId(bankAccountNumber);
-        IBankForCentralBank bankForCentralBank = getBankConnection(getBankURL(bankId));
-
-        if (bankForCentralBank == null) {
+        if (bankConnection == null) {
             return false;
         }
 
-        return bankForCentralBank.isValidBankAccountNumber(bankAccountNumber);
-    }
-
-    private IBankForCentralBank getBankConnection(String bankURL) {
-        URL wsdlURL;
-        try {
-            wsdlURL = new URL(bankURL + "?wsdl");
-        } catch (MalformedURLException e) {
-            return null;
-        }
-
-        QName qname = new QName("http://bank.ark.com/", "BankService");
-        Service service = Service.create(wsdlURL, qname);
-        QName qnamePort = new QName("http://bank.ark.com/","BankPort");
-
-        return service.getPort(qnamePort, IBankForCentralBank.class);
+        return bankConnection.isValidBankAccountNumber(getBankId(bankAccountNumber), bankAccountNumber);
     }
 
     private String getBankId(String accountNumber) {
@@ -110,20 +86,6 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
         }
 
         return accountNumber.length() < 4 ? null : accountNumber.substring(0, 4);
-    }
-
-    private String getBankURL(String bankId) {
-        if ((bankId == null) || bankId.isEmpty()) {
-            return null;
-        }
-
-        for (BankConnectionInfo bankConnectionInfo : bankConnectionInfos) {
-            if (bankConnectionInfo.getBankId().equals(bankId)) {
-                return bankConnectionInfo.getURL();
-            }
-        }
-
-        return null;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

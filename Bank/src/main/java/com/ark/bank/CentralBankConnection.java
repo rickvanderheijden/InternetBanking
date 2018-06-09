@@ -11,7 +11,7 @@ import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-class CentralBankConnection implements ICentralBankConnection {
+public class CentralBankConnection implements ICentralBankConnection {
 
     private final ICentralBankTransaction centralBankTransaction;
     private final ICentralBankRegister centralBankRegister;
