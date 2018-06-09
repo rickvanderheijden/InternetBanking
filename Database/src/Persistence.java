@@ -25,6 +25,7 @@ public class Persistence {
         this.emp = emf.createEntityManager();
         this.emd = emf.createEntityManager();
         this.emc = emf.createEntityManager();
+        this.emb = emf.createEntityManager();
 
     }
 
@@ -41,7 +42,6 @@ public class Persistence {
             e.printStackTrace();
             emp.getTransaction().rollback();
         } finally {
-            emp.close();
             return result;
         }
     }
@@ -55,16 +55,20 @@ public class Persistence {
             emc.getTransaction().rollback();
             return null;
         } finally {
-            emc.close();
         }
     }
 
-//    public List<BankAccount> getPersistTransaction(Customer c) {
-//        emb.getTransaction().begin();
-//        try {
-//            return (BankAccount) emb.createQuery("SELECT b FROM BankAccount b WHERE ")
-//        }
-//    }
+    public List<BankAccount> getPersistTransaction(Customer c) {
+        emb.getTransaction().begin();
+        try {
+            return (List<BankAccount>) emb.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", c).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            emc.getTransaction().rollback();
+            return null;
+        } finally {
+        }
+    }
 
     public synchronized boolean delete(Object object) {
         if (object == null) { return false; }
@@ -78,7 +82,6 @@ public class Persistence {
             e.printStackTrace();
             emd.getTransaction().rollback();
         } finally {
-            emd.close();
             return result;
         }
     }

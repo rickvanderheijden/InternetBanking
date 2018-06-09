@@ -5,6 +5,8 @@ import com.ark.bank.BankController;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -37,17 +39,20 @@ public class persistenceTest {
         p.delete(cus);
     }
 
-//    @Test
-//    public void testPersistBankAccount(){
-//        p.persist(c1);
-//        String idNum = "RABO123456789";
-//        Customer cus = p.getPersistCustomer("John", "Winterfell");
-//        BankAccount t1 = new BankAccount(cus, idNum);
-//
-//        boolean result = p.persist(t1);
-//
-//        assertTrue(result);
-//    }
+    @Test
+    public void testPersistBankAccount(){
+        p.persist(c1);
+        String idNum = "RABO123456789";
+        Customer cus = p.getPersistCustomer("John", "Winterfell");
+        BankAccount t1 = new BankAccount(cus, idNum);
+
+        boolean result = p.persist(t1);
+
+        assertTrue(result);
+
+        p.delete(t1);
+        p.delete(c1);
+    }
 
     @Test
     public void testDelete() {
@@ -81,5 +86,27 @@ public class persistenceTest {
 
         p.delete(cus1);
 //        p.delete(cus2);
+    }
+
+    @Test
+    public void testGetPersistBankaccount(){
+        p.persist(c1);
+        String idNum1 = "RABO123456789";
+        String idNum2 = "RABO987654321";
+        Customer cus = p.getPersistCustomer("John", "Winterfell");
+        BankAccount t1 = new BankAccount(cus, idNum1);
+        BankAccount t2 = new BankAccount(cus, idNum2);
+
+        p.persist(t1);
+        p.persist(t2);
+
+        List<BankAccount> lb = p.getPersistTransaction(c1);
+
+        assertEquals("RABO123456789", lb.get(0).getNumber());
+        assertEquals("RABO987654321", lb.get(1).getNumber());
+
+        p.delete(t1);
+        p.delete(t2);
+        p.delete(c1);
     }
 }
