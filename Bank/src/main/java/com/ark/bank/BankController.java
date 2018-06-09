@@ -60,7 +60,8 @@ public class BankController extends Observable implements IBankController {
                 || (transaction.getAmount() <= 0)
                 || (transaction.getDate() == null)
                 || (transaction.getDescription() == null)
-                || (transaction.getAccountFrom().equals(transaction.getAccountTo()))){
+                || transaction.getAccountFrom().equals(transaction.getAccountTo())
+                || transactions.contains(transaction)) {
             return false;
         }
 
@@ -407,6 +408,7 @@ public class BankController extends Observable implements IBankController {
                 && isBankAccountBalanceSufficient(transaction.getAccountFrom(), transaction.getAmount())) {
             executeTransactionLocalTo(transaction);
             executeTransactionLocalFrom(transaction);
+            transactions.add(transaction);
             return true;
         }
 

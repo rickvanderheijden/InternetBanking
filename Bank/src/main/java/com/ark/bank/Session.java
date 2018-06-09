@@ -97,7 +97,6 @@ public class Session {
         @Override
         public void run() {
             stopTimer();
-            active = false;
         }
     }
 }
