@@ -120,5 +120,5 @@ public interface IBankForClientSession extends Remote {
      * @return True if the limit has been changed, false otherwise
      * @throws RemoteException Thrown when remote method call fails.
      */
-    boolean changeCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException;
+    boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException;
 }

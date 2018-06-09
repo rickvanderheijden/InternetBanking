@@ -120,7 +120,7 @@ public class Controller {
         try {
             this.customer = this.bankConnector.createCustomer(name, residence, password);
             if (this.customer == null) {
-                return new ReturnObject(false, "Registratie fout", "Deze gebruiker bestaat al, Login op je account");
+                return new ReturnObject(false, "Registratie fout", "Deze gebruiker bestaat al, Log in op je account");
             }
             try {
                 ReturnObject rt = this.login(name, residence, password);
@@ -225,14 +225,15 @@ public class Controller {
         }
     }
 
-    public void sessionExpired() {
-        Platform.runLater(() -> dashboard.sessionExpired());
+    public void sessionTerminated() {
+        Platform.runLater(() -> dashboard.sessionTerminated());
+
 
     }
 
     public boolean changeCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) {
         try {
-            return this.bankConnector.changeCreditLimit(sessionKey, selectedBankaccount, limit);
+            return this.bankConnector.setCreditLimit(sessionKey, selectedBankaccount, limit);
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;

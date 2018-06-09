@@ -108,7 +108,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
             controller.transactionExecuted();
         } else if (propertyChangeEvent.getPropertyName().equals("sessionTerminated")) {
             System.out.println("sessionTerminated");
-            controller.sessionExpired();
+            controller.sessionTerminated();
         }
     }
 
@@ -119,10 +119,10 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
         return this.bankForClientLogin.logout(sessionKey);
     }
 
-    public boolean changeCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) throws RemoteException {
+    public boolean setCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) throws RemoteException {
         if (this.bankForClientSession == null) {
             return false;
         }
-        return this.bankForClientSession.changeCreditLimit(sessionKey, (BankAccount) selectedBankaccount, limit);
+        return this.bankForClientSession.setCreditLimit(sessionKey, (BankAccount) selectedBankaccount, limit);
     }
 }

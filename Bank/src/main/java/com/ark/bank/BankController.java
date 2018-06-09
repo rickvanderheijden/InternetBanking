@@ -465,12 +465,11 @@ public class BankController extends Observable implements Observer, IBankControl
     }
 
     @Override
-    public boolean changeCreditLimit(String sessionKey, IBankAccount bankAccount, long limit) {
+    public boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) {
         if (!isSessionActive(sessionKey)
                 || (bankAccount == null)
                 || !sessionKeyMatchesBankAccountNumber(sessionKey, bankAccount.getNumber())
-                || limit < 0
-                || limit > 100000) {
+                || limit < 0) {
             return false;
         }
         return bankAccount.setCreditLimit(limit);

@@ -98,5 +98,5 @@ public interface IBankController {
      * @param limit       The new Credit limit
      * @return True if the limit has been changed, false otherwise
      */
-    boolean changeCreditLimit(String sessionKey, IBankAccount bankAccount, long limit);
+    boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit);
 }

@@ -333,7 +333,7 @@ public class Dashboard extends View {
         this.TrasactionPopupAnchorPane.setVisible(false);
     }
 
-    public void sessionExpired() {
+    public void sessionTerminated() {
         showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw!");
         this.doLogout();
     }

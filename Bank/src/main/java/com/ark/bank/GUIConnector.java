@@ -149,12 +149,12 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean changeCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException {
+    public boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException {
         if (bankController == null) {
             return false;
         }
 
-        return bankController.changeCreditLimit(sessionKey, bankAccount, limit);
+        return bankController.setCreditLimit(sessionKey, bankAccount, limit);
     }
 
     @Override
