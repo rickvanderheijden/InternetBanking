@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author Rick van der Heijden
@@ -21,6 +22,10 @@ public class Transaction implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
+    /**
+     * Creates an instance of Transaction
+     * Only used for Entity
+     */
     public Transaction() {
     }
 
@@ -38,7 +43,6 @@ public class Transaction implements Serializable {
             || (accountTo == null) || accountTo.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
         this.amount = amount;
         this.description = description;
         this.accountFrom = accountFrom;
