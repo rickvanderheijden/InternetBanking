@@ -15,6 +15,7 @@ class CentralBankHost {
         System.out.println("Central bank is running");
 
         // Create server
-        Endpoint.publish(URL, new CentralBank());
+        IBankConnection bankConnection = new BankConnection();
+        Endpoint.publish(URL, new CentralBank(bankConnection));
     }
 }
