@@ -1,7 +1,10 @@
 package com.ark.bank;
 
-import com.ark.*;
+import com.ark.BankAccount;
+import com.ark.Customer;
+import com.ark.Transaction;
 import fontyspublisher.RemotePublisher;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -143,6 +146,15 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         }
 
         return bankController.executeTransaction(sessionKey, transaction);
+    }
+
+    @Override
+    public boolean changeCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException {
+        if (bankController == null) {
+            return false;
+        }
+
+        return bankController.changeCreditLimit(sessionKey, bankAccount, limit);
     }
 
     @Override

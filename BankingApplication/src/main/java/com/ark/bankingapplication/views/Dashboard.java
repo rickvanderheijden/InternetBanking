@@ -46,6 +46,12 @@ public class Dashboard extends View {
     @FXML private Label bankNameLabel;
     @FXML private TextArea transactionDescriptionTextArea;
 
+    //Credit limit
+    @FXML
+    private Button creditLimitButton;
+    @FXML
+    private TextField creditLimitTextfield;
+
     //Transaction Popup
     @FXML
     private AnchorPane TrasactionPopupAnchorPane;
@@ -95,6 +101,12 @@ public class Dashboard extends View {
                 amountCentsTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+        creditLimitTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                creditLimitTextfield.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        this.creditLimitButton.setOnAction(e -> doChangeCreditLimit());
         this.logoutButton.setOnAction(e -> doLogout());
         this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
         this.transactionButton.setOnAction(e -> doTransaction());
@@ -111,6 +123,9 @@ public class Dashboard extends View {
     }
 
 
+    /**
+     * Initiate Dashboard
+     */
     public void initDashboard() {
         if (this.customer != null && this.sessionKey != null) {
             this.nameLabel.setText(customer.getName());
@@ -138,9 +153,13 @@ public class Dashboard extends View {
         this.bankId = bank;
     }
 
+    /**
+     * Set the sessionKey
+     *
+     * @param sessionKey string
+     */
     public void setSessionKey(String sessionKey) {
         this.sessionKey = sessionKey;
-        System.out.println(this.sessionKey);
     }
 
     public void setCustomer(Customer customer) {
@@ -159,22 +178,12 @@ public class Dashboard extends View {
     }
 
     private void doLogout() {
-        System.out.println("logout geklikt");
         try {
             boolean logout = this.controller.logout(this.sessionKey);
             controller.showStartUp();
         } catch (Exception e) {
-            System.out.println("ging iets niet helemaal goed: " + e.getMessage());
             controller.showStartUp();
         }
-
-//        System.out.println(logout);
-//        if (!logout) {
-//            showWarning("Fout bij uitloggen", "Uitloggen mislukt, probeer het later nog eens!");
-//        } else {
-//            controller.showStartUp();
-//        }
-
     }
 
     private void doAddBankAccount() {
@@ -197,6 +206,7 @@ public class Dashboard extends View {
             String balanceText = this.customFormat(balanced);
             this.balanceLabel.setText("€" + balanceText);
             this.selectedBankNrLabel.setText(selectedBankAccountNr);
+            this.creditLimitTextfield.setText(String.valueOf(selectedBankaccount.getCreditLimit()/100));
             this.setTransactions();
         }
     }
@@ -215,15 +225,9 @@ public class Dashboard extends View {
 
     private void setTransactions() {
         List<Transaction> newTransactions = this.getTransactions();
-        System.out.println(newTransactions);
         if (newTransactions != null) {
             this.transactions.clear();
             for (Transaction transaction : newTransactions) {
-                if (transaction.getAccountFrom().equals(this.selectedBankAccountNr)) {
-                    System.out.println("Outgoing transaction");
-                } else {
-                    System.out.println("incomming transaction");
-                }
                 this.transactions.add(transaction);
             }
         }
@@ -303,6 +307,11 @@ public class Dashboard extends View {
 
     }
 
+    /**
+     * method to fix the decimal format
+     * @param value double
+     * @return
+     */
     public String customFormat(double value) {
         DecimalFormat df = new DecimalFormat("##,###,##0.00");
         df.setCurrency(Currency.getInstance("EUR"));
@@ -317,4 +326,14 @@ public class Dashboard extends View {
         this.TrasactionPopupAnchorPane.setVisible(false);
     }
 
+    public void sessionExpired() {
+        showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw!");
+        this.doLogout();
+    }
+
+    private void doChangeCreditLimit() {
+        long newLimit = Long.parseLong(creditLimitTextfield.getText());
+        boolean succes = controller.changeCreditLimit(this.sessionKey, this.selectedBankaccount, (newLimit * 100));
+        System.out.println(succes);
+    }
 }

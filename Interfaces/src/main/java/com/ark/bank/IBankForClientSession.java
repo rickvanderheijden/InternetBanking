@@ -1,8 +1,8 @@
 package com.ark.bank;
 
+import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.Transaction;
-import com.ark.bank.IBankAccount;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -110,4 +110,15 @@ public interface IBankForClientSession extends Remote {
      * @throws RemoteException Thrown when remote method call fails.
      */
     boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException;
+
+    /**
+     * Sets the credit limit of the user to the given amount.
+     *
+     * @param sessionKey  The session key that is given after a succesful login. It should be valid and active.
+     * @param bankAccount The bankAccount of which the credit limit had to be changed
+     * @param limit       The new Credit limit
+     * @return True if the limit has been changed, false otherwise
+     * @throws RemoteException Thrown when remote method call fails.
+     */
+    boolean changeCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException;
 }

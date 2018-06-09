@@ -224,4 +224,19 @@ public class Controller {
             return false;
         }
     }
+
+    public void sessionExpired() {
+        Platform.runLater(() -> dashboard.sessionExpired());
+
+    }
+
+    public boolean changeCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) {
+        try {
+            return this.bankConnector.changeCreditLimit(sessionKey, selectedBankaccount, limit);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }
