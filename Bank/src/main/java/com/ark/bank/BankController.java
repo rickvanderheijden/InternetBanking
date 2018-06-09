@@ -10,10 +10,9 @@ import java.util.*;
 /**
  * @author Rick van der Heijden
  */
-public class BankController extends Observable implements IBankController {
+public class BankController extends Observable implements Observer, IBankController {
     private static final long StartBankAccountNumber = 1000000000L;
     private static final long EndBankAccountNumber = 9999999999L;
-    private static final int DefaultSessionTime = 900000;
     private final Random random = new Random();
     private final String bankId;
     private final Set<IBankAccount> bankAccounts = new HashSet<>();
@@ -21,6 +20,7 @@ public class BankController extends Observable implements IBankController {
     private final Set<Session> sessions = new HashSet<>();
     private final Set<Transaction> transactions = new HashSet<>();
     private final ICentralBankConnection centralBankConnection;
+    private int defaultSessionTime = 900000;
 
     /**
      * Creates an instance of BankController
@@ -78,6 +78,11 @@ public class BankController extends Observable implements IBankController {
         else {
             return executeTransactionLocalToOtherFrom(transaction);
         }
+    }
+
+    @Override
+    public void setSessionTime(int sessionTimeInMinutes) {
+        defaultSessionTime = sessionTimeInMinutes * 1000;
     }
 
     @Override
@@ -248,7 +253,8 @@ public class BankController extends Observable implements IBankController {
             return null;
         }
 
-        Session session = new Session(DefaultSessionTime, name, residence);
+        Session session = new Session(defaultSessionTime, name, residence);
+        session.addObserver(this);
         sessions.add(session);
 
         return session.getSessionKey();
@@ -448,5 +454,13 @@ public class BankController extends Observable implements IBankController {
 
     private boolean isNullOrEmpty(String string) {
         return ((string == null) || string.isEmpty());
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof Session) {
+            setChanged();
+            notifyObservers(arg);
+        }
     }
 }

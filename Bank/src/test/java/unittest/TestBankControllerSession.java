@@ -2,10 +2,14 @@ package unittest;
 
 import com.ark.bank.BankController;
 import com.ark.bank.IBankController;
+import com.ark.bank.SessionTerminated;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
+
+import java.util.Observable;
+import java.util.Observer;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
@@ -13,7 +17,7 @@ import static org.junit.Assert.*;
 /**
  * @author Rick van der Heijden
  */
-public class TestBankControllerSession {
+public class TestBankControllerSession implements Observer {
 
     private static final String Name = "TestName";
     private static final String Password = "TestPassword";
@@ -21,10 +25,17 @@ public class TestBankControllerSession {
     private static final String BankIdInternal = "TEST";
     private IBankController bankController;
     private String sessionKey;
+    private String sessionKeyTerminated;
 
     @Before
     public void setUp() {
         bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController.setSessionTime(100);
+
+        bankController.addObserver(this);
+
+        sessionKey = null;
+        sessionKeyTerminated= null;
     }
 
     @After
@@ -37,6 +48,7 @@ public class TestBankControllerSession {
         createCustomerAndLogin();
         boolean result = bankController.terminateSession(sessionKey);
         assertTrue(result);
+        assertEquals(sessionKey, sessionKeyTerminated);
     }
 
     @Test
@@ -93,5 +105,13 @@ public class TestBankControllerSession {
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);
         sessionKey = bankController.login(Name, Residence, Password);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if ((o instanceof BankController) && (arg instanceof SessionTerminated)) {
+            SessionTerminated sessionTerminated = (SessionTerminated)arg;
+            sessionKeyTerminated = sessionTerminated.getSessionKey();
+        }
     }
 }
