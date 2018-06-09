@@ -56,7 +56,12 @@ public class Transaction implements Serializable {
      */
     @Override
     public String toString() {
-        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0);
+        if(this.getDate() != null){
+            String dateString = this.convertStringToDate(getDate());
+            return  dateString + " | €" + String.valueOf(this.amount / 100.0)  + " " +this.accountFrom + " --> " + this.accountTo;
+        }
+        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0) ;
+
     }
 
     /**
@@ -148,7 +153,7 @@ public class Transaction implements Serializable {
 
     public String convertStringToDate(Date indate) {
         String dateString = null;
-        SimpleDateFormat sdfr = new SimpleDateFormat("dd/MMM/yyyy");
+        SimpleDateFormat sdfr = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         /*you can also use DateFormat reference instead of SimpleDateFormat
          * like this: DateFormat df = new SimpleDateFormat("dd/MMM/yyyy");
          */

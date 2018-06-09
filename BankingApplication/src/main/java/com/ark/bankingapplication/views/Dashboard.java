@@ -305,7 +305,7 @@ public class Dashboard extends View {
         fromAccountLabel.setText(newTransaction.getAccountFrom());
         toAccountLabel.setText(newTransaction.getAccountTo());
         descriptionLabel.setText(newTransaction.getDescription());
-        dateLabel.setText(newTransaction.getDate().toString());
+        dateLabel.setText(newTransaction.convertStringToDate(newTransaction.getDate()));
         TransactionAmountLabel.setText(customFormat((newTransaction.getAmount() / 100)));
         this.TrasactionPopupAnchorPane.setVisible(true);
 
