@@ -26,7 +26,6 @@ public class Controller {
 
     private final String bankId;
     private String sessionKey;
-    private Customer customer;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
@@ -118,8 +117,8 @@ public class Controller {
      */
     public ReturnObject registerUser(String name, String residence, String password) {
         try {
-            this.customer = this.bankConnector.createCustomer(name, residence, password);
-            if (this.customer == null) {
+            Customer customer = this.bankConnector.createCustomer(name, residence, password);
+            if (customer == null) {
                 return new ReturnObject(false, "Registratie fout", "Deze gebruiker bestaat al, Log in op je account");
             }
             try {
@@ -206,10 +205,6 @@ public class Controller {
 
     public Scene getScene() {
         return this.scene;
-    }
-
-    public Customer getCustomer() {
-        return this.customer;
     }
 
     public void transactionExecuted() {

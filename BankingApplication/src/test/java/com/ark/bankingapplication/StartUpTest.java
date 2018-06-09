@@ -20,11 +20,11 @@ import testutilities.BankUtilities;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
+@SuppressWarnings("unused")
 public class StartUpTest extends ApplicationTest {
 
     private static final String Name = "TestName";
@@ -35,13 +35,10 @@ public class StartUpTest extends ApplicationTest {
     private static final String BankRabo = "RABO";
     private static final String RABOUrl = "http://localhost:1200/";
     private static BankUtilities utilities;
-    Controller controller;
-    Controller Rabo;
     private Scene scene;
     private StartUp startUp;
     private Dashboard dashboard;
 
-    private Customer rick;
     private IBankAccount RicksAccount;
 
     @BeforeClass
@@ -60,7 +57,7 @@ public class StartUpTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws IOException, NotBoundException {
 
-        controller = new Controller(stage, BankId);
+        Controller controller = new Controller(stage, BankId);
         controller.start();
 
 
@@ -68,10 +65,10 @@ public class StartUpTest extends ApplicationTest {
         startUp = (StartUp) scene.lookup("#startUp");
         dashboard = (Dashboard) scene.lookup("#dashboard");
 
-        Rabo = new Controller(stage, BankRabo);
-        BankConnector bc = new BankConnector(Rabo);
+        Controller rabo = new Controller(stage, BankRabo);
+        BankConnector bc = new BankConnector(rabo);
         bc.connect("RABO");
-        this.rick = new Customer("Rick", "Beek en Donk", "rick123");
+        Customer rick = new Customer("Rick", "Beek en Donk", "rick123");
         this.RicksAccount = new BankAccount(rick, "RABO2821842127");
     }
 
@@ -274,7 +271,7 @@ public class StartUpTest extends ApplicationTest {
     }
 
     @Test
-    public void ExecuteTransaction() throws RemoteException {
+    public void ExecuteTransaction() {
         sleep(500);
         clickOn("#loginButton");
         sleep(500);
@@ -289,7 +286,6 @@ public class StartUpTest extends ApplicationTest {
         ListView transactionsListView = (ListView) scene.lookup("#transactionsListView");
 
         int StartSize = transactionsListView.getItems().size();
-        String myAccount = selectedBankNr.getText();
         String ToAccount = this.RicksAccount.getNumber();
         String ammountTo = "10";
         String Descritpion = "Voor de Biertjes en de Tosti's!";

@@ -9,7 +9,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.File;
@@ -315,15 +313,14 @@ public class Dashboard extends View {
     }
 
     /**
-     * method to fix the decimal format
+     * Method to fix the decimal format
      * @param value double
-     * @return
+     * @return String of the pretty printed amount
      */
     public String customFormat(double value) {
         DecimalFormat df = new DecimalFormat("##,###,##0.00");
         df.setCurrency(Currency.getInstance("EUR"));
-        String output = df.format(value);
-        return output;
+        return df.format(value);
     }
 
     /**
