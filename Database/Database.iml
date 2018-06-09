@@ -32,5 +32,6 @@
     <orderEntry type="module" module-name="Interfaces" />
     <orderEntry type="library" name="derbyclient" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:5.2.17.Final" level="project" />
+    <orderEntry type="module" module-name="Bank" />
   </component>
 </module>

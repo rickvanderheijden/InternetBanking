@@ -1,7 +1,10 @@
+import com.ark.BankAccount;
 import com.ark.Customer;
+import com.ark.Transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,12 +18,14 @@ public class Persistence {
     private EntityManager emp;
     private EntityManager emd;
     private EntityManager emc;
+    private EntityManager emb;
 
     public Persistence(){
         this.emf = javax.persistence.Persistence.createEntityManagerFactory("bank");
         this.emp = emf.createEntityManager();
         this.emd = emf.createEntityManager();
         this.emc = emf.createEntityManager();
+
     }
 
 
@@ -44,7 +49,6 @@ public class Persistence {
     public Customer getPersistCustomer(String name, String residence) {
         emc.getTransaction().begin();
         try {
-
             return (Customer) emc.createQuery("SELECT c FROM Customer c WHERE c.name = :value1 AND c.residence = :value2").setParameter("value1", name).setParameter("value2", residence).getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +58,13 @@ public class Persistence {
             emc.close();
         }
     }
+
+//    public List<BankAccount> getPersistTransaction(Customer c) {
+//        emb.getTransaction().begin();
+//        try {
+//            return (BankAccount) emb.createQuery("SELECT b FROM BankAccount b WHERE ")
+//        }
+//    }
 
     public synchronized boolean delete(Object object) {
         if (object == null) { return false; }

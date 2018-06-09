@@ -34,6 +34,10 @@ public class BankAccount implements IBankAccount {
         this.number = number;
     }
 
+    public BankAccount(){
+
+    }
+
     @Override
     public Customer getOwner() {
         return owner;
