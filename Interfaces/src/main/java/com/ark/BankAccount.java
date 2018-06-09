@@ -1,6 +1,5 @@
 package com.ark;
 
-import com.ark.Customer;
 import com.ark.bank.IBankAccount;
 
 import javax.persistence.*;
@@ -60,7 +59,7 @@ public class BankAccount implements IBankAccount {
             return false;
         }
 
-        this.creditLimit = creditLimit; //.set(creditLimit);
+        this.creditLimit = creditLimit;
 
         return true;
     }

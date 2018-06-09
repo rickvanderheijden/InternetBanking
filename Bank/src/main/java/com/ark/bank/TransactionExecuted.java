@@ -1,6 +1,9 @@
 package com.ark.bank;
 
-public class TransactionExecuted {
+/**
+ * @author Rick van der Heijden
+ */
+class TransactionExecuted {
     public TransactionExecuted() {
     }
 }

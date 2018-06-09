@@ -25,7 +25,7 @@ public class BankUtilities {
     private final Map<String, Process> bankProcesses = new HashMap<>();
 
     public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) {
-        URL wsdlURL = null;
+        URL wsdlURL;
         try {
             wsdlURL = new URL(URLBase + bankId + "Service?wsdl");
         } catch (MalformedURLException e) {

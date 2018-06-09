@@ -53,7 +53,7 @@ public class CentralBankUtilities {
 
         waitForConnection();
 
-        URL wsdlURL = null;
+        URL wsdlURL;
         try {
             wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
         } catch (MalformedURLException e) {

@@ -2,7 +2,6 @@ package unittest;
 
 import com.ark.bank.BankController;
 import com.ark.Customer;
-import com.ark.bank.IBankController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,7 @@ public class TestBankControllerCustomer {
     private static final String Password = "TestPassword";
     private static final String Residence = "TestResidence";
     private static final String BankIdInternal = "TEST";
-    private IBankController bankController;
+    private BankController bankController;
     private String sessionKey;
 
     @Before

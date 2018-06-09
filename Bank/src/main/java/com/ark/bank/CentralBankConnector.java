@@ -2,6 +2,7 @@ package com.ark.bank;
 
 import com.ark.BankConnectionInfo;
 import com.ark.Transaction;
+import com.sun.xml.internal.ws.server.ServerRtException;
 
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
@@ -27,8 +28,9 @@ public class CentralBankConnector implements IBankForCentralBank {
         if ((URLBase != null) && (!URLBase.isEmpty())
                 && (bankId) != null && (!bankId.isEmpty())) {
 
-            createBankConnection();
-            registerBank();
+            if (createBankConnection()) {
+                registerBank();
+            }
         }
     }
 
@@ -58,7 +60,14 @@ public class CentralBankConnector implements IBankForCentralBank {
         return bankController.isValidBankAccountNumber(bankAccountNumber);
     }
 
-    private void createBankConnection() {
-        Endpoint.publish(URLBase + bankId, this);
+    private boolean createBankConnection() {
+        try {
+            Endpoint.publish(URLBase + bankId, this);
+        } catch (IllegalArgumentException | ServerRtException e) {
+            return false;
+        }
+
+        return true;
+
     }
 }
