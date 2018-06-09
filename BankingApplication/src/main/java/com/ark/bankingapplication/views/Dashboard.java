@@ -5,17 +5,19 @@ import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.TransactionList;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.Currency;
 import java.util.List;
 
 
@@ -52,12 +54,18 @@ public class Dashboard extends View {
     private TransactionList transactions;
     private List<String> bankAccounts = null;
     private ObservableList<String> bankAccouts = FXCollections.observableArrayList();
+    private PseudoClass transactionType;
 
-    protected ListProperty<Transaction> listProperty = new SimpleListProperty<Transaction>();
 
     public Dashboard() throws ControlNotLoadedException {
         super("Dashboard.fxml");
-
+        toBankAccountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(this.selectedBankAccountNr)) {
+                this.transactionButton.setDisable(true);
+            } else {
+                this.transactionButton.setDisable(false);
+            }
+        });
         amountFullTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 amountFullTextField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -83,8 +91,6 @@ public class Dashboard extends View {
     }
 
     public void initDashboard() {
-        /* TODO: Set customer information, get bankaccounts, if there is only 1, select that one. Show information on dashboard. */
-
         if (this.customer != null && this.sessionKey != null) {
             this.nameLabel.setText(customer.getName());
             this.bankAccounts = controller.getBankAccounts(this.sessionKey);
@@ -121,15 +127,23 @@ public class Dashboard extends View {
     }
 
     public void setLogo() {
-        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png");
+        String path = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png").getAbsolutePath();
+        File file = new File(path);
         Image image = new Image(file.toURI().toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(this.bankId);
 
 
     }
+
     private void doLogout() {
-        controller.showStartUp();
+        boolean logout = this.controller.logout(this.sessionKey);
+        if (!logout) {
+            showWarning("Fout bij uitloggen", "Uitloggen mislukt, probeer het later nog eens!");
+        } else {
+            controller.showStartUp();
+        }
+
     }
 
     private void doAddBankAccount() {
@@ -149,7 +163,8 @@ public class Dashboard extends View {
         if (selectedBankaccount != null) {
             long balance = selectedBankaccount.getBalance();
             double balanced = balance / 100.0;
-            this.balanceLabel.setText("€" + String.valueOf(balanced));
+            String balanceText = this.customFormat(balanced);
+            this.balanceLabel.setText("€" + balanceText);
             this.selectedBankNrLabel.setText(selectedBankAccountNr);
             this.setTransactions();
         }
@@ -168,25 +183,26 @@ public class Dashboard extends View {
     }
 
     private void setTransactions() {
-        if (this.getTransactions() != null) {
-            for (Transaction transaction : this.getTransactions()) {
-                System.out.println(transaction.toString());
+        List<Transaction> newTransactions = this.getTransactions();
+        System.out.println(newTransactions);
+        if (newTransactions != null) {
+            this.transactions.clear();
+            for (Transaction transaction : newTransactions) {
+                if (transaction.getAccountFrom().equals(this.selectedBankAccountNr)) {
+                    System.out.println("Outgoing transaction");
+                } else {
+                    System.out.println("incomming transaction");
+                }
                 this.transactions.add(transaction);
             }
-//            this.transactionListView.setItems(this.transactions);
-        } else {
-            System.out.println(this.transactions);
-//            this.transactionListView.getItems().removeAll();
-//            this.transactionListView.getItems().addAll(this.transactions);
-//            this.transactionListView.setItems(this.transactions);
         }
         if (this.transactions.getSize() > 0) {
             ObservableList<Transaction> readOnly = transactions.getReadOnlyList();
             this.transactionsListView.setItems(readOnly);
-            //this.transactionListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         }
+    }
 
-
+    private void pseudoClassStateChanged(String outgoing) {
     }
 
     private void doTransaction() {
@@ -209,12 +225,20 @@ public class Dashboard extends View {
             amount = (full * 100) + cents;
             Transaction transaction = new Transaction(amount, description, selectedBankAccountNr, toBankAccount);
             if (controller.executeTransaction(sessionKey, transaction)) {
-                showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + "is overgemaakt aan : " + toBankAccount);
+                showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + " is overgemaakt aan : " + toBankAccount);
+                this.clearInputs();
                 this.updateBankAccount();
             } else {
                 showWarning("Transactie mislukt", "Er is een fout opgetreden bij het verwerken van de transactie, probeer het op een later moment nog eens!");
             }
         }
+    }
+
+    private void clearInputs() {
+        toBankAccountTextField.clear();
+        amountFullTextField.clear();
+        amountCentsTextField.clear();
+        transactionDescriptionTextArea.clear();
     }
 
     @SuppressWarnings("Duplicates")
@@ -240,7 +264,12 @@ public class Dashboard extends View {
         System.out.println("click");
 
     }
-    private void selectedTransaction(){
-        System.out.println("hoi");
+
+    public String customFormat(double value) {
+        DecimalFormat df = new DecimalFormat("##,###,##0.00");
+        df.setCurrency(Currency.getInstance("EUR"));
+        String output = df.format(value);
+        return output;
     }
+
 }

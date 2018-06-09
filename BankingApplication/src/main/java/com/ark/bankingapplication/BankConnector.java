@@ -1,12 +1,12 @@
 package com.ark.bankingapplication;
 
-import com.ark.*;
+import com.ark.Customer;
+import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
-import javafx.application.Platform;
 
 import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
@@ -105,5 +105,12 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
         if (propertyChangeEvent.getPropertyName().equals("transactionExecuted")) {
             controller.transactionExecuted();
         }
+    }
+
+    public boolean logout(String sessionKey) throws RemoteException {
+        if (this.bankForClientLogin == null) {
+            return false;
+        }
+        return this.bankForClientLogin.logout(sessionKey);
     }
 }
