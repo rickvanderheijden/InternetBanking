@@ -7,8 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Rick van der Heijden
@@ -37,6 +38,12 @@ public class TestBankControllerLoginLogout {
         createCustomerAndLogin();
         boolean result = bankController.logout(sessionKey);
         assertTrue(result);
+    }
+
+    @Test
+    public void testLoginUnknownCustomer() {
+        String result = bankController.login(Name, Residence, Password);
+        assertNull(result);
     }
 
     @Test

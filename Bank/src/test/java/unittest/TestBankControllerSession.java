@@ -11,7 +11,6 @@ import unittest.stubs.CentralBankConnectionStub;
 import java.util.Observable;
 import java.util.Observer;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 /**
@@ -31,11 +30,12 @@ public class TestBankControllerSession implements Observer {
     public void setUp() {
         bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
         bankController.setSessionTime(100);
-
         bankController.addObserver(this);
 
         sessionKey = null;
         sessionKeyTerminated= null;
+
+        createCustomerAndLogin();
     }
 
     @After
@@ -45,62 +45,54 @@ public class TestBankControllerSession implements Observer {
 
     @Test
     public void testTerminateSessionValidValues() {
-        createCustomerAndLogin();
-        boolean result = bankController.terminateSession(sessionKey);
-        assertTrue(result);
+        testTerminateSession(sessionKey, true);
         assertEquals(sessionKey, sessionKeyTerminated);
     }
 
     @Test
     public void testTerminateSessionSessionKeyNull() {
-        createCustomerAndLogin();
-        boolean result = bankController.terminateSession(null);
-        assertFalse(result);
+        testTerminateSession(null, false);
     }
 
     @Test
     public void testTerminateSessionSessionKeyEmpty() {
-        createCustomerAndLogin();
-        boolean result = bankController.terminateSession("");
-        assertFalse(result);
+        testTerminateSession("", false);
     }
 
     @Test
     public void testTerminateSessionSessionKeyInvalid() {
-        createCustomerAndLogin();
-        boolean result = bankController.terminateSession("InvalidKey");
-        assertFalse(result);
+        testTerminateSession("InvalidKey", false);
     }
 
     @Test
     public void testRefreshSessionValidValues() {
-        createCustomerAndLogin();
-        boolean result = bankController.refreshSession(sessionKey);
-        assertTrue(result);
+        testRefreshSession(sessionKey, true);
     }
 
     @Test
     public void testRefreshSessionSessionKeyNull() {
-        createCustomerAndLogin();
-        boolean result = bankController.refreshSession(null);
-        assertFalse(result);
+        testRefreshSession(null, false);
     }
 
     @Test
     public void testRefreshSessionSessionKeyEmpty() {
-        createCustomerAndLogin();
-        boolean result = bankController.refreshSession("");
-        assertFalse(result);
+        testRefreshSession("", false);
     }
 
     @Test
     public void testRefreshSessionSessionKeyInvalid() {
-        createCustomerAndLogin();
-        boolean result = bankController.refreshSession("InvalidKey");
-        assertFalse(result);
+        testRefreshSession("InvalidKey", false);
     }
 
+    private void testTerminateSession(String sessionKey, boolean expectedResult) {
+        boolean result = bankController.terminateSession(sessionKey);
+        assertEquals(expectedResult, result);
+    }
 
+    private void testRefreshSession(String sessionKey, boolean expectedResult) {
+        boolean result = bankController.refreshSession(sessionKey);
+        assertEquals(expectedResult, result);
+    }
 
     private void createCustomerAndLogin() {
         bankController.createCustomer(Name, Residence, Password);

@@ -1,5 +1,8 @@
 package com.ark.bank;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class SessionTerminated {
     private final String sessionKey;
 

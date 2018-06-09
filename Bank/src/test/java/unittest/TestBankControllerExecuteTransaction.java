@@ -23,6 +23,7 @@ public class TestBankControllerExecuteTransaction {
     private static final String Password = "Password";
     private static final String Residence = "Residence";
     private static final String BankIdInternal = "TEST";
+    private final CentralBankConnectionStub centralBankConnectionStub = new CentralBankConnectionStub();
     private IBankController bankController;
     private String sessionKeyOne;
     private String sessionKeyTwo;
@@ -33,7 +34,7 @@ public class TestBankControllerExecuteTransaction {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, centralBankConnectionStub);
         sessionKeyOne = "";
         sessionKeyTwo = "";
         sessionKeyThree = "";
@@ -148,6 +149,32 @@ public class TestBankControllerExecuteTransaction {
         assertEquals( 0, bankAccountOne.getBalance());
         assertEquals(0, transactionsFrom.size());
         assertEquals(0, transactionsTo.size());
+    }
+
+    @Test
+    public void testExecuteTransactionLocalFromOtherTo() {
+        createCustomerAndLogin(1);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne, customerOne);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), "OtherBank");
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        assertTrue(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals(    1, transactionsFrom.size());
+    }
+
+    @Test
+    public void testExecuteTransactionLocalToOtherFrom() {
+        createCustomerAndLogin(1);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne, customerOne);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", "OtherBank", bankAccountOne.getNumber());
+        boolean result = bankController.executeTransaction(transaction);
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
+        assertTrue(result);
+        assertEquals(2100, bankAccountOne.getBalance());
+        assertEquals(   1, transactionsTo.size());
     }
 
     @Test

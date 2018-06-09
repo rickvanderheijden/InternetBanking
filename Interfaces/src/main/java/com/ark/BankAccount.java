@@ -1,6 +1,5 @@
 package com.ark;
 
-import com.ark.Customer;
 import com.ark.bank.IBankAccount;
 
 import javax.persistence.*;

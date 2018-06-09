@@ -10,10 +10,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import static java.lang.Thread.sleep;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Rick van der Heijden
@@ -37,6 +34,36 @@ public class TestSession implements Observer {
     @After
     public void tearDown() {
         session = null;
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testSessionSessionTimeZero() {
+        session = new Session(0, Name, Residence);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testSessionSessionTimeNegative() {
+        session = new Session(-1, Name, Residence);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testSessionCustomerNameNull() {
+        session = new Session(sessionTime, null, Residence);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testSessionCustomerNameEmpty() {
+        session = new Session(sessionTime, "", Residence);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testSessionCustomerResidenceNull() {
+        session = new Session(sessionTime, Name, null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testSessionCustomerResidenceEmpty() {
+        session = new Session(sessionTime, Name, "");
     }
 
     @Test
