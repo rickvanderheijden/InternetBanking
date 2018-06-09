@@ -6,27 +6,26 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<fx:root xmlns:fx="http://javafx.com/fxml/1" fx:id="startUp" maxHeight="960.0" maxWidth="1680.0" minHeight="960.0"
-         minWidth="1680.0" prefHeight="960.0" prefWidth="1680.0" type="javafx.scene.layout.AnchorPane"
-         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-         AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/9">
-    <HBox alignment="CENTER" prefHeight="960.0" prefWidth="1680.0">
-        <AnchorPane prefHeight="960.0" prefWidth="1679.0">
-            <ImageView fx:id="bankLogo" fitHeight="267.0" fitWidth="201.0" layoutX="580.0" layoutY="57.0"
+<fx:root xmlns:fx="http://javafx.com/fxml/1" fx:id="startUp" prefHeight="960.0" prefWidth="1230.0"
+         type="javafx.scene.layout.AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/9">
+    <HBox alignment="CENTER" prefHeight="960.0" prefWidth="1230.0">
+        <AnchorPane prefHeight="960.0" prefWidth="1230.0">
+            <ImageView fx:id="bankLogo" fitHeight="267.0" fitWidth="201.0" layoutX="217.0" layoutY="54.0"
                        pickOnBounds="true" preserveRatio="true"/>
-            <Label fx:id="bankNameLabel" layoutX="885.0" layoutY="112.0" prefHeight="164.0" prefWidth="482.0"
+            <Label fx:id="bankNameLabel" layoutX="536.0" layoutY="188.0" prefHeight="164.0" prefWidth="482.0"
                    styleClass="bankName" text="Label">
                 <font>
                     <Font size="80.0"/>
                 </font>
             </Label>
-            <Label fx:id="errorMessageLabel" layoutX="573.0" layoutY="838.0" prefHeight="83.0" prefWidth="753.0"
+            <Label fx:id="errorMessageLabel" layoutX="280.0" layoutY="838.0" prefHeight="83.0" prefWidth="753.0"
                    styleClass="error-message" visible="false">
                 <padding>
                     <Insets left="10.0" right="10.0"/>
                 </padding>
             </Label>
-            <VBox fx:id="loginVBox" alignment="CENTER" fillWidth="false" layoutX="734.0" layoutY="392.0"
+            <VBox fx:id="loginVBox" alignment="CENTER" fillWidth="false" layoutX="513.0" layoutY="393.0"
                   minHeight="303.0" minWidth="301.0" prefHeight="303.0" prefWidth="301.0" spacing="20.0">
                 <TextField fx:id="usernameTextField" prefHeight="40.0" prefWidth="300.0" promptText="Gebruikersnaam"
                            styleClass="transparent-input"/>
@@ -43,7 +42,7 @@
                     </cursor>
                 </Label>
             </VBox>
-            <VBox fx:id="registerVBox" alignment="CENTER" fillWidth="false" layoutX="731.0" layoutY="321.0"
+            <VBox fx:id="registerVBox" alignment="CENTER" fillWidth="false" layoutX="513.0" layoutY="321.0"
                   prefHeight="384.0" prefWidth="307.0" spacing="20.0" visible="false">
                 <TextField fx:id="registernameTextField" prefHeight="40.0" prefWidth="300.0" promptText="Gebruikersnaam"
                            styleClass="transparent-input"/>

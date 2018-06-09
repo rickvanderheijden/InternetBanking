@@ -1,10 +1,10 @@
 package com.ark.bankingapplication;
 
 import com.ark.Customer;
+import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
-import com.ark.Transaction;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -214,5 +214,14 @@ public class Controller {
 
     public void transactionExecuted() {
         Platform.runLater(() -> dashboard.updateBankAccount());
+    }
+
+    public boolean logout(String sessionKey) {
+        try {
+            return this.bankConnector.logout(sessionKey);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
