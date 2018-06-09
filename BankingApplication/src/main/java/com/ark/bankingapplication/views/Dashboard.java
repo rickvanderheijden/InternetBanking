@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.File;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Currency;
 import java.util.List;
@@ -44,6 +45,24 @@ public class Dashboard extends View {
     @FXML private Button logoutButton;
     @FXML private Label bankNameLabel;
     @FXML private TextArea transactionDescriptionTextArea;
+
+    //Transaction Popup
+    @FXML
+    private AnchorPane TrasactionPopupAnchorPane;
+    @FXML
+    private Label transactionTypeLabel;
+    @FXML
+    private Label fromAccountLabel;
+    @FXML
+    private Label toAccountLabel;
+    @FXML
+    private Label descriptionLabel;
+    @FXML
+    private Label dateLabel;
+    @FXML
+    private Label TransactionAmountLabel;
+    @FXML
+    private Button closeButton;
 
     private Customer customer = null;
     private IBankAccount selectedBankaccount = null;
@@ -76,19 +95,21 @@ public class Dashboard extends View {
                 amountCentsTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
-        logoutButton.setOnAction(e -> doLogout());
+        this.logoutButton.setOnAction(e -> doLogout());
         this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
-        transactionButton.setOnAction(e -> doTransaction());
-        BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+        this.transactionButton.setOnAction(e -> doTransaction());
+        this.BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             this.selectedBankAccountNr = newValue;
             this.setTransactions();
             updateBankAccount();
         });
+        this.closeButton.setOnAction(e -> closeTransactionPopup());
         this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
         this.transactionsListView.setItems(this.transactions.getReadOnlyList());
     }
+
 
     public void initDashboard() {
         if (this.customer != null && this.sessionKey != null) {
@@ -127,9 +148,10 @@ public class Dashboard extends View {
     }
 
     public void setLogo() {
+        URL iconUrl = this.getClass().getResource("images/" + this.bankId + "-ICON.png");
         String path = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png").getAbsolutePath();
         File file = new File(path);
-        Image image = new Image(file.toURI().toString());
+        Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(this.bankId);
 
@@ -137,12 +159,21 @@ public class Dashboard extends View {
     }
 
     private void doLogout() {
-        boolean logout = this.controller.logout(this.sessionKey);
-        if (!logout) {
-            showWarning("Fout bij uitloggen", "Uitloggen mislukt, probeer het later nog eens!");
-        } else {
+        System.out.println("logout geklikt");
+        try {
+            boolean logout = this.controller.logout(this.sessionKey);
+            controller.showStartUp();
+        } catch (Exception e) {
+            System.out.println("ging iets niet helemaal goed: " + e.getMessage());
             controller.showStartUp();
         }
+
+//        System.out.println(logout);
+//        if (!logout) {
+//            showWarning("Fout bij uitloggen", "Uitloggen mislukt, probeer het later nog eens!");
+//        } else {
+//            controller.showStartUp();
+//        }
 
     }
 
@@ -202,8 +233,6 @@ public class Dashboard extends View {
         }
     }
 
-    private void pseudoClassStateChanged(String outgoing) {
-    }
 
     private void doTransaction() {
         String toBankAccount = toBankAccountTextField.getText();
@@ -259,9 +288,18 @@ public class Dashboard extends View {
     }
 
     private void selectedTransactionChanged(ObservableValue<? extends Transaction> ov, Transaction oldTransaction, Transaction newTransaction) {
-        // TODO: toon transaction info
-        System.out.println(newTransaction);
-        System.out.println("click");
+        if (newTransaction.getAccountFrom().equals(selectedBankAccountNr)) {
+            transactionTypeLabel.setText("Uitgaand");
+        } else {
+            transactionTypeLabel.setText("Inkomend");
+        }
+        fromAccountLabel.setText(newTransaction.getAccountFrom());
+        toAccountLabel.setText(newTransaction.getAccountTo());
+        descriptionLabel.setText(newTransaction.getDescription());
+        dateLabel.setText(newTransaction.getDate().toString());
+        TransactionAmountLabel.setText(customFormat((newTransaction.getAmount() / 100)));
+        this.TrasactionPopupAnchorPane.setVisible(true);
+
 
     }
 
@@ -270,6 +308,13 @@ public class Dashboard extends View {
         df.setCurrency(Currency.getInstance("EUR"));
         String output = df.format(value);
         return output;
+    }
+
+    /**
+     * Close the transaction popup
+     */
+    private void closeTransactionPopup() {
+        this.TrasactionPopupAnchorPane.setVisible(false);
     }
 
 }

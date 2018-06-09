@@ -1,10 +1,14 @@
 package com.ark.bankingapplication;
 
+import com.ark.BankAccount;
+import com.ark.Customer;
+import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.AfterClass;
@@ -15,6 +19,8 @@ import org.testfx.framework.junit.ApplicationTest;
 import testutilities.BankUtilities;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
@@ -26,16 +32,24 @@ public class StartUpTest extends ApplicationTest {
     private static final String Residence = "TestResidence";
     private static final String BankId = "ABNA";
     private static final String URLBase = "http://localhost:1205/";
+    private static final String BankRabo = "RABO";
+    private static final String RABOUrl = "http://localhost:1200/";
     private static BankUtilities utilities;
     Controller controller;
+    Controller Rabo;
     private Scene scene;
     private StartUp startUp;
     private Dashboard dashboard;
+
+    private Customer rick;
+    private IBankAccount RicksAccount;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
         utilities = new BankUtilities();
         utilities.startBank(BankId, URLBase);
+        utilities.startBank(BankRabo, RABOUrl);
+
     }
 
     @AfterClass
@@ -44,14 +58,21 @@ public class StartUpTest extends ApplicationTest {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, NotBoundException {
 
         controller = new Controller(stage, BankId);
         controller.start();
 
+
         this.scene = controller.getScene();
         startUp = (StartUp) scene.lookup("#startUp");
         dashboard = (Dashboard) scene.lookup("#dashboard");
+
+        Rabo = new Controller(stage, BankRabo);
+        BankConnector bc = new BankConnector(Rabo);
+        bc.connect("RABO");
+        this.rick = new Customer("Rick", "Beek en Donk", "rick123");
+        this.RicksAccount = new BankAccount(rick, "RABO2821842127");
     }
 
     @Test
@@ -229,15 +250,13 @@ public class StartUpTest extends ApplicationTest {
         verifyThat(dashboard, isVisible());
         sleep(1000);
         Assert.assertEquals("Bankname should be: ABN AMRO", "ABN AMRO", bankName.getText());
-        Assert.assertEquals("balance should be: €0.0", "€0.0", balance.getText());
+        Assert.assertEquals("balance should be: €0,00", "€0,00", balance.getText());
         Assert.assertEquals("Name should be: Arthur ", "Arthur", Name.getText());
     }
 
     @Test
     public void TestAddBankAccount() {
-
-
-        sleep(1000);
+        sleep(500);
         clickOn("#loginButton");
         sleep(500);
         clickOn("OK");
@@ -246,15 +265,59 @@ public class StartUpTest extends ApplicationTest {
         sleep(1000);
         ComboBox bankAccountsList = (ComboBox) scene.lookup("#BankAccountsComboBox");
         int StartSize = bankAccountsList.getItems().size();
-
-        System.out.println(StartSize);
-
         clickOn("#addBankAccountButton");
-        sleep(5000);
+        sleep(1000);
         clickOn("OK");
         int newSize = bankAccountsList.getItems().size();
         System.out.println(newSize);
         Assert.assertEquals("Size of bankAccountsList should be 1 greater then " + StartSize, (StartSize + 1), newSize);
+    }
+
+    @Test
+    public void ExecuteTransaction() throws RemoteException {
+        sleep(500);
+        clickOn("#loginButton");
+        sleep(500);
+        clickOn("OK");
+        sleep(500);
+        verifyThat(dashboard, isVisible());
+        sleep(1000);
+
+        //After login set attributes
+        Label selectedBankNr = (Label) scene.lookup("#selectedBankNrLabel");
+        Label balance = (Label) scene.lookup("#balanceLabel");
+        ListView transactionsListView = (ListView) scene.lookup("#transactionsListView");
+
+        int StartSize = transactionsListView.getItems().size();
+        String myAccount = selectedBankNr.getText();
+        String ToAccount = this.RicksAccount.getNumber();
+        String ammountTo = "10";
+        String Descritpion = "Voor de Biertjes en de Tosti's!";
+
+
+        clickOn("#toBankAccountTextField").write(ToAccount);
+        clickOn("#amountFullTextField").write(ammountTo);
+        clickOn("#transactionDescriptionTextArea").write(Descritpion);
+        clickOn("#transactionButton");
+        sleep(1000);
+        clickOn("OK");
+        String newBalance = balance.getText();
+        Assert.assertEquals("Balance should be €-10,00", "€-10,00", newBalance);
+        int newSize = transactionsListView.getItems().size();
+        System.out.println(newSize);
+        Assert.assertEquals("Size of bankAccountsList should be 1 greater then " + StartSize, (StartSize + 1), newSize);
+    }
+
+    @Test
+    public void TestLogout() {
+        clickOn("#loginButton");
+        sleep(500);
+        clickOn("OK");
+        sleep(500);
+        verifyThat(dashboard, isVisible());
+        sleep(1000);
+        clickOn("#logoutButton");
+        verifyThat(startUp, isVisible());
     }
 
 }

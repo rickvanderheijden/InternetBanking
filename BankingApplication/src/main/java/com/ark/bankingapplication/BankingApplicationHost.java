@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 public class BankingApplicationHost extends Application {
@@ -13,8 +14,9 @@ public class BankingApplicationHost extends Application {
     public void start(Stage stage) throws Exception {
         List<String> parameters = getParameters().getRaw();
         Controller controller = new Controller(stage, parameters.get(0));
+        URL iconUrl = this.getClass().getResource("views/images/" + parameters.get(0) + "-ICON.png");
         File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + parameters.get(0) + "-ICON.png");
-        Image image = new Image(file.toURI().toString());
+        Image image = new Image(iconUrl.toString());
         stage.getIcons().add(image);
         controller.start();
     }

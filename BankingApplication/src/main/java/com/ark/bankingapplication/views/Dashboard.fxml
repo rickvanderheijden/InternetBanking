@@ -103,4 +103,92 @@
            </AnchorPane>
    </HBox>
     </AnchorPane>
+    <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="TrasactionPopupAnchorPane" layoutX="480.0" layoutY="500.0"
+                maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0"
+                prefWidth="350.0" styleClass="transaction-anchorpane" visible="false"
+                xmlns="http://javafx.com/javafx/9">
+        <children>
+            <GridPane layoutY="70.0" prefHeight="224.0" prefWidth="350.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="112.0"/>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="238.0" minWidth="10.0" prefWidth="238.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="115.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                    <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                    <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                    <RowConstraints maxHeight="180.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                    <RowConstraints maxHeight="180.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <children>
+                    <Label prefHeight="32.0" prefWidth="86.0" styleClass="text" text="Transactie type: ">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="transactionTypeLabel" styleClass="text" text="Label" GridPane.columnIndex="1">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Van:" GridPane.rowIndex="3">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="fromAccountLabel" prefHeight="17.0" prefWidth="140.0" styleClass="text" text="Label"
+                           GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Naar:" GridPane.rowIndex="4">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="toAccountLabel" prefHeight="17.0" prefWidth="151.0" styleClass="text" text="Label"
+                           GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Bedrag: " GridPane.rowIndex="2">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="dateLabel" styleClass="text" text="Label" GridPane.columnIndex="1"
+                           GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label styleClass="text" text="Datum: " GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                    <Label fx:id="TransactionAmountLabel" styleClass="text" text="Label" GridPane.columnIndex="1"
+                           GridPane.rowIndex="2">
+                        <GridPane.margin>
+                            <Insets left="20.0"/>
+                        </GridPane.margin>
+                    </Label>
+                </children>
+            </GridPane>
+            <Button fx:id="closeButton" layoutX="285.0" layoutY="12.0" mnemonicParsing="false" styleClass="ark-button"
+                    text="Sluiten"/>
+            <Label prefHeight="50.0" prefWidth="272.0" styleClass="title" text="Transactie Details">
+                <padding>
+                    <Insets left="20.0"/>
+                </padding>
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="descriptionLabel" layoutX="16.0" layoutY="290.0" prefHeight="35.0" prefWidth="320.0"
+                   styleClass="text" text="Label"/>
+        </children>
+    </AnchorPane>
 </fx:root>
