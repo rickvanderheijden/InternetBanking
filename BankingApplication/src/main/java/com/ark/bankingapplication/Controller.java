@@ -26,7 +26,6 @@ public class Controller {
 
     private final String bankId;
     private String sessionKey;
-    private Customer customer;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
@@ -118,9 +117,9 @@ public class Controller {
      */
     public ReturnObject registerUser(String name, String residence, String password) {
         try {
-            this.customer = this.bankConnector.createCustomer(name, residence, password);
-            if (this.customer == null) {
-                return new ReturnObject(false, "Registratie fout", "Er is een fout opgetreden tijdens de registratie!");
+            Customer customer = this.bankConnector.createCustomer(name, residence, password);
+            if (customer == null) {
+                return new ReturnObject(false, "Registratie fout", "Deze gebruiker bestaat al, Log in op je account");
             }
             try {
                 ReturnObject rt = this.login(name, residence, password);
@@ -208,10 +207,6 @@ public class Controller {
         return this.scene;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
     public void transactionExecuted() {
         Platform.runLater(() -> dashboard.updateBankAccount());
     }
@@ -223,5 +218,21 @@ public class Controller {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void sessionTerminated() {
+        Platform.runLater(() -> dashboard.sessionTerminated());
+
+
+    }
+
+    public boolean changeCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) {
+        try {
+            return this.bankConnector.setCreditLimit(sessionKey, selectedBankaccount, limit);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

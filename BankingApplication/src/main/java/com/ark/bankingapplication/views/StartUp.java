@@ -12,8 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
-import java.io.File;
-import java.rmi.NotBoundException;
+import java.net.URL;
 
 @SuppressWarnings("unused")
 public class StartUp extends View {
@@ -214,8 +213,9 @@ public class StartUp extends View {
     }
 
     public void setLogo(String bankId) {
-        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + bankId + "-ICON.png");
-        Image image = new Image(file.toURI().toString());
+        URL iconUrl = this.getClass().getResource("images/" + bankId + "-ICON.png");
+//        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + bankId + "-ICON.png");
+        Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(bankId);
         this.fillInputs(bankId);
