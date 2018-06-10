@@ -9,6 +9,7 @@
         <module name="Bank" />
         <module name="BankingApplication" />
         <module name="CentralBank" />
+        <module name="Database" />
         <module name="Interfaces" />
         <module name="TestUtilities" />
       </profile>

@@ -19,6 +19,7 @@
         <option value="$PROJECT_DIR$/BankingApplication/pom.xml" />
         <option value="$PROJECT_DIR$/TestUtilities/pom.xml" />
         <option value="$PROJECT_DIR$/Shared/pom.xml" />
+        <option value="$PROJECT_DIR$/Database/pom.xml" />
       </list>
     </option>
   </component>
