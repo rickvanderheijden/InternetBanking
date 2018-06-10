@@ -1,6 +1,5 @@
 package com.ark.bank;
 
-import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.Transaction;
 import fontyspublisher.RemotePublisher;
@@ -150,12 +149,12 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException {
+    public boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit) throws RemoteException {
         if (bankController == null) {
             return false;
         }
 
-        return bankController.setCreditLimit(sessionKey, bankAccount, limit);
+        return bankController.setCreditLimit(sessionKey, bankAccountNr, limit);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.ark;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -40,16 +43,6 @@ public class Transaction implements Serializable {
     }
 
     public Transaction() {
-    }
-
-
-    /**
-     * Returns a string representation of the object.
-     * @return A string representation of the object
-     */
-    @Override
-    public String toString() {
-        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0);
     }
 
     /**

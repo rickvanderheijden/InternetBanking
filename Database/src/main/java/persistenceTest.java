@@ -52,14 +52,29 @@ public class persistenceTest {
     }
 
     @Test
+    public void testTransaction() {
+
+    }
+    @Test
     public void testPersistTransaction(){
         long amount = 15;
         String description = "Test transaction";
         String accountFrom = "RABO123456789";
         String accountTo = "RABO987654321";
+        boolean result;
 
         Transaction t = new Transaction(amount, description, accountFrom, accountTo);
-        boolean result = p.persist(t);
+        try {
+            System.out.println(t.getAccountFrom() + " AccountFrom");
+            System.out.println(t.getAccountTo() + " AccountTo");
+            System.out.println(t.getDescription() + " description");
+            System.out.println(t.getAmount() + "amount");
+            result = p.persist(t);
+        } catch (Exception e) {
+            result = false;
+            System.out.println(e.getMessage());
+        }
+
 
         assertTrue(result);
 

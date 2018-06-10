@@ -16,6 +16,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * @author Arthur Doorgeest
+ */
 public class Controller {
     private final Stage stage;
     private final BankConnector bankConnector;
@@ -226,9 +229,9 @@ public class Controller {
 
     }
 
-    public boolean changeCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) {
+    public boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit) {
         try {
-            return this.bankConnector.setCreditLimit(sessionKey, selectedBankaccount, limit);
+            return this.bankConnector.setCreditLimit(sessionKey, bankAccountNr, limit);
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;

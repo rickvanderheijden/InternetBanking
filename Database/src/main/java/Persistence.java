@@ -46,6 +46,7 @@ public class Persistence {
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
             entityManager.getTransaction().rollback();
         } finally {
             return result;
