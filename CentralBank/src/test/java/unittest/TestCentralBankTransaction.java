@@ -3,12 +3,10 @@ package unittest;
 import com.ark.BankConnectionInfo;
 import com.ark.Transaction;
 import com.ark.centralbank.*;
-import com.ark.centralbank.ICentralBankRegister;
-import com.ark.centralbank.ICentralBankTransaction;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import unittest.stubs.BankConnectionStub;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,14 +16,16 @@ import static org.junit.Assert.assertTrue;
 public class TestCentralBankTransaction {
 
     private static ICentralBankTransaction centralBank;
+    private static final String BankAccountNumberABNA = "ABNA0123456789";
+    private static final String BankAccountNumberRABO = "RABO0123456789";
 
-    @BeforeClass
-    public static void setUpClass() {
-        centralBank = new CentralBank();
+    @Before
+    public void setUp() {
+        centralBank = new CentralBank(new BankConnectionStub());
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @After
+    public void tearDown() {
         centralBank = null;
     }
 
@@ -36,17 +36,16 @@ public class TestCentralBankTransaction {
     }
 
 
-    //TODO: DO THESE IN INTEGRATION TEST ??
     @Test
     public void testExecuteTransactionValidValuesBothNotRegistered() {
-        Transaction transaction = new Transaction(2100, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        Transaction transaction = new Transaction(2100, "This is a test transaction", BankAccountNumberABNA, BankAccountNumberRABO);
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionValidValuesAccountFromNotRegistered() {
-        Transaction transaction = new Transaction(2100, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        Transaction transaction = new Transaction(2100, "This is a test transaction", BankAccountNumberABNA, BankAccountNumberRABO);
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
@@ -56,20 +55,35 @@ public class TestCentralBankTransaction {
         ICentralBankRegister centralBankRegister = (ICentralBankRegister)centralBank;
         centralBankRegister.registerBank(new BankConnectionInfo("ABNA", ""));
 
-        Transaction transaction = new Transaction(2100, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        Transaction transaction = new Transaction(2100, "This is a test transaction", BankAccountNumberABNA, BankAccountNumberRABO);
         boolean result = centralBank.executeTransaction(transaction);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionValidValuesBothRegistered() {
-        //TODO: CREATE STUBS? OR DO IN INTEGRATION
         ICentralBankRegister centralBankRegister = (ICentralBankRegister)centralBank;
-        centralBankRegister.registerBank(new BankConnectionInfo("ABNA", ""));
-        centralBankRegister.registerBank(new BankConnectionInfo("RABO", ""));
+        centralBankRegister.registerBank(new BankConnectionInfo("ABNA", "ABNAURL"));
+        centralBankRegister.registerBank(new BankConnectionInfo("RABO", "RABOURL"));
 
-        Transaction transaction = new Transaction(2100, "This is a test transaction", "ABNA0123456789", "RABO0123456789");
+        Transaction transaction = new Transaction(2100, "This is a test transaction", BankAccountNumberABNA, BankAccountNumberRABO);
         boolean result = centralBank.executeTransaction(transaction);
         assertTrue(result);
+    }
+
+    @Test
+    public void testIsValidBankAccountNumber() {
+        testIsValidBankAccountNumber(true);
+    }
+
+    @Test
+    public void testIsValidBankAccountNumberNoBankConnection() {
+        centralBank = new CentralBank(null);
+        testIsValidBankAccountNumber(false);
+    }
+
+    private void testIsValidBankAccountNumber(boolean expectedResult) {
+        boolean result = centralBank.isValidBankAccountNumber(BankAccountNumberABNA);
+        assertEquals(expectedResult, result);
     }
 }

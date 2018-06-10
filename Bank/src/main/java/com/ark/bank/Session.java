@@ -1,5 +1,6 @@
 package com.ark.bank;
 
+import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -7,7 +8,7 @@ import java.util.UUID;
 /**
  * @author Rick van der Heijden
  */
-public class Session {
+public class Session extends Observable {
     private Timer timer;
     private final String customerName;
     private final String customerResidence;
@@ -25,7 +26,7 @@ public class Session {
      */
     public Session(int sessionTime, String customerName, String customerResidence) throws IllegalArgumentException {
 
-        if ((sessionTime < 0)
+        if ((sessionTime <= 0)
             || (customerName == null) || customerName.isEmpty()
             || (customerResidence == null) || customerResidence.isEmpty()){
             throw new IllegalArgumentException();
@@ -59,6 +60,9 @@ public class Session {
         if (isActive()) {
             stopTimer();
             result = true;
+
+            setChanged();
+            notifyObservers(new SessionTerminated(key.toString()));
         }
 
         return result;
@@ -96,8 +100,8 @@ public class Session {
     private class PeriodicTask extends TimerTask {
         @Override
         public void run() {
-            stopTimer();
-            active = false;
+            terminate();
         }
     }
 }
+

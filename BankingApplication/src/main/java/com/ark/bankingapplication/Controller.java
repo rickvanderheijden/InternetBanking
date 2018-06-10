@@ -1,10 +1,10 @@
 package com.ark.bankingapplication;
 
 import com.ark.Customer;
+import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
-import com.ark.Transaction;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,7 +26,6 @@ public class Controller {
 
     private final String bankId;
     private String sessionKey;
-    private Customer customer;
 
     public Controller(Stage stage, String bankId) throws RemoteException {
         this.stage = stage;
@@ -118,7 +117,10 @@ public class Controller {
      */
     public ReturnObject registerUser(String name, String residence, String password) {
         try {
-            this.customer = this.bankConnector.createCustomer(name, residence, password);
+            Customer customer = this.bankConnector.createCustomer(name, residence, password);
+            if (customer == null) {
+                return new ReturnObject(false, "Registratie fout", "Deze gebruiker bestaat al, Log in op je account");
+            }
             try {
                 ReturnObject rt = this.login(name, residence, password);
                 if (rt.isSuccess()) {
@@ -205,11 +207,32 @@ public class Controller {
         return this.scene;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
-
     public void transactionExecuted() {
         Platform.runLater(() -> dashboard.updateBankAccount());
+    }
+
+    public boolean logout(String sessionKey) {
+        try {
+            return this.bankConnector.logout(sessionKey);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void sessionTerminated() {
+        Platform.runLater(() -> dashboard.sessionTerminated());
+
+
+    }
+
+    public boolean changeCreditLimit(String sessionKey, IBankAccount selectedBankaccount, long limit) {
+        try {
+            return this.bankConnector.setCreditLimit(sessionKey, selectedBankaccount, limit);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
 
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
@@ -17,16 +19,28 @@ import static org.junit.Assert.*;
  */
 public class TestBankControllerExecuteTransaction {
 
-    private static final String Name = "TestName";
-    private static final String Password = "TestPassword";
-    private static final String Residence = "TestResidence";
+    private static final String Name = "Name";
+    private static final String Password = "Password";
+    private static final String Residence = "Residence";
     private static final String BankIdInternal = "TEST";
+    private final CentralBankConnectionStub centralBankConnectionStub = new CentralBankConnectionStub();
     private IBankController bankController;
-    private String sessionKey;
+    private String sessionKeyOne;
+    private String sessionKeyTwo;
+    private String sessionKeyThree;
+    private Customer customerOne;
+    private Customer customerTwo;
+    private Customer customerThree;
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, centralBankConnectionStub);
+        sessionKeyOne = "";
+        sessionKeyTwo = "";
+        sessionKeyThree = "";
+        customerOne = null;
+        customerTwo = null;
+        customerThree = null;
     }
 
     @After
@@ -36,124 +50,188 @@ public class TestBankControllerExecuteTransaction {
 
     @Test
     public void testExecuteTransactionNull() {
-        createCustomerAndLogin();
-        boolean result = bankController.executeTransaction(sessionKey, null);
+        createCustomerAndLogin(1);
+        boolean result = bankController.executeTransaction(sessionKeyOne, null);
         assertFalse(result);
     }
 
     @Test
     public void testExecuteTransactionAllValuesNull() {
-        createCustomerAndLogin();
+        createCustomerAndLogin(1);
         Transaction transaction = new Transaction();
-        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
         assertFalse(result);
     }
 
 
     @Test
     public void testExecuteTransactionAccountToNull() {
-        createCustomerAndLogin();
+        createCustomerAndLogin(1);
         Transaction transaction = new Transaction();
         setTransactionValues(transaction, 2295, "Description", "AccountFrom", null);
-        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
         assertFalse(result);
+        assertEquals(0, transactionsFrom.size());
     }
 
     @Test
     public void testExecuteTransactionDescriptionNull() {
-        createCustomerAndLogin();
+        createCustomerAndLogin(1);
         Transaction transaction = new Transaction();
         setTransactionValues(transaction, 2295, null, "AccountFrom", "AccountTo");
-        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
         assertFalse(result);
+        assertEquals(0, transactionsFrom.size());
+        assertEquals(0, transactionsTo.size());
     }
 
     @Test
     public void testExecuteTransactionAmountNull() {
         Transaction transaction = new Transaction();
         setTransactionValues(transaction, 0, "Description", "AccountFrom", "AccountTo");
-        boolean result = bankController.executeTransaction(sessionKey, transaction);
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
         assertFalse(result);
+        assertEquals(0, transactionsFrom.size());
+        assertEquals(0, transactionsTo.size());
     }
 
     @Test
     public void testExecuteTransactionValidValuesButWrongSessionKey() {
-        Customer customerOne   = bankController.createCustomer("Name1", "Residence1", "Password1");
-        Customer customerTwo   = bankController.createCustomer("Name2", "Residence2", "Password2");
-
-        String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
-        String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
+        createCustomerAndLogin(2);
 
         IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
         IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
 
         Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
         boolean result = bankController.executeTransaction(sessionKeyTwo, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
         assertFalse(result);
-        assertEquals(    0, bankAccountOne.getBalance());
-        assertEquals(    0, bankAccountTwo.getBalance());
+        assertEquals(0, bankAccountOne.getBalance());
+        assertEquals(0, bankAccountTwo.getBalance());
+        assertEquals(0, transactionsFrom.size());
+        assertEquals(0, transactionsTo.size());
+    }
+
+    @Test
+    public void testExecuteTransactionSameCustomerDifferentBankAccount() {
+        createCustomerAndLogin(1);
+
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne, customerOne);
+        IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyOne, customerOne);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
+        assertTrue(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals( 2100, bankAccountTwo.getBalance());
+        assertEquals(1, transactionsFrom.size());
+        assertEquals(1, transactionsTo.size());
+    }
+
+    @Test
+    public void testExecuteTransactionSameCustomerSameBankAccount() {
+        createCustomerAndLogin(1);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne, customerOne);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountOne.getNumber());
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
+        assertFalse(result);
+        assertEquals( 0, bankAccountOne.getBalance());
+        assertEquals(0, transactionsFrom.size());
+        assertEquals(0, transactionsTo.size());
+    }
+
+    @Test
+    public void testExecuteTransactionLocalFromOtherTo() {
+        createCustomerAndLogin(1);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne, customerOne);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), "OtherBank");
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        assertTrue(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals(    1, transactionsFrom.size());
+    }
+
+    @Test
+    public void testExecuteTransactionLocalToOtherFrom() {
+        createCustomerAndLogin(1);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne, customerOne);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", "OtherBank", bankAccountOne.getNumber());
+        boolean result = bankController.executeTransaction(transaction);
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
+        assertTrue(result);
+        assertEquals(2100, bankAccountOne.getBalance());
+        assertEquals(   1, transactionsTo.size());
     }
 
     @Test
     public void testExecuteTransactionValidValues() {
-        Customer customerOne   = bankController.createCustomer("Name1", "Residence1", "Password1");
-        Customer customerTwo   = bankController.createCustomer("Name2", "Residence2", "Password2");
-
-        String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
-        String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
+        createCustomerAndLogin(2);
 
         IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
         IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
 
         Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
         boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
         assertTrue(result);
         assertEquals(-2100, bankAccountOne.getBalance());
         assertEquals( 2100, bankAccountTwo.getBalance());
+        assertEquals(1, transactionsFrom.size());
+        assertEquals(1, transactionsTo.size());
+    }
+
+    @Test
+    public void testExecuteTransactionTwice() {
+        createCustomerAndLogin(2);
+
+        IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+
+        Transaction transaction = new Transaction(2100, "This is a test transaction", bankAccountOne.getNumber(), bankAccountTwo.getNumber());
+        boolean result = bankController.executeTransaction(sessionKeyOne, transaction);
+        List<Transaction> transactionsFrom = bankController.getTransactions(sessionKeyOne, transaction.getAccountFrom());
+        List<Transaction> transactionsTo = bankController.getTransactions(sessionKeyOne, transaction.getAccountTo());
+        assertTrue(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals( 2100, bankAccountTwo.getBalance());
+        assertEquals(1, transactionsFrom.size());
+        assertEquals(1, transactionsTo.size());
+
+        result = bankController.executeTransaction(sessionKeyOne, transaction);
+        assertFalse(result);
+        assertEquals(-2100, bankAccountOne.getBalance());
+        assertEquals( 2100, bankAccountTwo.getBalance());
+        assertEquals(1, transactionsFrom.size());
+        assertEquals(1, transactionsTo.size());
     }
 
     @Test
     public void testExecuteTransactionValidValuesMultiThreading() throws InterruptedException {
-        Customer customerOne   = bankController.createCustomer("Name1", "Residence1", "Password1");
-        Customer customerTwo   = bankController.createCustomer("Name2", "Residence2", "Password2");
-        Customer customerThree = bankController.createCustomer("Name3", "Residence3", "Password3");
-
-        String sessionKeyOne   = bankController.login("Name1", "Residence1", "Password1");
-        String sessionKeyTwo   = bankController.login("Name2", "Residence2", "Password2");
-        String sessionKeyThree = bankController.login("Name3", "Residence3", "Password3");
+        createCustomerAndLogin(3);
 
         IBankAccount bankAccountOne   = bankController.createBankAccount(sessionKeyOne,   customerOne);
         IBankAccount bankAccountTwo   = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
         IBankAccount bankAccountThree = bankController.createBankAccount(sessionKeyThree, customerThree);
 
-        Transaction transactionOne   = new Transaction(10, "This is a test transaction", bankAccountOne.getNumber(), bankAccountThree.getNumber());
-        Transaction transactionTwo   = new Transaction(10, "This is a test transaction", bankAccountTwo.getNumber(), bankAccountThree.getNumber());
-        Transaction transactionThree = new Transaction(10, "This is a test transaction", bankAccountThree.getNumber(), bankAccountOne.getNumber());
-        Transaction transactionFour  = new Transaction(10, "This is a test transaction", bankAccountThree.getNumber(), bankAccountTwo.getNumber());
-
-        Thread threadOne = new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                bankController.executeTransaction(sessionKeyOne, transactionOne);
-            }
-        });
-
-        Thread threadTwo = new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                bankController.executeTransaction(sessionKeyTwo, transactionTwo);
-            }
-        });
-
-        Thread threadThree = new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                bankController.executeTransaction(sessionKeyThree, transactionThree);
-            }
-        });
-
-        Thread threadFour = new Thread(() -> {
-            for (int i = 0; i < 1000; i++) {
-                bankController.executeTransaction(sessionKeyThree, transactionFour);
-            }
-        });
+        Thread threadOne   = new Thread(() -> executeAndCheckTransaction(sessionKeyOne,   bankAccountOne.getNumber(),   bankAccountThree.getNumber(), 1000));
+        Thread threadTwo   = new Thread(() -> executeAndCheckTransaction(sessionKeyTwo,   bankAccountTwo.getNumber(),   bankAccountThree.getNumber(), 1000));
+        Thread threadThree = new Thread(() -> executeAndCheckTransaction(sessionKeyThree, bankAccountThree.getNumber(), bankAccountOne.getNumber()  , 1000));
+        Thread threadFour  = new Thread(() -> executeAndCheckTransaction(sessionKeyThree, bankAccountThree.getNumber(), bankAccountTwo.getNumber()  , 1000));
 
         threadOne.start();
         threadTwo.start();
@@ -165,22 +243,94 @@ public class TestBankControllerExecuteTransaction {
         threadThree.join();
         threadFour.join();
 
+        List<Transaction> transactionsOne   = bankController.getTransactions(sessionKeyOne,   bankAccountOne.getNumber());
+        List<Transaction> transactionsTwo   = bankController.getTransactions(sessionKeyTwo,   bankAccountTwo.getNumber());
+        List<Transaction> transactionsThree = bankController.getTransactions(sessionKeyThree, bankAccountThree.getNumber());
+
         assertEquals( 0, bankAccountOne.getBalance());
         assertEquals( 0, bankAccountTwo.getBalance());
         assertEquals( 0, bankAccountThree.getBalance());
+
+        assertEquals(2000, transactionsOne.size());
+        assertEquals(2000, transactionsTwo.size());
+        assertEquals(4000, transactionsThree.size());
     }
 
-    private void createCustomerAndLogin() {
-        bankController.createCustomer(Name, Residence, Password);
-        sessionKey = bankController.login(Name, Residence, Password);
+    @Test
+    public void testGetTransactionsSessionKeyValid() {
+        createCustomerAndLogin(2);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        executeAndCheckTransaction(sessionKeyOne, bankAccountOne.getNumber(), bankAccountTwo.getNumber(), 1);
+
+        List<Transaction> transactionsOne = bankController.getTransactions(sessionKeyOne,   bankAccountOne.getNumber());
+        List<Transaction> transactionsTwo = bankController.getTransactions(sessionKeyTwo,   bankAccountTwo.getNumber());
+
+        assertEquals(1, transactionsOne.size());
+        assertEquals(1, transactionsTwo.size());
     }
 
+    @Test
+    public void testGetTransactionsSessionKeyInvalid() {
+        createCustomerAndLogin(2);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        executeAndCheckTransaction(sessionKeyOne, bankAccountOne.getNumber(), bankAccountTwo.getNumber(), 1);
+
+        List<Transaction> transactionsOne = bankController.getTransactions("Invalid",   bankAccountOne.getNumber());
+        assertEquals(0, transactionsOne.size());
+    }
+
+    @Test
+    public void testGetTransactionsSessionKeyNull() {
+        createCustomerAndLogin(2);
+        IBankAccount bankAccountOne = bankController.createBankAccount(sessionKeyOne,   customerOne);
+        IBankAccount bankAccountTwo = bankController.createBankAccount(sessionKeyTwo,   customerTwo);
+        executeAndCheckTransaction(sessionKeyOne, bankAccountOne.getNumber(), bankAccountTwo.getNumber(), 1);
+
+        List<Transaction> transactionsOne = bankController.getTransactions(null,   bankAccountOne.getNumber());
+        assertEquals(0, transactionsOne.size());
+    }
+
+    private void executeAndCheckTransaction(String sessionKey, String bankAccountFrom, String bankAccountTo, int numberOfTransactions) {
+        for (int i = 0; i < numberOfTransactions; i++) {
+            Transaction transaction = new Transaction(10, "This is a test transaction", bankAccountFrom, bankAccountTo);
+            boolean result = bankController.executeTransaction(sessionKey, transaction);
+            assertTrue(result);
+        }
+    }
+
+    private void createCustomerAndLogin(int numberOfCustomers) {
+        if (numberOfCustomers < 0) numberOfCustomers = 0;
+        if (numberOfCustomers > 3) numberOfCustomers = 3;
+
+        for (int index = 0; index < numberOfCustomers; index++) {
+            String number = Integer.toString(index);
+            String name = Name.concat(number);
+            String residence = Residence.concat(number);
+            String password = Password.concat(number);
+            switch (index) {
+                case 0:
+                    customerOne = bankController.createCustomer(name, residence, password);
+                    sessionKeyOne = bankController.login(name, residence, password);
+                    break;
+                case 1:
+                    customerTwo = bankController.createCustomer(name, residence, password);
+                    sessionKeyTwo = bankController.login(name, residence, password);
+                    break;
+                case 2:
+                    customerThree = bankController.createCustomer(name, residence, password);
+                    sessionKeyThree = bankController.login(name, residence, password);
+                    break;
+            }
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
     private void setTransactionValues(Transaction transaction, long amount, String description, String accountFrom, String accountTo) {
         if (amount > 0)          { transaction.setAmount(amount);           }
         if (description != null) { transaction.setDescription(description); }
         if (accountFrom != null) { transaction.setAccountFrom(accountFrom); }
         if (accountTo   != null) { transaction.setAccountTo(accountTo);     }
     }
-
-    //TODO: CHECK IF TRANSACTION EXIST AFTER SUCCESFUL. NOT WHEN NOT SUCCESFUL!!
 }

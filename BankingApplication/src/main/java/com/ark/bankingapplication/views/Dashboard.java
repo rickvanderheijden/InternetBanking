@@ -5,17 +5,25 @@ import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.TransactionList;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+
 import java.io.File;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Currency;
+import java.util.Date;
 import java.util.List;
 
 
@@ -43,6 +51,20 @@ public class Dashboard extends View {
     @FXML private Label bankNameLabel;
     @FXML private TextArea transactionDescriptionTextArea;
 
+    //Credit limit
+    @FXML private Button creditLimitButton;
+    @FXML private TextField creditLimitTextfield;
+
+    //Transaction Popup
+    @FXML private AnchorPane TrasactionPopupAnchorPane;
+    @FXML private Label transactionTypeLabel;
+    @FXML private Label fromAccountLabel;
+    @FXML private Label toAccountLabel;
+    @FXML private Label descriptionLabel;
+    @FXML private Label dateLabel;
+    @FXML private Label TransactionAmountLabel;
+    @FXML private Button closeButton;
+
     private Customer customer = null;
     private IBankAccount selectedBankaccount = null;
     private String bankId = null;
@@ -52,12 +74,18 @@ public class Dashboard extends View {
     private TransactionList transactions;
     private List<String> bankAccounts = null;
     private ObservableList<String> bankAccouts = FXCollections.observableArrayList();
+    private PseudoClass transactionType;
 
-    protected ListProperty<Transaction> listProperty = new SimpleListProperty<Transaction>();
 
     public Dashboard() throws ControlNotLoadedException {
         super("Dashboard.fxml");
-
+        toBankAccountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(this.selectedBankAccountNr)) {
+                this.transactionButton.setDisable(true);
+            } else {
+                this.transactionButton.setDisable(false);
+            }
+        });
         amountFullTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 amountFullTextField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -68,24 +96,62 @@ public class Dashboard extends View {
                 amountCentsTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
-        logoutButton.setOnAction(e -> doLogout());
+        creditLimitTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                creditLimitTextfield.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        this.creditLimitButton.setOnAction(e -> doChangeCreditLimit());
+        this.logoutButton.setOnAction(e -> doLogout());
         this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
-        transactionButton.setOnAction(e -> doTransaction());
-        BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+        this.transactionButton.setOnAction(e -> doTransaction());
+        this.BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             this.selectedBankAccountNr = newValue;
             this.setTransactions();
             updateBankAccount();
         });
+        this.closeButton.setOnAction(e -> closeTransactionPopup());
+
+        this.transactionsListView.setCellFactory(param -> new ListCell<Transaction>() {
+            @Override
+            protected void updateItem(Transaction transaction, boolean empty) {
+                super.updateItem(transaction, empty);
+
+                if (empty || transaction == null) {
+                    setText(null);
+                } else {
+                    String text = convertStringToDate(transaction.getDate());
+                    text += " | €" + String.valueOf(transaction.getAmount() / 100.0)  + " " +
+                            transaction.getAccountFrom() + " --> " + transaction.getAccountTo();
+
+                    setText(text);
+                }
+            }
+        });
+
+        this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
-        System.out.println(this.transactions.getReadOnlyList());
-
         this.transactionsListView.setItems(this.transactions.getReadOnlyList());
+        this.selectedBankNrLabel.setOnMouseClicked(event -> {
+            if(event.getButton().equals(MouseButton.PRIMARY)){
+                if(event.getClickCount() == 2){
+                    System.out.println("double clicked");
+                    final Clipboard clipboard = Clipboard.getSystemClipboard();
+                    final ClipboardContent content = new ClipboardContent();
+                    content.putString(this.selectedBankAccountNr);
+                    clipboard.setContent(content);
+                    showInfo("Bankrekening gekopieerd", "Bankrekening nummer gekopieerd naar clipboard: " + content.getString());
+                }
+            }
+        });
     }
 
-    public void initDashboard() {
-        /* TODO: Set customer information, get bankaccounts, if there is only 1, select that one. Show information on dashboard. */
 
+    /**
+     * Initiate Dashboard
+     */
+    public void initDashboard() {
         if (this.customer != null && this.sessionKey != null) {
             this.nameLabel.setText(customer.getName());
             this.bankAccounts = controller.getBankAccounts(this.sessionKey);
@@ -112,9 +178,13 @@ public class Dashboard extends View {
         this.bankId = bank;
     }
 
+    /**
+     * Set the sessionKey
+     *
+     * @param sessionKey string
+     */
     public void setSessionKey(String sessionKey) {
         this.sessionKey = sessionKey;
-        System.out.println(this.sessionKey);
     }
 
     public void setCustomer(Customer customer) {
@@ -122,15 +192,21 @@ public class Dashboard extends View {
     }
 
     public void setLogo() {
-        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png");
-        Image image = new Image(file.toURI().toString());
+        URL iconUrl = this.getClass().getResource("images/" + this.bankId + "-ICON.png");
+        String path = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png").getAbsolutePath();
+        File file = new File(path);
+        Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(this.bankId);
-
-
     }
+
     private void doLogout() {
-        controller.showStartUp();
+        try {
+            boolean logout = this.controller.logout(this.sessionKey);
+            controller.showStartUp();
+        } catch (Exception e) {
+            controller.showStartUp();
+        }
     }
 
     private void doAddBankAccount() {
@@ -147,11 +223,15 @@ public class Dashboard extends View {
 
     public void updateBankAccount() {
         IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
-        long balance = selectedBankaccount.getBalance();
-        double balanced = balance / 100.0;
-        this.balanceLabel.setText("€" + String.valueOf(balanced));
-        this.selectedBankNrLabel.setText(selectedBankAccountNr);
-        this.setTransactions();
+        if (selectedBankaccount != null) {
+            long balance = selectedBankaccount.getBalance();
+            double balanced = balance / 100.0;
+            String balanceText = this.customFormat(balanced);
+            this.balanceLabel.setText("€" + balanceText);
+            this.selectedBankNrLabel.setText(selectedBankAccountNr);
+            this.creditLimitTextfield.setText(String.valueOf(selectedBankaccount.getCreditLimit()/100));
+            this.setTransactions();
+        }
     }
 
     private void setBankAccounts() {
@@ -167,26 +247,19 @@ public class Dashboard extends View {
     }
 
     private void setTransactions() {
-        if (this.getTransactions() != null) {
-            for (Transaction transaction : this.getTransactions()) {
-                System.out.println(transaction.toString());
+        List<Transaction> newTransactions = this.getTransactions();
+        if (newTransactions != null) {
+            this.transactions.clear();
+            for (Transaction transaction : newTransactions) {
                 this.transactions.add(transaction);
             }
-//            this.transactionListView.setItems(this.transactions);
-        } else {
-            System.out.println(this.transactions);
-//            this.transactionListView.getItems().removeAll();
-//            this.transactionListView.getItems().addAll(this.transactions);
-//            this.transactionListView.setItems(this.transactions);
         }
         if (this.transactions.getSize() > 0) {
             ObservableList<Transaction> readOnly = transactions.getReadOnlyList();
             this.transactionsListView.setItems(readOnly);
-            //this.transactionListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         }
-
-
     }
+
 
     private void doTransaction() {
         String toBankAccount = toBankAccountTextField.getText();
@@ -208,12 +281,20 @@ public class Dashboard extends View {
             amount = (full * 100) + cents;
             Transaction transaction = new Transaction(amount, description, selectedBankAccountNr, toBankAccount);
             if (controller.executeTransaction(sessionKey, transaction)) {
-                showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + "is overgemaakt aan : " + toBankAccount);
+                showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + " is overgemaakt aan : " + toBankAccount);
+                this.clearInputs();
                 this.updateBankAccount();
             } else {
                 showWarning("Transactie mislukt", "Er is een fout opgetreden bij het verwerken van de transactie, probeer het op een later moment nog eens!");
             }
         }
+    }
+
+    private void clearInputs() {
+        toBankAccountTextField.clear();
+        amountFullTextField.clear();
+        amountCentsTextField.clear();
+        transactionDescriptionTextArea.clear();
     }
 
     @SuppressWarnings("Duplicates")
@@ -234,8 +315,61 @@ public class Dashboard extends View {
     }
 
     private void selectedTransactionChanged(ObservableValue<? extends Transaction> ov, Transaction oldTransaction, Transaction newTransaction) {
-        // TODO: toon transaction info
-        System.out.println(newTransaction);
+        if (newTransaction.getAccountFrom().equals(selectedBankAccountNr)) {
+            transactionTypeLabel.setText("Uitgaand");
+        } else {
+            transactionTypeLabel.setText("Inkomend");
+        }
+        fromAccountLabel.setText(newTransaction.getAccountFrom());
+        toAccountLabel.setText(newTransaction.getAccountTo());
+        descriptionLabel.setText(newTransaction.getDescription());
+        dateLabel.setText(convertStringToDate(newTransaction.getDate()));
+        TransactionAmountLabel.setText(customFormat((newTransaction.getAmount() / 100)));
+        this.TrasactionPopupAnchorPane.setVisible(true);
 
+
+    }
+
+    /**
+     * Method to fix the decimal format
+     * @param value double
+     * @return String of the pretty printed amount
+     */
+    public String customFormat(double value) {
+        DecimalFormat df = new DecimalFormat("##,###,##0.00");
+        df.setCurrency(Currency.getInstance("EUR"));
+        return df.format(value);
+    }
+
+    /**
+     * Close the transaction popup
+     */
+    private void closeTransactionPopup() {
+        this.TrasactionPopupAnchorPane.setVisible(false);
+    }
+
+    public void sessionTerminated() {
+        showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw!");
+        this.doLogout();
+    }
+
+    private void doChangeCreditLimit() {
+        long newLimit = Long.parseLong(creditLimitTextfield.getText());
+        boolean succes = controller.changeCreditLimit(this.sessionKey, this.selectedBankaccount, (newLimit * 100));
+        System.out.println(succes);
+    }
+
+    public String convertStringToDate(Date indate) {
+        String dateString = null;
+        SimpleDateFormat sdfr = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        /*you can also use DateFormat reference instead of SimpleDateFormat
+         * like this: DateFormat df = new SimpleDateFormat("dd/MMM/yyyy");
+         */
+        try {
+            dateString = sdfr.format(indate);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return dateString;
     }
 }

@@ -1,7 +1,10 @@
 package com.ark.bank;
 
-import com.ark.*;
+import com.ark.BankAccount;
+import com.ark.Customer;
+import com.ark.Transaction;
 import fontyspublisher.RemotePublisher;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -25,12 +28,12 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         this.bankController = bankController;
         remotePublisher = new RemotePublisher();
         remotePublisher.registerProperty("transactionExecuted");
+        remotePublisher.registerProperty("sessionTerminated");
 
         String bankId = "";
         if (bankController != null) {
 
-            //TODO: Do this is a better way
-            ((Observable)bankController).addObserver(this);
+            bankController.addObserver(this);
             bankId = bankController.getBankId();
         }
 
@@ -77,6 +80,10 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public IBankAccount createBankAccount(String sessionKey, Customer owner) {
+        if (bankController == null) {
+            return null;
+        }
+
         return bankController.createBankAccount(sessionKey, owner);
     }
 
@@ -98,9 +105,6 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
         return bankController.createCustomer(name, residence, password);
     }
 
-
-    //TODO: ONLY FOR CURRENT CUSTOMER? IN THAT CASE, NAME AND RESIDENCE CAN BE REMOVED
-    @Override
     public Customer getCustomer(String sessionKey, String name, String residence) {
         if (bankController == null) {
             return null;
@@ -146,6 +150,15 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
+    public boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit) throws RemoteException {
+        if (bankController == null) {
+            return false;
+        }
+
+        return bankController.setCreditLimit(sessionKey, bankAccount, limit);
+    }
+
+    @Override
     public String login(String name, String residence, String password) {
         if (bankController == null) {
             return null;
@@ -165,10 +178,23 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
     @Override
     public void update(Observable o, Object arg) {
-        try {
-            remotePublisher.inform("transactionExecuted", null, null);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if (o instanceof BankController) {
+            if (arg instanceof SessionTerminated) {
+                SessionTerminated sessionTerminated = (SessionTerminated) arg;
+                try {
+                    remotePublisher.inform("sessionTerminated", sessionTerminated.getSessionKey(), null);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (arg instanceof TransactionExecuted){
+                try {
+                    remotePublisher.inform("transactionExecuted", null, null);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

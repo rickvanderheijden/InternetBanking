@@ -32,7 +32,6 @@ public class Transaction implements Serializable {
             || (accountTo == null) || accountTo.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
         this.amount = amount;
         this.description = description;
         this.accountFrom = accountFrom;

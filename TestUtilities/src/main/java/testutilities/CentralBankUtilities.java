@@ -41,7 +41,7 @@ public class CentralBankUtilities {
         String jarPath;
         String jrePath = System.getProperty("java.home");
         String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.indexOf("win") >= 0) {
+        if (OS.contains("win")) {
             jarPath = "..\\out\\artifacts\\CentralBank_jar\\";
             javaPath = jrePath + "\\bin\\java.exe";
         } else {
@@ -53,7 +53,7 @@ public class CentralBankUtilities {
 
         waitForConnection();
 
-        URL wsdlURL = null;
+        URL wsdlURL;
         try {
             wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
         } catch (MalformedURLException e) {
