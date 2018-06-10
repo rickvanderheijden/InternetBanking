@@ -26,11 +26,9 @@ public class StartUp extends View {
     @FXML private Button loginButton;
     @FXML private AnchorPane startAnchorPane;
     @FXML private AnchorPane startUp;
-    @FXML
-    private VBox loginVBox;
+    @FXML private VBox loginVBox;
     @FXML private Label goToRegisterPane;
-    @FXML
-    private VBox registerVBox;
+    @FXML private VBox registerVBox;
     @FXML private TextField registernameTextField;
     @FXML private TextField registerResidenceTextField;
     @FXML private PasswordField registerPasswordField;
@@ -38,10 +36,8 @@ public class StartUp extends View {
     @FXML private Button registerButton;
     @FXML private Label toLoginPane;
     @FXML private Label registerErrorMessagesLabel;
-    @FXML
-    private Label bankNameLabel;
-    @FXML
-    private ImageView bankLogo;
+    @FXML private Label bankNameLabel;
+    @FXML private ImageView bankLogo;
 
     public StartUp() throws ControlNotLoadedException {
         super("StartUp.fxml");

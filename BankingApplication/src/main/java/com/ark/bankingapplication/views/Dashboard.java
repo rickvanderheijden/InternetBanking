@@ -111,7 +111,6 @@ public class Dashboard extends View {
             updateBankAccount();
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
-
         this.transactionsListView.setCellFactory(param -> new ListCell<Transaction>() {
             @Override
             protected void updateItem(Transaction transaction, boolean empty) {
@@ -125,10 +124,19 @@ public class Dashboard extends View {
                             transaction.getAccountFrom() + " --> " + transaction.getAccountTo();
 
                     setText(text);
+                    System.out.println(transaction.getAccountFrom());
+                    System.out.println(selectedBankAccountNr);
+                    if(transaction.getAccountFrom() != null && selectedBankAccountNr != null){
+                        if(transaction.getAccountFrom().equals(selectedBankAccountNr)){
+                            getStyleClass().add("outgoing");
+                        }else{
+                            getStyleClass().add("incoming");
+                        }
+                    }
+
                 }
             }
         });
-
         this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
