@@ -120,12 +120,10 @@ public class Dashboard extends View {
                     setText(null);
                 } else {
                     String text = convertStringToDate(transaction.getDate());
-                    text += " | €" + String.valueOf(transaction.getAmount() / 100.0)  + " " +
+                    text += " | €" + customFormat(transaction.getAmount() / 100.0)  + " " +
                             transaction.getAccountFrom() + " --> " + transaction.getAccountTo();
 
                     setText(text);
-                    System.out.println(transaction.getAccountFrom());
-                    System.out.println(selectedBankAccountNr);
                     if(transaction.getAccountFrom() != null && selectedBankAccountNr != null){
                         if(transaction.getAccountFrom().equals(selectedBankAccountNr)){
                             getStyleClass().add("outgoing");
@@ -357,7 +355,7 @@ public class Dashboard extends View {
     }
 
     public void sessionTerminated() {
-        showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw!");
+        showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw in!");
         this.doLogout();
     }
 
