@@ -1,7 +1,7 @@
 package com.ark.bank;
 
+import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.Transaction;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -98,17 +98,17 @@ public interface IBankForClientSession extends Remote {
      * @return List of transactions. Will be empty (not null) if parameters are not valid.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) throws RemoteException;
+    List<BankTransaction> getTransactions(String sessionKey, String bankAccountNumber) throws RemoteException;
 
     /**
-     * Executes a transaction. The owner of the sessionKey should match the owner of the
+     * Executes a bankTransaction. The owner of the sessionKey should match the owner of the
      * bank account that is used to get the money from.
      * @param sessionKey The session key that is given after a succesful login. It should be valid and active.
-     * @param transaction This is the transaction which holds the amount and banknumbers. Should have valid entries and can not be null.
-     * @return True if the transaction can be executed succesfully (on both receiving and sending ends), false otherwise.
+     * @param bankTransaction This is the bankTransaction which holds the amount and banknumbers. Should have valid entries and can not be null.
+     * @return True if the bankTransaction can be executed succesfully (on both receiving and sending ends), false otherwise.
      * @throws RemoteException Thrown when remote method call fails.
      */
-    boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException;
+    boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) throws RemoteException;
 
     /**
      * Sets the credit limit of the user to the given amount.

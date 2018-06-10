@@ -56,19 +56,19 @@ public class CentralBank implements ICentralBankRegister, ICentralBankTransactio
     }
 
     @Override
-    public boolean executeTransaction(Transaction transaction) {
-        if ((bankConnection == null) || (transaction == null)) {
+    public boolean executeTransaction(BankTransaction bankTransaction) {
+        if ((bankConnection == null) || (bankTransaction == null)) {
             return false;
         }
 
-        String bankIdFrom = getBankId(transaction.getAccountFrom());
-        String bankIdTo = getBankId(transaction.getAccountTo());
+        String bankIdFrom = getBankId(bankTransaction.getAccountFrom());
+        String bankIdTo = getBankId(bankTransaction.getAccountTo());
 
         if (!isBankRegistered(bankIdFrom) && !isBankRegistered(bankIdTo)) {
             return false;
         }
 
-        return bankConnection.executeTransaction(bankIdTo, transaction);
+        return bankConnection.executeTransaction(bankIdTo, bankTransaction);
     }
 
     @Override

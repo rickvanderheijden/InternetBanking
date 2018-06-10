@@ -4,7 +4,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.ark.BankAccount</class>
         <class>com.ark.Customer</class>
-        <class>com.ark.Transaction</class>
+        <class>com.ark.BankTransaction</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/bank"/>
             <property name="javax.persistence.jdbc.user" value=""/>

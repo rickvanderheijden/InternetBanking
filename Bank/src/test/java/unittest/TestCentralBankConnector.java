@@ -1,6 +1,6 @@
 package unittest;
 
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.ark.bank.CentralBankConnector;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +46,8 @@ public class TestCentralBankConnector {
     }
 
     private void testCentralBankConnectorExecuteTransaction(boolean expectedResult) {
-        Transaction transaction = new Transaction(1000, "Description", BankAccountNumber, BankAccountNumber);
-        boolean result = centralBankConnector.executeTransaction(transaction);
+        BankTransaction bankTransaction = new BankTransaction(1000, "Description", BankAccountNumber, BankAccountNumber);
+        boolean result = centralBankConnector.executeTransaction(bankTransaction);
         assertEquals(expectedResult, result);
     }
     private void testCentralBankConnectorIsValidBankAccountNumber(boolean expectedResult) {

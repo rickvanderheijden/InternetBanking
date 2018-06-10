@@ -1,6 +1,6 @@
 package unittest;
 
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.ark.bank.*;
 import com.ark.Customer;
 import org.junit.After;
@@ -188,31 +188,31 @@ public class TestGUIConnector {
 
     @Test
     public void testGetTransactions() {
-        List<Transaction> transactions = guiConnector.getTransactions(SessionKey, BankAccountNumber);
-        assertNotNull(transactions);
-        assertEquals(1, transactions.size());
+        List<BankTransaction> bankTransactions = guiConnector.getTransactions(SessionKey, BankAccountNumber);
+        assertNotNull(bankTransactions);
+        assertEquals(1, bankTransactions.size());
     }
 
     @Test
     public void testGetTransactionsWithNoBankController() throws RemoteException {
         guiConnector = new GUIConnector(null);
-        List<Transaction> transactions = guiConnector.getTransactions(SessionKey, BankAccountNumber);
-        assertNotNull(transactions);
-        assertEquals(0, transactions.size());
+        List<BankTransaction> bankTransactions = guiConnector.getTransactions(SessionKey, BankAccountNumber);
+        assertNotNull(bankTransactions);
+        assertEquals(0, bankTransactions.size());
     }
 
     @Test
     public void testExecuteTransaction() {
-        Transaction transaction = new Transaction(1200, "Description", BankAccountNumber, BankAccountNumber);
-        boolean result = guiConnector.executeTransaction(SessionKey, transaction);
+        BankTransaction bankTransaction = new BankTransaction(1200, "Description", BankAccountNumber, BankAccountNumber);
+        boolean result = guiConnector.executeTransaction(SessionKey, bankTransaction);
         assertTrue(result);
     }
 
     @Test
     public void testExecuteTransactionWithNoBankController() throws RemoteException {
         guiConnector = new GUIConnector(null);
-        Transaction transaction = new Transaction(1200, "Description", BankAccountNumber, BankAccountNumber);
-        boolean result = guiConnector.executeTransaction(SessionKey, transaction);
+        BankTransaction bankTransaction = new BankTransaction(1200, "Description", BankAccountNumber, BankAccountNumber);
+        boolean result = guiConnector.executeTransaction(SessionKey, bankTransaction);
         assertFalse(result);
     }
 }

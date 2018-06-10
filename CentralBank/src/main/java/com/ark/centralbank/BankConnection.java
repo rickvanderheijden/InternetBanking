@@ -1,7 +1,7 @@
 package com.ark.centralbank;
 
 import com.ark.BankConnectionInfo;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.ark.bank.IBankForCentralBank;
 
 import javax.xml.namespace.QName;
@@ -19,9 +19,9 @@ public class BankConnection implements IBankConnection {
     }
 
     @Override
-    public boolean executeTransaction(String bankId, Transaction transaction) {
+    public boolean executeTransaction(String bankId, BankTransaction bankTransaction) {
         if (bankForCentralBanks.containsKey(bankId)) {
-            return bankForCentralBanks.get(bankId).executeTransaction(transaction);
+            return bankForCentralBanks.get(bankId).executeTransaction(bankTransaction);
         }
 
         return false;

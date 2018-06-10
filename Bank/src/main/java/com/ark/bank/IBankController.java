@@ -1,8 +1,8 @@
 package com.ark.bank;
 
 import com.ark.BankConnectionInfo;
+import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.Transaction;
 
 import java.util.List;
 import java.util.Observer;
@@ -24,8 +24,8 @@ public interface IBankController {
     IBankAccount getBankAccount(String sessionKey, String bankAccountNumber);
 
     List<String> getBankAccountNumbers(String sessionKey);
-    boolean executeTransaction(Transaction transaction);
-    boolean executeTransaction(String sessionKey, Transaction transaction);
+    boolean executeTransaction(BankTransaction bankTransaction);
+    boolean executeTransaction(String sessionKey, BankTransaction bankTransaction);
 
     /**
      * Set the default time (in milliseconds) in which the session will expire.
@@ -80,7 +80,7 @@ public interface IBankController {
      * @param bankAccountNumber This is the bank account number. Can not be null or empty.
      * @return List of transactions. Will be empty (not null) if parameters are not valid.
      */
-    List<Transaction> getTransactions(String sessionKey, String bankAccountNumber);
+    List<BankTransaction> getTransactions(String sessionKey, String bankAccountNumber);
 
     /**
      * Adds an observer to the object. Normally done by extending the class with the Observable class.

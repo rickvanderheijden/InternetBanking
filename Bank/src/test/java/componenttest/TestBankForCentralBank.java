@@ -1,7 +1,7 @@
 package componenttest;
 
+import com.ark.BankTransaction;
 import com.ark.bank.IBankForCentralBank;
-import com.ark.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,8 +41,8 @@ public class TestBankForCentralBank {
 
     @Test
     public void testExecuteTransactionAllValuesNull() {
-        Transaction transaction = new Transaction();
-        boolean result = bank.executeTransaction(transaction);
+        BankTransaction bankTransaction = new BankTransaction();
+        boolean result = bank.executeTransaction(bankTransaction);
         assertFalse(result);
     }
 }

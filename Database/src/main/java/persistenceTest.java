@@ -1,6 +1,6 @@
 import com.ark.BankAccount;
+import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.Transaction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,30 +52,14 @@ public class persistenceTest {
     }
 
     @Test
-    public void testTransaction() {
-
-    }
-    @Test
     public void testPersistTransaction(){
         long amount = 15;
         String description = "Test transaction";
         String accountFrom = "RABO123456789";
         String accountTo = "RABO987654321";
-        boolean result;
 
-        Transaction t = new Transaction(amount, description, accountFrom, accountTo);
-        try {
-            System.out.println(t.getAccountFrom() + " AccountFrom");
-            System.out.println(t.getAccountTo() + " AccountTo");
-            System.out.println(t.getDescription() + " description");
-            System.out.println(t.getAmount() + "amount");
-            result = p.persist(t);
-        } catch (Exception e) {
-            result = false;
-            System.out.println(e.getMessage());
-        }
-
-
+        BankTransaction t = new BankTransaction(amount, description, accountFrom, accountTo);
+        boolean result = p.persist(t);
         assertTrue(result);
 
         p.delete(t);
@@ -214,44 +198,44 @@ public class persistenceTest {
 
         p.delete(c1);
     }
-//
-//    @Test
-//    public void testGetPersistTransaction(){
-//        long amount = 15;
-//        String description = "Test transaction";
-//        String accountFrom1 = "RABO123456789";
-//        String accountTo1 = "RABO987654321";
-//
-//        String accountFrom2 = "RABO000000000";
-//        String accountTo2 = "SNSB123456789";
-//
-//        String accountFrom3 = "SNSB123456789";
-//        String accountTo3 = "RABO123456789";
-//
-//        Transaction tr1 = new Transaction(amount, description, accountFrom1, accountTo1);
-//        Transaction tr2 = new Transaction(amount, description, accountFrom2, accountTo2);
-//
-//        p.persist(tr1);
-//        p.persist(tr2);
-//
-//        List<Transaction> trl1 = p.getPersistTransaction("RABO123456789");
-//        assertEquals(1, trl1.size());
-//
-//        Transaction tr3 = new Transaction(amount, description, accountFrom3, accountTo3);
-//        p.persist(tr3);
-//
-//        List<Transaction> trl2 = p.getPersistTransaction("RABO123456789");
-//        assertEquals(2, trl2.size());
-//
-//        p.delete(tr1);
-//        p.delete(tr2);
-//        p.delete(tr3);
-//    }
 
-//    @Test
-//    public void testGetPersistTransactionNULL(){
-//
-//        List<Transaction> tr = p.getPersistTransaction("RABO123456789");
-//        assertEquals(0, tr.size());
-//    }
+    @Test
+    public void testGetPersistTransaction(){
+        long amount = 15;
+        String description = "Test transaction";
+        String accountFrom1 = "RABO123456789";
+        String accountTo1 = "RABO987654321";
+
+        String accountFrom2 = "RABO000000000";
+        String accountTo2 = "SNSB123456789";
+
+        String accountFrom3 = "SNSB123456789";
+        String accountTo3 = "RABO123456789";
+
+        BankTransaction tr1 = new BankTransaction(amount, description, accountFrom1, accountTo1);
+        BankTransaction tr2 = new BankTransaction(amount, description, accountFrom2, accountTo2);
+
+        p.persist(tr1);
+        p.persist(tr2);
+
+        List<BankTransaction> trl1 = p.getPersistTransaction("RABO123456789");
+        assertEquals(1, trl1.size());
+
+        BankTransaction tr3 = new BankTransaction(amount, description, accountFrom3, accountTo3);
+        p.persist(tr3);
+
+        List<BankTransaction> trl2 = p.getPersistTransaction("RABO123456789");
+        assertEquals(2, trl2.size());
+
+        p.delete(tr1);
+        p.delete(tr2);
+        p.delete(tr3);
+    }
+
+    @Test
+    public void testGetPersistTransactionNULL(){
+
+        List<BankTransaction> tr = p.getPersistTransaction("RABO123456789");
+        assertEquals(0, tr.size());
+    }
 }

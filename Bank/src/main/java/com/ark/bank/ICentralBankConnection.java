@@ -1,10 +1,10 @@
 package com.ark.bank;
 
 import com.ark.BankConnectionInfo;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 
 public interface ICentralBankConnection {
     boolean registerBank(BankConnectionInfo bankConnectionInfo);
-    boolean executeTransaction(Transaction transaction);
+    boolean executeTransaction(BankTransaction bankTransaction);
     boolean isValidBankAccountNumber(String accountNumber);
 }

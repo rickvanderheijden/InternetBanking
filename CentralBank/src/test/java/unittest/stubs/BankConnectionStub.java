@@ -1,7 +1,7 @@
 package unittest.stubs;
 
 import com.ark.BankConnectionInfo;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.ark.centralbank.IBankConnection;
 
 import java.util.HashSet;
@@ -12,9 +12,9 @@ public class BankConnectionStub implements IBankConnection {
     private final Set<String> bankIds = new HashSet<>();
 
     @Override
-    public boolean executeTransaction(String bankId, Transaction transaction) {
-        return (bankIds.contains(getBankId(transaction.getAccountFrom()))
-            && bankIds.contains(getBankId(transaction.getAccountTo())));
+    public boolean executeTransaction(String bankId, BankTransaction bankTransaction) {
+        return (bankIds.contains(getBankId(bankTransaction.getAccountFrom()))
+            && bankIds.contains(getBankId(bankTransaction.getAccountTo())));
     }
 
     @Override

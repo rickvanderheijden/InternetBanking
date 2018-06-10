@@ -3,7 +3,7 @@ package unittest.stubs;
 import com.ark.BankAccount;
 import com.ark.BankConnectionInfo;
 import com.ark.Customer;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankController;
 
@@ -66,12 +66,12 @@ public class BankControllerStub implements IBankController {
     }
 
     @Override
-    public boolean executeTransaction(Transaction transaction) {
+    public boolean executeTransaction(BankTransaction bankTransaction) {
         return true;
     }
 
     @Override
-    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+    public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) {
         return true;
     }
 
@@ -110,10 +110,10 @@ public class BankControllerStub implements IBankController {
     }
 
     @Override
-    public List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) {
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(new Transaction(1200, "Description", bankAccountNumber, bankAccountNumber));
-        return transactions;
+    public List<BankTransaction> getTransactions(String sessionKey, String bankAccountNumber) {
+        List<BankTransaction> bankTransactions = new ArrayList<>();
+        bankTransactions.add(new BankTransaction(1200, "Description", bankAccountNumber, bankAccountNumber));
+        return bankTransactions;
     }
 
     @Override

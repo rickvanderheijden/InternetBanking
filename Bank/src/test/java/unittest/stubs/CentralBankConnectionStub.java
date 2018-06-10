@@ -1,7 +1,7 @@
 package unittest.stubs;
 
 import com.ark.BankConnectionInfo;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.ark.bank.ICentralBankConnection;
 
 /**
@@ -15,7 +15,7 @@ public class CentralBankConnectionStub implements ICentralBankConnection {
     }
 
     @Override
-    public boolean executeTransaction(Transaction transaction) {
+    public boolean executeTransaction(BankTransaction bankTransaction) {
         return true;
     }
 

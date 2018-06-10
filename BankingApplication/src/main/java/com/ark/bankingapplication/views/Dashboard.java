@@ -1,7 +1,7 @@
 package com.ark.bankingapplication.views;
 
+import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.TransactionList;
 import com.ark.bankingapplication.exceptions.ControlNotLoadedException;
@@ -43,7 +43,7 @@ public class Dashboard extends View {
     @FXML private AnchorPane dashboardPane;
     @FXML private ImageView bankLogo;
     @FXML private Button addBankAccountButton;
-    @FXML private ListView<Transaction> transactionsListView;
+    @FXML private ListView<BankTransaction> transactionsListView;
     @FXML private Label selectedBankNrLabel;
     @FXML private Button transactionButton;
     @FXML private Button logoutButton;
@@ -54,7 +54,7 @@ public class Dashboard extends View {
     @FXML private Button creditLimitButton;
     @FXML private TextField creditLimitTextfield;
 
-    //Transaction Popup
+    //BankTransaction Popup
     @FXML private AnchorPane TrasactionPopupAnchorPane;
     @FXML private Label transactionTypeLabel;
     @FXML private Label fromAccountLabel;
@@ -110,21 +110,21 @@ public class Dashboard extends View {
             updateBankAccount();
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
-        this.transactionsListView.setCellFactory(param -> new ListCell<Transaction>() {
+        this.transactionsListView.setCellFactory(param -> new ListCell<BankTransaction>() {
             @Override
-            protected void updateItem(Transaction transaction, boolean empty) {
-                super.updateItem(transaction, empty);
+            protected void updateItem(BankTransaction bankTransaction, boolean empty) {
+                super.updateItem(bankTransaction, empty);
 
-                if (empty || transaction == null) {
+                if (empty || bankTransaction == null) {
                     setText(null);
                 } else {
-                    String text = convertStringToDate(transaction.getDate());
-                    text += " | €" + customFormat(transaction.getAmount() / 100.0)  + " " +
-                            transaction.getAccountFrom() + " --> " + transaction.getAccountTo();
+                    String text = convertStringToDate(bankTransaction.getDate());
+                    text += " | €" + customFormat(bankTransaction.getAmount() / 100.0)  + " " +
+                            bankTransaction.getAccountFrom() + " --> " + bankTransaction.getAccountTo();
 
                     setText(text);
-                    if(transaction.getAccountFrom() != null && selectedBankAccountNr != null){
-                        if(transaction.getAccountFrom().equals(selectedBankAccountNr)){
+                    if(bankTransaction.getAccountFrom() != null && selectedBankAccountNr != null){
+                        if(bankTransaction.getAccountFrom().equals(selectedBankAccountNr)){
                             getStyleClass().add("outgoing");
                         }else{
                             getStyleClass().add("incoming");
@@ -136,7 +136,7 @@ public class Dashboard extends View {
         });
         this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
-        this.transactions.add(new Transaction());
+        this.transactions.add(new BankTransaction());
         this.transactionsListView.setItems(this.transactions.getReadOnlyList());
         this.selectedBankNrLabel.setOnMouseClicked(event -> {
             if(event.getButton().equals(MouseButton.PRIMARY)){
@@ -172,7 +172,7 @@ public class Dashboard extends View {
      * Get all  transactions
      * @return list of transactions
      */
-    private List<Transaction> getTransactions() {
+    private List<BankTransaction> getTransactions() {
         if (this.sessionKey != null) {
             return controller.getTransactions(sessionKey, selectedBankAccountNr);
         }
@@ -265,15 +265,15 @@ public class Dashboard extends View {
     }
 
     private void setTransactions() {
-        List<Transaction> newTransactions = this.getTransactions();
-        if (newTransactions != null) {
+        List<BankTransaction> newBankTransactions = this.getTransactions();
+        if (newBankTransactions != null) {
             this.transactions.clear();
-            for (Transaction transaction : newTransactions) {
-                this.transactions.add(transaction);
+            for (BankTransaction bankTransaction : newBankTransactions) {
+                this.transactions.add(bankTransaction);
             }
         }
         if (this.transactions.getSize() > 0) {
-            ObservableList<Transaction> readOnly = transactions.getReadOnlyList();
+            ObservableList<BankTransaction> readOnly = transactions.getReadOnlyList();
             this.transactionsListView.setItems(readOnly);
         }
     }
@@ -297,8 +297,8 @@ public class Dashboard extends View {
             cents = !centsString.isEmpty() ? Long.parseLong(centsString) : 0;
 
             amount = (full * 100) + cents;
-            Transaction transaction = new Transaction(amount, description, selectedBankAccountNr, toBankAccount);
-            if (controller.executeTransaction(sessionKey, transaction)) {
+            BankTransaction bankTransaction = new BankTransaction(amount, description, selectedBankAccountNr, toBankAccount);
+            if (controller.executeTransaction(sessionKey, bankTransaction)) {
                 showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + " is overgemaakt aan : " + toBankAccount);
                 this.clearInputs();
                 this.updateBankAccount();
@@ -332,17 +332,17 @@ public class Dashboard extends View {
         }
     }
 
-    private void selectedTransactionChanged(ObservableValue<? extends Transaction> ov, Transaction oldTransaction, Transaction newTransaction) {
-        if (newTransaction.getAccountFrom().equals(selectedBankAccountNr)) {
+    private void selectedTransactionChanged(ObservableValue<? extends BankTransaction> ov, BankTransaction oldBankTransaction, BankTransaction newBankTransaction) {
+        if (newBankTransaction.getAccountFrom().equals(selectedBankAccountNr)) {
             transactionTypeLabel.setText("Uitgaand");
         } else {
             transactionTypeLabel.setText("Inkomend");
         }
-        fromAccountLabel.setText(newTransaction.getAccountFrom());
-        toAccountLabel.setText(newTransaction.getAccountTo());
-        descriptionLabel.setText(newTransaction.getDescription());
-        dateLabel.setText(convertStringToDate(newTransaction.getDate()));
-        TransactionAmountLabel.setText(customFormat((newTransaction.getAmount() / 100)));
+        fromAccountLabel.setText(newBankTransaction.getAccountFrom());
+        toAccountLabel.setText(newBankTransaction.getAccountTo());
+        descriptionLabel.setText(newBankTransaction.getDescription());
+        dateLabel.setText(convertStringToDate(newBankTransaction.getDate()));
+        TransactionAmountLabel.setText(customFormat((newBankTransaction.getAmount() / 100)));
         this.TrasactionPopupAnchorPane.setVisible(true);
 
 
