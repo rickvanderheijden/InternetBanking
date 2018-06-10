@@ -81,3 +81,7 @@
 }
 
 
+.outgoing{ -fx-text-fill: red;}
+.incoming{ -fx-text-fill: green;}
+
+

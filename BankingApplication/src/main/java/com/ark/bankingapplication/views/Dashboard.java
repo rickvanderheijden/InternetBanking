@@ -18,7 +18,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 
-import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -30,7 +29,7 @@ import java.util.List;
 /**
  * FXML Controller class
  *
- * @author Arthur
+ * @author Arthur Doorgeest
  */
 @SuppressWarnings("unused")
 public class Dashboard extends View {
@@ -111,7 +110,6 @@ public class Dashboard extends View {
             updateBankAccount();
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
-
         this.transactionsListView.setCellFactory(param -> new ListCell<Transaction>() {
             @Override
             protected void updateItem(Transaction transaction, boolean empty) {
@@ -121,14 +119,21 @@ public class Dashboard extends View {
                     setText(null);
                 } else {
                     String text = convertStringToDate(transaction.getDate());
-                    text += " | €" + String.valueOf(transaction.getAmount() / 100.0)  + " " +
+                    text += " | €" + customFormat(transaction.getAmount() / 100.0)  + " " +
                             transaction.getAccountFrom() + " --> " + transaction.getAccountTo();
 
                     setText(text);
+                    if(transaction.getAccountFrom() != null && selectedBankAccountNr != null){
+                        if(transaction.getAccountFrom().equals(selectedBankAccountNr)){
+                            getStyleClass().add("outgoing");
+                        }else{
+                            getStyleClass().add("incoming");
+                        }
+                    }
+
                 }
             }
         });
-
         this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
@@ -174,6 +179,11 @@ public class Dashboard extends View {
         return null;
     }
 
+    /**
+     * Method to set the BankId of the bank Application that is started
+     *
+     * @param bank Strin of BankId
+     */
     public void setBank(String bank) {
         this.bankId = bank;
     }
@@ -187,14 +197,19 @@ public class Dashboard extends View {
         this.sessionKey = sessionKey;
     }
 
+    /**
+     * Method to set te Customer
+     * @param customer the current logged in Customer
+     */
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
+    /**
+     * Method to set the logo of the bank
+     */
     public void setLogo() {
         URL iconUrl = this.getClass().getResource("images/" + this.bankId + "-ICON.png");
-        String path = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + this.bankId + "-ICON.png").getAbsolutePath();
-        File file = new File(path);
         Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(this.bankId);
@@ -221,6 +236,9 @@ public class Dashboard extends View {
 
     }
 
+    /**
+     * Method to update the fields on de view
+     */
     public void updateBankAccount() {
         IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
         if (selectedBankaccount != null) {
@@ -335,7 +353,7 @@ public class Dashboard extends View {
      * @param value double
      * @return String of the pretty printed amount
      */
-    public String customFormat(double value) {
+    private String customFormat(double value) {
         DecimalFormat df = new DecimalFormat("##,###,##0.00");
         df.setCurrency(Currency.getInstance("EUR"));
         return df.format(value);
@@ -349,26 +367,31 @@ public class Dashboard extends View {
     }
 
     public void sessionTerminated() {
-        showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw!");
+        showWarning("Sessie verlopen", "Je sessie is verlopen, log opnieuw in!");
         this.doLogout();
     }
 
     private void doChangeCreditLimit() {
         long newLimit = Long.parseLong(creditLimitTextfield.getText());
-        boolean succes = controller.changeCreditLimit(this.sessionKey, this.selectedBankaccount, (newLimit * 100));
-        System.out.println(succes);
+        boolean creditLimitChanged = controller.setCreditLimit(this.sessionKey, this.selectedBankAccountNr, (newLimit * 100));
+        if (creditLimitChanged) {
+            showInfo("Krediet Limiet aangepast", "Je krediet limiet is aangepast naar €" + customFormat(newLimit / 1.0));
+        }
     }
 
-    public String convertStringToDate(Date indate) {
+    /**
+     * Method to return a propper Date Format
+     *
+     * @param indate Date that needs to be formated
+     * @return Propperly formated String of the date
+     */
+    private String convertStringToDate(Date indate) {
         String dateString = null;
         SimpleDateFormat sdfr = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        /*you can also use DateFormat reference instead of SimpleDateFormat
-         * like this: DateFormat df = new SimpleDateFormat("dd/MMM/yyyy");
-         */
         try {
             dateString = sdfr.format(indate);
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (Exception ignored) {
+
         }
         return dateString;
     }

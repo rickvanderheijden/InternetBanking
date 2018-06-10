@@ -11,15 +11,14 @@ import java.util.List;
  */
 public class Persistence {
 
-    private EntityManagerFactory emf;
-    private EntityManager em;
+    private EntityManager entityManager;
 
     /**
      * Creates a instance of Persistence object
      */
     public Persistence(){
-        this.emf = javax.persistence.Persistence.createEntityManagerFactory("bank");
-        this.em = emf.createEntityManager();
+        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank");
+        this.entityManager = entityManagerFactory.createEntityManager();
 
     }
 
@@ -27,8 +26,8 @@ public class Persistence {
      * opens transaction if not already open
      */
     private void beginTransaction(){
-        if(!em.getTransaction().isActive()){
-            em.getTransaction().begin();
+        if(!entityManager.getTransaction().isActive()){
+            entityManager.getTransaction().begin();
         }
     }
 
@@ -42,12 +41,13 @@ public class Persistence {
         boolean result = false;
         beginTransaction();
         try {
-            em.persist(object);
-            em.getTransaction().commit();
+            entityManager.persist(object);
+            entityManager.getTransaction().commit();
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            System.out.println(e.getMessage());
+            entityManager.getTransaction().rollback();
         } finally {
             return result;
         }
@@ -63,10 +63,10 @@ public class Persistence {
         if (name == null || residence == null){ return null; }
         beginTransaction();
         try {
-            return (Customer) em.createQuery("SELECT c FROM Customer c WHERE c.name = :value1 AND c.residence = :value2").setParameter("value1", name).setParameter("value2", residence).getSingleResult();
+            return (Customer) entityManager.createQuery("SELECT c FROM Customer c WHERE c.name = :value1 AND c.residence = :value2").setParameter("value1", name).setParameter("value2", residence).getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             return null;
         }
     }
@@ -80,10 +80,10 @@ public class Persistence {
         if (c == null) { return null; }
         beginTransaction();
         try {
-            return (List<BankAccount>) em.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", c).getResultList();
+            return (List<BankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", c).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             return null;
         }
     }
@@ -97,10 +97,10 @@ public class Persistence {
         if (nr.isEmpty()) { return null; }
         beginTransaction();
         try {
-            return (BankAccount) em.createQuery("SELECT b FROM BankAccount b WHERE b.number = :value").setParameter("value", nr).getSingleResult();
+            return (BankAccount) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.number = :value").setParameter("value", nr).getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             return null;
         }
     }
@@ -109,10 +109,10 @@ public class Persistence {
         if (nr.isEmpty()) { return null; }
         beginTransaction();
         try {
-            return (List<Transaction>) em.createQuery("SELECT t FROM Transaction t WHERE t.accountFrom = :value or t.accountTo = :value").setParameter("value", nr).getResultList();
+            return (List<Transaction>) entityManager.createQuery("SELECT t FROM Transaction t WHERE t.accountFrom = :value or t.accountTo = :value").setParameter("value", nr).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
             return null;
         }
     }
@@ -127,12 +127,12 @@ public class Persistence {
         boolean result = false;
         beginTransaction();
         try {
-            em.remove(em.contains(object) ? object : em.merge(object));
-            em.getTransaction().commit();
+            entityManager.remove(entityManager.contains(object) ? object : entityManager.merge(object));
+            entityManager.getTransaction().commit();
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            entityManager.getTransaction().rollback();
         } finally {
             return result;
         }

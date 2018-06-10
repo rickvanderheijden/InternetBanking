@@ -1,6 +1,5 @@
 package com.ark.bank;
 
-import com.ark.BankAccount;
 import com.ark.BankConnectionInfo;
 import com.ark.Customer;
 import com.ark.Transaction;
@@ -95,10 +94,10 @@ public interface IBankController {
      * Sets the credit limit of the user to the given amount.
      *
      * @param sessionKey  The session key that is given after a succesful login. It should be valid and active.
-     * @param bankAccount The bankAccount of which the credit limit had to be changed
+     * @param bankAccountNr The bankAccountNr of which the credit limit had to be changed
      * @param limit       The new Credit limit
      * @return True if the limit has been changed, false otherwise
      */
-    boolean setCreditLimit(String sessionKey, BankAccount bankAccount, long limit);
+    boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit);
 
 }
