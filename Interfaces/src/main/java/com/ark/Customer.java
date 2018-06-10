@@ -1,9 +1,8 @@
 package com.ark;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.sun.istack.internal.NotNull;
+
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -12,8 +11,11 @@ import java.io.Serializable;
 @Entity
 public class Customer implements Serializable {
 
+    @NotNull
     private String name;
+    @NotNull
     private String password;
+    @NotNull
     private String residence;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;

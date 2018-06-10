@@ -13,7 +13,7 @@ public class BankAccount implements IBankAccount {
     private String number;
     private long balance = 0;
     private long creditLimit = 10000;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Customer owner;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
@@ -31,6 +31,10 @@ public class BankAccount implements IBankAccount {
 
         this.owner = owner;
         this.number = number;
+    }
+
+    public BankAccount(){
+
     }
 
     @Override

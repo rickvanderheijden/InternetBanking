@@ -1,9 +1,6 @@
 package com.ark;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,6 +9,7 @@ import java.util.Date;
  */
 @Entity
 public class Transaction implements Serializable {
+
     private long amount;
     private String description;
     private String accountFrom;
@@ -19,13 +17,6 @@ public class Transaction implements Serializable {
     private Date date;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
-
-    /**
-     * Creates an instance of Transaction
-     * Only used for Entity
-     */
-    public Transaction() {
-    }
 
     /**
      * Creates an instance of Transaction
@@ -46,6 +37,19 @@ public class Transaction implements Serializable {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = new Date();
+    }
+
+    public Transaction() {
+    }
+
+
+    /**
+     * Returns a string representation of the object.
+     * @return A string representation of the object
+     */
+    @Override
+    public String toString() {
+        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0);
     }
 
     /**
