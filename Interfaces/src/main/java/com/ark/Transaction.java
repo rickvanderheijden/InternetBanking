@@ -1,19 +1,15 @@
 package com.ark;
 
-import javax.jws.WebService;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Rick van der Heijden
  */
-@WebService
 @Entity
 public class Transaction implements Serializable {
+
     private long amount;
     private String description;
     private String accountFrom;
@@ -21,9 +17,6 @@ public class Transaction implements Serializable {
     private Date date;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
-
-    public Transaction() {
-    }
 
     /**
      * Creates an instance of Transaction
@@ -45,6 +38,9 @@ public class Transaction implements Serializable {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = new Date();
+    }
+
+    public Transaction() {
     }
 
 

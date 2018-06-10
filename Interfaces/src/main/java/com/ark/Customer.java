@@ -52,12 +52,6 @@ public class Customer implements Serializable {
     }
 
     /**
-     * Gets the id of the customer
-     * @return The id of the customer. Can be null or empty
-     */
-    public long getId() { return id; }
-
-    /**
      * Checks if the password is the same as the provided password.
      * @param password The password to check.
      * @return True if password is correct, false otherwise.
