@@ -21,7 +21,9 @@ import javafx.scene.layout.AnchorPane;
 import java.io.File;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Currency;
+import java.util.Date;
 import java.util.List;
 
 
@@ -109,6 +111,24 @@ public class Dashboard extends View {
             updateBankAccount();
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
+
+        this.transactionsListView.setCellFactory(param -> new ListCell<Transaction>() {
+            @Override
+            protected void updateItem(Transaction transaction, boolean empty) {
+                super.updateItem(transaction, empty);
+
+                if (empty || transaction == null) {
+                    setText(null);
+                } else {
+                    String text = convertStringToDate(transaction.getDate());
+                    text += " | €" + String.valueOf(transaction.getAmount() / 100.0)  + " " +
+                            transaction.getAccountFrom() + " --> " + transaction.getAccountTo();
+
+                    setText(text);
+                }
+            }
+        });
+
         this.transactionsListView.getSelectionModel().selectedItemProperty().addListener(this::selectedTransactionChanged);
         this.transactions = new TransactionList();
         this.transactions.add(new Transaction());
@@ -178,8 +198,6 @@ public class Dashboard extends View {
         Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(this.bankId);
-
-
     }
 
     private void doLogout() {
@@ -305,7 +323,7 @@ public class Dashboard extends View {
         fromAccountLabel.setText(newTransaction.getAccountFrom());
         toAccountLabel.setText(newTransaction.getAccountTo());
         descriptionLabel.setText(newTransaction.getDescription());
-        dateLabel.setText(newTransaction.convertStringToDate(newTransaction.getDate()));
+        dateLabel.setText(convertStringToDate(newTransaction.getDate()));
         TransactionAmountLabel.setText(customFormat((newTransaction.getAmount() / 100)));
         this.TrasactionPopupAnchorPane.setVisible(true);
 
@@ -339,5 +357,19 @@ public class Dashboard extends View {
         long newLimit = Long.parseLong(creditLimitTextfield.getText());
         boolean succes = controller.changeCreditLimit(this.sessionKey, this.selectedBankaccount, (newLimit * 100));
         System.out.println(succes);
+    }
+
+    public String convertStringToDate(Date indate) {
+        String dateString = null;
+        SimpleDateFormat sdfr = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        /*you can also use DateFormat reference instead of SimpleDateFormat
+         * like this: DateFormat df = new SimpleDateFormat("dd/MMM/yyyy");
+         */
+        try {
+            dateString = sdfr.format(indate);
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return dateString;
     }
 }

@@ -5,7 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -47,21 +46,6 @@ public class Transaction implements Serializable {
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.date = new Date();
-    }
-
-
-    /**
-     * Returns a string representation of the object.
-     * @return A string representation of the object
-     */
-    @Override
-    public String toString() {
-        if(this.getDate() != null){
-            String dateString = this.convertStringToDate(getDate());
-            return  dateString + " | €" + String.valueOf(this.amount / 100.0)  + " " +this.accountFrom + " --> " + this.accountTo;
-        }
-        return "Van: " + this.accountFrom + " Naar: " + this.accountTo + " €" + String.valueOf(this.amount / 100.0) ;
-
     }
 
     /**
@@ -149,19 +133,5 @@ public class Transaction implements Serializable {
      */
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public String convertStringToDate(Date indate) {
-        String dateString = null;
-        SimpleDateFormat sdfr = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        /*you can also use DateFormat reference instead of SimpleDateFormat
-         * like this: DateFormat df = new SimpleDateFormat("dd/MMM/yyyy");
-         */
-        try {
-            dateString = sdfr.format(indate);
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        return dateString;
     }
 }
