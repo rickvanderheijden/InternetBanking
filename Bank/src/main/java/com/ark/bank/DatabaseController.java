@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Koen Sengers
  */
-public class DatabaseController {
+public final class DatabaseController {
 
     private EntityManager entityManager;
 
