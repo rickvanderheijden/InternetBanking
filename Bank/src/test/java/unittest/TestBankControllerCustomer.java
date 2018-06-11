@@ -2,6 +2,7 @@ package unittest;
 
 import com.ark.bank.BankController;
 import com.ark.Customer;
+import com.ark.bank.DatabaseController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class TestBankControllerCustomer {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseController(BankIdInternal));
     }
 
     @After

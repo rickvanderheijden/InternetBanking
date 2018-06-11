@@ -25,9 +25,8 @@ class BankHost {
         System.out.println("Bank is running: " + BankId);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection();
-        IBankController bankController = new BankController(BankId, centralBankConnection);
+        IBankController bankController = new BankController(BankId, centralBankConnection, new DatabaseController(BankId));
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
-        Persistence database = new Persistence(BankId);
     }
 }

@@ -3,11 +3,13 @@ package unittest;
 import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.bank.Persistence;
+import com.ark.bank.DatabaseController;
+import com.ark.bank.IBankAccount;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.*;
 
@@ -15,14 +17,14 @@ import static junit.framework.TestCase.*;
 /**
  * @author Koen Sengers
  */
-public class TestPersistence {
+public class TestDatabaseController {
 
-    Persistence p;
+    DatabaseController p;
     Customer c1;
 
     @Before
     public void setUp() {
-        p = new Persistence("Test");
+        p = new DatabaseController("TEST");
         c1 = new Customer("John", "Winterfell", "Ghost");
     }
 
@@ -240,5 +242,79 @@ public class TestPersistence {
 
         List<BankTransaction> tr = p.getPersistTransaction("RABO123456789");
         assertEquals(0, tr.size());
+    }
+
+    @Test
+    public void testGetAllCustomers(){
+        Customer c2 = new Customer("Rick", "Beek en Donk", "Hates Mac");
+        Customer c3 = new Customer("Arthur", "Zaltbommel", "Also hates Mac");
+        p.persist(c1);
+        p.persist(c2);
+        p.persist(c3);
+
+        List<Customer> l = p.getAllCustomers();
+        assertEquals(3, l.size());
+
+        p.delete(c1);
+        p.delete(c2);
+        p.delete(c3);
+    }
+
+    @Test
+    public void testGetAllBankAccounts(){
+        Customer c2 = new Customer("Rick", "Beek en Donk", "Hates Mac");
+        Customer c3 = new Customer("Arthur", "Zaltbommel", "Also hates Mac");
+        p.persist(c1);
+        p.persist(c2);
+        p.persist(c3);
+
+        String idNum1 = "RABO123456789";
+        String idNum2 = "RABO987654321";
+        String idNum3 = "RABO5647382910";
+        String idNum4 = "RABO1029384756";
+
+        BankAccount t1 = new BankAccount(c1, idNum1);
+        BankAccount t2 = new BankAccount(c2, idNum2);
+        BankAccount t3 = new BankAccount(c3, idNum3);
+        BankAccount t4 = new BankAccount(c1, idNum4);
+
+        p.persist(t1);
+        p.persist(t2);
+        p.persist(t3);
+        p.persist(t4);
+
+        List<BankAccount> l = p.getAllBankAccounts();
+        assertEquals(4, l.size());
+
+        p.delete(t1);
+        p.delete(t2);
+        p.delete(t3);
+        p.delete(t4);
+        p.delete(c1);
+        p.delete(c2);
+        p.delete(c3);
+    }
+
+    @Test
+    public void testGetAllBankTransactions(){
+        BankTransaction b1 = new BankTransaction(15, "Test1", "RABO123456789", "RABO987654321");
+        BankTransaction b2 = new BankTransaction(15, "Test1", "RABO123456789", "RABO987654321");
+        BankTransaction b3 = new BankTransaction(15, "Test1", "RABO123456789", "RABO987654321");
+        BankTransaction b4 = new BankTransaction(15, "Test1", "RABO123456789", "RABO987654321");
+        BankTransaction b5 = new BankTransaction(15, "Test1", "RABO123456789", "RABO987654321");
+        p.persist(b1);
+        p.persist(b2);
+        p.persist(b3);
+        p.persist(b4);
+        p.persist(b5);
+
+        List<BankTransaction> l = p.getAllBankTransactions();
+        assertEquals(5, l.size());
+
+        p.delete(b1);
+        p.delete(b2);
+        p.delete(b3);
+        p.delete(b4);
+        p.delete(b5);
     }
 }

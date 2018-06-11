@@ -34,7 +34,7 @@ public class TestBankControllerExecuteBankTransaction {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, centralBankConnectionStub);
+        bankController = new BankController(BankIdInternal, centralBankConnectionStub, new DatabaseController(BankIdInternal));
         sessionKeyOne = "";
         sessionKeyTwo = "";
         sessionKeyThree = "";

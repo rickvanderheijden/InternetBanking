@@ -1,6 +1,7 @@
 package unittest;
 
 import com.ark.bank.BankController;
+import com.ark.bank.DatabaseController;
 import com.ark.bank.IBankController;
 import com.ark.bank.SessionTerminated;
 import org.junit.After;
@@ -28,7 +29,7 @@ public class TestBankControllerSession implements Observer {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseController(BankIdInternal));
         bankController.setSessionTime(100);
         bankController.addObserver(this);
 

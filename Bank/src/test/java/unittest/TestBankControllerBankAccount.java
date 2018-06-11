@@ -2,6 +2,7 @@ package unittest;
 
 import com.ark.Customer;
 import com.ark.bank.BankController;
+import com.ark.bank.DatabaseController;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankController;
 import org.junit.After;
@@ -31,7 +32,7 @@ public class TestBankControllerBankAccount {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseController(BankIdInternal));
     }
 
     @After

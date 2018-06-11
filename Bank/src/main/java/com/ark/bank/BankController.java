@@ -21,19 +21,21 @@ public class BankController extends Observable implements Observer, IBankControl
     private final Set<BankTransaction> bankTransactions = new HashSet<>();
     private final ICentralBankConnection centralBankConnection;
     private int defaultSessionTime = 900000;
+    private final DatabaseController db;
 
     /**
      * Creates an instance of BankController
      * @param bankId The id of the bank. Can not be null or empty.
      * @param centralBankConnection Connection to the central bank. Can not be null.
      */
-    public BankController(String bankId, ICentralBankConnection centralBankConnection) throws IllegalArgumentException {
+    public BankController(String bankId, ICentralBankConnection centralBankConnection, DatabaseController db) throws IllegalArgumentException {
         if (isNullOrEmpty(bankId) || (centralBankConnection == null)) {
             throw new IllegalArgumentException();
         }
 
         this.bankId = bankId;
         this.centralBankConnection = centralBankConnection;
+        this.db = db;
     }
 
     @Override
