@@ -4,12 +4,10 @@ import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
 import com.ark.bank.DatabaseController;
-import com.ark.bank.IBankAccount;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Set;
 
 import static junit.framework.TestCase.*;
 
