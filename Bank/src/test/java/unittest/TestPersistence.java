@@ -22,7 +22,7 @@ public class TestPersistence {
 
     @Before
     public void setUp() {
-        p = new Persistence();
+        p = new Persistence("Test");
         c1 = new Customer("John", "Winterfell", "Ghost");
     }
 
