@@ -28,5 +28,6 @@ class BankHost {
         IBankController bankController = new BankController(BankId, centralBankConnection);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
+        ((BankController) bankController).connectDB(BankId);
     }
 }
