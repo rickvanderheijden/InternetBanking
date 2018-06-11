@@ -15,19 +15,19 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * @author Arthur Doorgeest
  */
-class BankConnector extends UnicastRemoteObject implements IRemotePropertyListener {
+class BankConnector extends Observable implements IBankConnector, IRemotePropertyListener {
 
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
-    private Controller controller;
 
-    public BankConnector(Controller controller) throws RemoteException {
+    public BankConnector() throws RemoteException {
         super();
-        this.controller = controller;
+        UnicastRemoteObject.exportObject(this, 0);
     }
 
     /**
@@ -96,7 +96,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
     }
 
     /**
-     * Method to get all the transactions connceted to a bankaccount with the given bankaccountNR
+     * Method to get all the transactions connected to a bankaccount with the given bankaccountNR
      * @param sessionKey to verify that the customer is logged in.
      * @param bankNumber of the bankAccount
      * @return a List op Transactions
@@ -174,9 +174,11 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getPropertyName().equals("transactionExecuted")) {
-            controller.transactionExecuted();
+            setChanged();
+            notifyObservers("transactionExecuted");
         } else if (propertyChangeEvent.getPropertyName().equals("sessionTerminated")) {
-            controller.sessionTerminated();
+            setChanged();
+            notifyObservers("sessionTerminated");
         }
     }
 

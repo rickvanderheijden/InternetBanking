@@ -19,7 +19,7 @@ public class Persistence {
      * Creates a instance of Persistence object
      */
     public Persistence(){
-        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank");
+        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank2");
         this.entityManager = entityManagerFactory.createEntityManager();
 
     }

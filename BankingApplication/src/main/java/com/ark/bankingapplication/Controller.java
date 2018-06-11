@@ -15,13 +15,15 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Arthur Doorgeest
  */
-public class Controller {
+public class Controller implements Observer {
     private final Stage stage;
-    private final BankConnector bankConnector;
+    private final IBankConnector bankConnector;
 
     private Scene scene;
     private StartUp startUp;
@@ -30,10 +32,14 @@ public class Controller {
     private final String bankId;
     private String sessionKey;
 
-    public Controller(Stage stage, String bankId) throws RemoteException {
+    public Controller(Stage stage, String bankId, IBankConnector bankConnector) throws RemoteException {
         this.stage = stage;
         this.bankId = bankId;
-        this.bankConnector = new BankConnector(this);
+        this.bankConnector = bankConnector;
+
+        if (this.bankConnector != null) {
+            ((Observable)bankConnector).addObserver(this);
+        }
     }
 
     public void start() throws IOException {
@@ -225,8 +231,6 @@ public class Controller {
 
     public void sessionTerminated() {
         Platform.runLater(() -> dashboard.sessionTerminated());
-
-
     }
 
     public boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit) {
@@ -236,6 +240,22 @@ public class Controller {
             e.printStackTrace();
             return false;
         }
+    }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof String) {
+            String description = (String)arg;
+            switch (description) {
+                case "sessionTerminated":
+                    sessionTerminated();
+                    break;
+                case "transactionExecuted":
+                    transactionExecuted();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

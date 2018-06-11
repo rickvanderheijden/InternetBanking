@@ -12,7 +12,8 @@ public class BankingApplicationHost extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         List<String> parameters = getParameters().getRaw();
-        Controller controller = new Controller(stage, parameters.get(0));
+        IBankConnector bankConnector = new BankConnector();
+        Controller controller = new Controller(stage, parameters.get(0), bankConnector);
         URL iconUrl = this.getClass().getResource("views/images/" + parameters.get(0) + "-ICON.png");
         Image image = new Image(iconUrl.toString());
         stage.getIcons().add(image);
