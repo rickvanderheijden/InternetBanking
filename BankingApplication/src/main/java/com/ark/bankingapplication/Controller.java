@@ -238,4 +238,22 @@ public class Controller {
         }
 
     }
+
+    public boolean subscribeToTransaction(String bankAccountNr) {
+        try {
+            this.bankConnector.subscribeToTransaction(bankAccountNr);
+            return true;
+        } catch (RemoteException e) {
+            return false;
+        }
+    }
+
+    public boolean unsubscribeToTransaction(String bankAccountNr) {
+        try {
+            this.bankConnector.unsubscribeToTransaction(bankAccountNr);
+            return true;
+        } catch (RemoteException e) {
+            return false;
+        }
+    }
 }
