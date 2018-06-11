@@ -1,7 +1,7 @@
 package com.ark.bankingapplication;
 
+import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankForClientLogin;
 import com.ark.bank.IBankForClientSession;
@@ -102,7 +102,7 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
      * @return a List op Transactions
      * @throws RemoteException Thrown when remote method call fails.
      */
-    public List<Transaction> getTransactions(String sessionKey, String bankNumber) throws RemoteException {
+    public List<BankTransaction> getTransactions(String sessionKey, String bankNumber) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
         }
@@ -125,17 +125,17 @@ class BankConnector extends UnicastRemoteObject implements IRemotePropertyListen
     }
 
     /**
-     *  Method to execute a transaction
+     *  Method to execute a bankTransaction
      * @param sessionKey to verify that the customer is logged in.
-     * @param transaction that needs to be executed
-     * @return True if the Transaction is succesfull, otherswise false
+     * @param bankTransaction that needs to be executed
+     * @return True if the BankTransaction is succesfull, otherswise false
      * @throws RemoteException Thrown when remote method call fails.
      */
-    public boolean executeTransaction(String sessionKey, Transaction transaction) throws RemoteException {
+    public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) throws RemoteException {
         if (this.bankForClientSession == null) {
             return false;
         }
-        return this.bankForClientSession.executeTransaction(sessionKey, transaction);
+        return this.bankForClientSession.executeTransaction(sessionKey, bankTransaction);
     }
 
     /**

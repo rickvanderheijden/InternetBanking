@@ -1,7 +1,7 @@
 package com.ark.bank;
 
 import com.ark.Customer;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import fontyspublisher.RemotePublisher;
 
 import java.rmi.RemoteException;
@@ -131,7 +131,7 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public List<Transaction> getTransactions(String sessionKey, String bankAccountNumber) {
+    public List<BankTransaction> getTransactions(String sessionKey, String bankAccountNumber) {
         if (bankController == null) {
             return new ArrayList<>();
         }
@@ -140,12 +140,12 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+    public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) {
         if (bankController == null) {
             return false;
         }
 
-        return bankController.executeTransaction(sessionKey, transaction);
+        return bankController.executeTransaction(sessionKey, bankTransaction);
     }
 
     @Override

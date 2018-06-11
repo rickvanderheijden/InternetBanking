@@ -1,7 +1,7 @@
 package com.ark.bank;
 
 import com.ark.BankConnectionInfo;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 import com.sun.xml.internal.ws.server.ServerRtException;
 
 import javax.jws.WebService;
@@ -43,12 +43,12 @@ public class CentralBankConnector implements IBankForCentralBank {
     }
 
     @Override
-    public boolean executeTransaction(Transaction transaction) {
+    public boolean executeTransaction(BankTransaction bankTransaction) {
         if (bankController == null) {
             return false;
         }
 
-        return bankController.executeTransaction(transaction);
+        return bankController.executeTransaction(bankTransaction);
     }
 
     @Override

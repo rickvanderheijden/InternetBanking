@@ -1,9 +1,6 @@
 package com.ark;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,24 +8,24 @@ import java.util.Date;
  * @author Rick van der Heijden
  */
 @Entity
-public class Transaction implements Serializable {
+public class BankTransaction implements Serializable {
 
     private long amount;
     private String description;
     private String accountFrom;
     private String accountTo;
-    private Date date;
+    private Date transactionDate;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) long id;
 
     /**
-     * Creates an instance of Transaction
+     * Creates an instance of BankTransaction
      * @param amount The amount of the transaction. Can not be zero of negative.
      * @param description The description of the transaction. Can not null or empty.
      * @param accountFrom The account from which the amount is deducted. Can not null or empty.
      * @param accountTo The account to which the amount is transfered. Can not null or empty.
      */
-    public Transaction(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
+    public BankTransaction(long amount, String description, String accountFrom, String accountTo) throws IllegalArgumentException {
         if ((amount <= 0)
             || (description == null) || description.isEmpty()
             || (accountFrom == null) || accountFrom.isEmpty()
@@ -39,10 +36,10 @@ public class Transaction implements Serializable {
         this.description = description;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
-        this.date = new Date();
+        this.transactionDate = new Date();
     }
 
-    public Transaction() {
+    public BankTransaction() {
     }
 
     /**
@@ -121,7 +118,7 @@ public class Transaction implements Serializable {
      * @return Date of the transaction.
      */
     public Date getDate() {
-        return date;
+        return transactionDate;
     }
 
     /**
@@ -129,6 +126,6 @@ public class Transaction implements Serializable {
      * @param date The date of the transaction.
      */
     public void setDate(Date date) {
-        this.date = date;
+        this.transactionDate = date;
     }
 }

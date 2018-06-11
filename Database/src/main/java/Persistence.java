@@ -1,6 +1,6 @@
 import com.ark.BankAccount;
 import com.ark.Customer;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -89,7 +89,7 @@ public class Persistence {
     }
 
     /**
-     * Retreives a transactions
+     * Retreives a bankaccount
      * @param nr The account number of the bankaccount. Can not be null.
      * @return The bankaccount if present, else null.
      */
@@ -105,11 +105,16 @@ public class Persistence {
         }
     }
 
-    public List<Transaction> getPersistTransaction(String nr){
+    /**
+     * Retreiver all transactions of bankaccount
+     * @param nr The account number of the bankaccount. Can not be null.
+     * @return A list of bankTransactions. Can be empty.
+     */
+    public List<BankTransaction> getPersistTransaction(String nr){
         if (nr.isEmpty()) { return null; }
         beginTransaction();
         try {
-            return (List<Transaction>) entityManager.createQuery("SELECT t FROM Transaction t WHERE t.accountFrom = :value or t.accountTo = :value").setParameter("value", nr).getResultList();
+            return (List<BankTransaction>) entityManager.createQuery("SELECT t FROM BankTransaction t WHERE t.accountFrom = :value or t.accountTo = :value").setParameter("value", nr).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();

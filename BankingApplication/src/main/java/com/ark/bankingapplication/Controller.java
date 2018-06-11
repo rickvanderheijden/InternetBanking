@@ -1,7 +1,7 @@
 package com.ark.bankingapplication;
 
+import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.Transaction;
 import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
@@ -148,7 +148,7 @@ public class Controller {
      * @param bankNumber The Banknumber of the BankAccount.
      * @return List of Transactions
      */
-    public List<Transaction> getTransactions(String sessionKey, String bankNumber) {
+    public List<BankTransaction> getTransactions(String sessionKey, String bankNumber) {
         try {
             return this.bankConnector.getTransactions(sessionKey, bankNumber);
         } catch (RemoteException e) {
@@ -186,9 +186,9 @@ public class Controller {
         return result;
     }
 
-    public boolean executeTransaction(String sessionKey, Transaction transaction) {
+    public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) {
         try {
-            Boolean transactionSuccesfull = this.bankConnector.executeTransaction(sessionKey, transaction);
+            Boolean transactionSuccesfull = this.bankConnector.executeTransaction(sessionKey, bankTransaction);
             System.out.println("resultaat van de transactie is: " + transactionSuccesfull);
             return transactionSuccesfull;
         } catch (RemoteException e) {

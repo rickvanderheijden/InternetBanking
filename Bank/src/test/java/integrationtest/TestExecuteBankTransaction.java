@@ -23,7 +23,7 @@ import static junit.framework.TestCase.*;
 /**
  * @author Rick van der Heijden
  */
-public class TestExecuteTransaction {
+public class TestExecuteBankTransaction {
     private enum BankId { RABO, ABNA }
     private static final String BankIdRABO = "RABO";
     private static final String URLBaseRABO = "http://localhost:1200/";
@@ -71,8 +71,8 @@ public class TestExecuteTransaction {
         int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
         int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
-        Transaction transaction = new Transaction(2315, "This is a description", bankAccounts.get(indexABNA).getNumber(), bankAccounts.get(indexRABO).getNumber());
-        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), transaction);
+        BankTransaction bankTransaction = new BankTransaction(2315, "This is a description", bankAccounts.get(indexABNA).getNumber(), bankAccounts.get(indexRABO).getNumber());
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), bankTransaction);
 
         assertTrue(result);
 
@@ -87,8 +87,8 @@ public class TestExecuteTransaction {
         int indexABNAOne = createCustomerAndBankAccount(BankId.ABNA);
         int indexABNATwo = createCustomerAndBankAccount(BankId.ABNA);
 
-        Transaction transaction = new Transaction(2315, "This is a description", bankAccounts.get(indexABNAOne).getNumber(), bankAccounts.get(indexABNATwo).getNumber());
-        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNAOne), transaction);
+        BankTransaction bankTransaction = new BankTransaction(2315, "This is a description", bankAccounts.get(indexABNAOne).getNumber(), bankAccounts.get(indexABNATwo).getNumber());
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNAOne), bankTransaction);
 
         assertTrue(result);
 
@@ -105,8 +105,8 @@ public class TestExecuteTransaction {
 
         long amount = bankAccounts.get(indexABNA).getCreditLimit() + 1;
 
-        Transaction transaction = new Transaction(amount, "This is a description", bankAccounts.get(indexABNA).getNumber(), bankAccounts.get(indexRABO).getNumber());
-        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), transaction);
+        BankTransaction bankTransaction = new BankTransaction(amount, "This is a description", bankAccounts.get(indexABNA).getNumber(), bankAccounts.get(indexRABO).getNumber());
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), bankTransaction);
 
         assertFalse(result);
 
@@ -121,8 +121,8 @@ public class TestExecuteTransaction {
         int indexABNA = createCustomerAndBankAccount(BankId.ABNA);
         int indexRABO = createCustomerAndBankAccount(BankId.RABO);
 
-        Transaction transaction = new Transaction(1500, "This is a description", bankAccounts.get(indexABNA).getNumber(), "INVALIDACCOUNT");
-        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), transaction);
+        BankTransaction bankTransaction = new BankTransaction(1500, "This is a description", bankAccounts.get(indexABNA).getNumber(), "INVALIDACCOUNT");
+        boolean result = bankForClientSessionABNA.executeTransaction(sessionKeys.get(indexABNA), bankTransaction);
 
         assertFalse(result);
 

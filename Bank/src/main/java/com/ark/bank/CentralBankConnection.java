@@ -3,7 +3,7 @@ package com.ark.bank;
 import com.ark.BankConnectionInfo;
 import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
-import com.ark.Transaction;
+import com.ark.BankTransaction;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -33,12 +33,12 @@ public class CentralBankConnection implements ICentralBankConnection {
     }
 
     @Override
-    public boolean executeTransaction(Transaction transaction) {
+    public boolean executeTransaction(BankTransaction bankTransaction) {
         if (centralBankTransaction == null) {
             return false;
         }
 
-        return centralBankTransaction.executeTransaction(transaction);
+        return centralBankTransaction.executeTransaction(bankTransaction);
     }
 
     @Override
