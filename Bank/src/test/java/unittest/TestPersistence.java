@@ -1,6 +1,9 @@
+package unittest;
+
 import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
+import com.ark.bank.Persistence;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +15,7 @@ import static junit.framework.TestCase.*;
 /**
  * @author Koen Sengers
  */
-public class persistenceTest {
+public class TestPersistence {
 
     Persistence p;
     Customer c1;
