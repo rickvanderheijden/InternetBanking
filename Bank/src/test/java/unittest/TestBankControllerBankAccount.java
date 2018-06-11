@@ -32,7 +32,7 @@ public class TestBankControllerBankAccount {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseController(BankIdInternal));
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
     }
 
     @After

@@ -20,7 +20,7 @@ public class DatabaseController {
      * @param BankId The bank id of the current bank.
      */
     public DatabaseController(String BankId) {
-        if(BankId == null || BankId.isEmpty()) { throw new IllegalArgumentException(); }
+        if(BankId == null || BankId.isEmpty()) { return; }
         EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + BankId);
         this.entityManager = entityManagerFactory.createEntityManager();
     }

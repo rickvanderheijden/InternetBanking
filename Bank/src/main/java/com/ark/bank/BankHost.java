@@ -25,7 +25,7 @@ class BankHost {
         System.out.println("Bank is running: " + BankId);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection();
-        IBankController bankController = new BankController(BankId, centralBankConnection, new DatabaseController(BankId));
+        IBankController bankController = new BankController(BankId, centralBankConnection);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
     }

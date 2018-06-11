@@ -19,7 +19,7 @@ public class TestBankControllerMiscellaneous {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseController(BankIdInternal));
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
     }
 
     @After
@@ -29,22 +29,22 @@ public class TestBankControllerMiscellaneous {
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorAllNull() {
-        bankController = new BankController(null, null, null);
+        bankController = new BankController(null, null);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorBankIdNull() {
-        bankController = new BankController(null, new CentralBankConnectionStub(), new DatabaseController(null));
+        bankController = new BankController(null, new CentralBankConnectionStub());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorBankIdEmpty() {
-        bankController = new BankController("", new CentralBankConnectionStub(), new DatabaseController(""));
+        bankController = new BankController("", new CentralBankConnectionStub());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorCentralBankConnectionNull() {
-        bankController = new BankController(BankIdInternal, null, new DatabaseController(BankIdInternal));
+        bankController = new BankController(BankIdInternal, null);
     }
 
     @Test
