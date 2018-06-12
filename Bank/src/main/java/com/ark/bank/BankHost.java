@@ -13,7 +13,7 @@ class BankHost {
     private static String BankId = "RABO";
     private static String URLBase = "http://localhost:1200/";
 
-    public static void main(String[] args) throws RemoteException, ServiceException {
+    public static void main(String[] args) throws RemoteException {
 
         if ((args.length >= 2)
             && (args[0] != null) && (!args[0].isEmpty())
@@ -30,6 +30,10 @@ class BankHost {
         IBankController bankController = new BankController(BankId, centralBankConnection);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
-        bankController.connectToBankDatabase(BankId);
+        try {
+            bankController.connectToBankDatabase(BankId);
+        } catch (Exception e){
+            System.out.println("Could not connect to database");
+        }
     }
 }
