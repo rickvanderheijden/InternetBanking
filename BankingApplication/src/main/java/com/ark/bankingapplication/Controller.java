@@ -32,7 +32,7 @@ public class Controller implements Observer {
     private final String bankId;
     private String sessionKey;
 
-    public Controller(Stage stage, String bankId, IBankConnector bankConnector) throws RemoteException {
+    public Controller(Stage stage, String bankId, IBankConnector bankConnector) {
         this.stage = stage;
         this.bankId = bankId;
         this.bankConnector = bankConnector;
@@ -172,9 +172,9 @@ public class Controller implements Observer {
         return null;
     }
 
-    public IBankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNr) {
+    public IBankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNumber) {
         try {
-            return this.bankConnector.getBankAccount(sessionKey, selectedBankAccountNr);
+            return this.bankConnector.getBankAccount(sessionKey, selectedBankAccountNumber);
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -216,7 +216,7 @@ public class Controller implements Observer {
         return this.scene;
     }
 
-    public void transactionExecuted() {
+    private void transactionExecuted() {
         Platform.runLater(() -> dashboard.updateBankAccount());
     }
 
@@ -229,7 +229,7 @@ public class Controller implements Observer {
         }
     }
 
-    public void sessionTerminated() {
+    private void sessionTerminated() {
         Platform.runLater(() -> dashboard.sessionTerminated());
     }
 
@@ -259,18 +259,16 @@ public class Controller implements Observer {
         }
     }
 
-    public boolean subscribeToTransaction(String bankAccountNr) {
+    public void subscribeToTransaction(String bankAccountNumber) {
         try {
-            this.bankConnector.subscribeToTransaction(bankAccountNr);
-            return true;
+            this.bankConnector.subscribeToTransaction(bankAccountNumber);
         } catch (RemoteException e) {
-            return false;
         }
     }
 
-    public boolean unsubscribeToTransaction(String bankAccountNr) {
+    public boolean unsubscribeToTransaction(String bankAccountNumber) {
         try {
-            this.bankConnector.unsubscribeToTransaction(bankAccountNr);
+            this.bankConnector.unsubscribeToTransaction(bankAccountNumber);
             return true;
         } catch (RemoteException e) {
             return false;

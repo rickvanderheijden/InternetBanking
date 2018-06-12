@@ -17,7 +17,9 @@ public interface IBankConnector {
     List<String> getBankAccountNumbers(String sessionKey) throws RemoteException;
     boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) throws RemoteException;
     Customer getCustomer(String sessionKey, String name, String residence) throws RemoteException;
-    IBankAccount getBankAccount(String sessionKey, String bankAccountNr) throws RemoteException;
+    IBankAccount getBankAccount(String sessionKey, String bankAccountNumber) throws RemoteException;
     boolean logout(String sessionKey) throws RemoteException;
-    boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit) throws RemoteException;
+    boolean setCreditLimit(String sessionKey, String bankAccountNumber, long limit) throws RemoteException;
+    void subscribeToTransaction(String bankAccountNumber) throws RemoteException;
+    void unsubscribeToTransaction(String bankAccountNumber) throws RemoteException;
 }

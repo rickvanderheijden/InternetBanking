@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Persistence {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     /**
      * Creates a instance of Persistence object

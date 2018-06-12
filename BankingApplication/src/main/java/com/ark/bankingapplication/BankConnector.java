@@ -24,7 +24,6 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
 
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
-    private Controller controller;
     private IRemotePublisherForListener remotePublisherForListener;
 
     public BankConnector() throws RemoteException {
@@ -44,8 +43,6 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         this.remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-
-
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
         bankForClientSession = (IBankForClientSession) registry.lookup("bank" + bankId);
 
@@ -177,10 +174,10 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
      */
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-        if (propertyChangeEvent.getPropertyName().equals("transactionExecuted")) {
+        if (propertyChangeEvent.getPropertyName().contains("transactionExecuted")) {
             setChanged();
             notifyObservers("transactionExecuted");
-        } else if (propertyChangeEvent.getPropertyName().equals("sessionTerminated")) {
+        } else if (propertyChangeEvent.getPropertyName().contains("sessionTerminated")) {
             setChanged();
             notifyObservers("sessionTerminated");
         }
@@ -221,13 +218,13 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
             remotePublisherForListener.subscribeRemoteListener(this, "sessionTerminated" + sessionKey);
     }
 
-    public void subscribeToTransaction(String bankAccountNr) throws RemoteException {
+    public void subscribeToTransaction(String bankAccountNumber) throws RemoteException {
         if (this.remotePublisherForListener != null)
-            remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted" + bankAccountNr);
+            remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted" + bankAccountNumber);
     }
 
-    public void unsubscribeToTransaction(String bankAccountNr) throws RemoteException {
+    public void unsubscribeToTransaction(String bankAccountNumber) throws RemoteException {
         if (this.remotePublisherForListener != null)
-            remotePublisherForListener.unsubscribeRemoteListener(this, "transactionExecuted" + bankAccountNr);
+            remotePublisherForListener.unsubscribeRemoteListener(this, "transactionExecuted" + bankAccountNumber);
     }
 }
