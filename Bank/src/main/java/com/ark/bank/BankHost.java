@@ -1,5 +1,7 @@
 package com.ark.bank;
 
+import org.hibernate.service.spi.ServiceException;
+
 import java.rmi.RemoteException;
 
 /**
@@ -11,7 +13,7 @@ class BankHost {
     private static String BankId = "RABO";
     private static String URLBase = "http://localhost:1200/";
 
-    public static void main(String[] args) throws RemoteException {
+    public static void main(String[] args) throws RemoteException, ServiceException {
 
         if ((args.length >= 2)
             && (args[0] != null) && (!args[0].isEmpty())
