@@ -1,7 +1,7 @@
 package com.ark.bank;
 
-import com.ark.Customer;
 import com.ark.BankTransaction;
+import com.ark.Customer;
 import fontyspublisher.RemotePublisher;
 
 import java.rmi.RemoteException;
@@ -26,8 +26,7 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
         this.bankController = bankController;
         remotePublisher = new RemotePublisher();
-        remotePublisher.registerProperty("transactionExecuted");
-        remotePublisher.registerProperty("sessionTerminated");
+
 
         String bankId = "";
         if (bankController != null) {
@@ -140,11 +139,10 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) {
+    public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) throws RemoteException {
         if (bankController == null) {
             return false;
         }
-
         return bankController.executeTransaction(sessionKey, bankTransaction);
     }
 
@@ -158,12 +156,18 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public String login(String name, String residence, String password) {
+    public String login(String name, String residence, String password) throws RemoteException {
         if (bankController == null) {
             return null;
         }
+        String sessionKey = bankController.login(name, residence, password);
 
-        return bankController.login(name, residence, password);
+        if (sessionKey != null) {
+            registerRemoteProperty("sessionTerminated" + sessionKey);
+            for (String bankAccountNumber : bankController.getBankAccountNumbers(sessionKey))
+            registerRemoteProperty("transactionExecuted" + bankAccountNumber);
+        }
+        return sessionKey;
     }
 
     @Override
@@ -178,22 +182,44 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     @Override
     public void update(Observable o, Object arg) {
         if (o instanceof BankController) {
+
+            List<String> registeredProperties = new ArrayList<>();
+
+            try {
+                registeredProperties = remotePublisher.getProperties();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
             if (arg instanceof SessionTerminated) {
                 SessionTerminated sessionTerminated = (SessionTerminated) arg;
                 try {
-                    remotePublisher.inform("sessionTerminated", sessionTerminated.getSessionKey(), null);
+                    String property = "sessionTerminated" + sessionTerminated.getSessionKey();
+                    if (registeredProperties.contains(property)) {
+                        remotePublisher.inform(property, null, null);
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
 
             if (arg instanceof TransactionExecuted){
+                TransactionExecuted transactionExecuted = (TransactionExecuted) arg;
                 try {
-                    remotePublisher.inform("transactionExecuted", null, null);
+                    String property = "transactionExecuted" + transactionExecuted.getBankAccount();
+                    if (registeredProperties.contains(property)) {
+                        remotePublisher.inform(property, null, null);
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void registerRemoteProperty(String propertyName) throws RemoteException {
+        if (remotePublisher != null) {
+            remotePublisher.registerProperty(propertyName);
         }
     }
 }

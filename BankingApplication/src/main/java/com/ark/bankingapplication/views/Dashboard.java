@@ -68,7 +68,7 @@ public class Dashboard extends View {
     private IBankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
-    private String selectedBankAccountNr = null;
+    private String selectedBankAccountNumber = null;
 
     private TransactionList transactions;
     private List<String> bankAccounts = null;
@@ -79,7 +79,7 @@ public class Dashboard extends View {
     public Dashboard() throws ControlNotLoadedException {
         super("Dashboard.fxml");
         toBankAccountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.equals(this.selectedBankAccountNr)) {
+            if (newValue.equals(this.selectedBankAccountNumber)) {
                 this.transactionButton.setDisable(true);
             } else {
                 this.transactionButton.setDisable(false);
@@ -105,7 +105,9 @@ public class Dashboard extends View {
         this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
         this.transactionButton.setOnAction(e -> doTransaction());
         this.BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            this.selectedBankAccountNr = newValue;
+            controller.unsubscribeToTransaction(oldValue);
+            controller.subscribeToTransaction(newValue);
+            this.selectedBankAccountNumber = newValue;
             this.setTransactions();
             updateBankAccount();
         });
@@ -123,8 +125,8 @@ public class Dashboard extends View {
                             bankTransaction.getAccountFrom() + " --> " + bankTransaction.getAccountTo();
 
                     setText(text);
-                    if(bankTransaction.getAccountFrom() != null && selectedBankAccountNr != null){
-                        if(bankTransaction.getAccountFrom().equals(selectedBankAccountNr)){
+                    if(bankTransaction.getAccountFrom() != null && selectedBankAccountNumber != null){
+                        if(bankTransaction.getAccountFrom().equals(selectedBankAccountNumber)){
                             getStyleClass().add("outgoing");
                         }else{
                             getStyleClass().add("incoming");
@@ -144,7 +146,7 @@ public class Dashboard extends View {
                     System.out.println("double clicked");
                     final Clipboard clipboard = Clipboard.getSystemClipboard();
                     final ClipboardContent content = new ClipboardContent();
-                    content.putString(this.selectedBankAccountNr);
+                    content.putString(this.selectedBankAccountNumber);
                     clipboard.setContent(content);
                     showInfo("Bankrekening gekopieerd", "Bankrekening nummer gekopieerd naar clipboard: " + content.getString());
                 }
@@ -161,7 +163,8 @@ public class Dashboard extends View {
             this.nameLabel.setText(customer.getName());
             this.bankAccounts = controller.getBankAccounts(this.sessionKey);
             this.setBankAccounts();
-            if (selectedBankAccountNr != null) {
+            if (selectedBankAccountNumber != null) {
+                controller.subscribeToTransaction(selectedBankAccountNumber);
                 this.updateBankAccount();
             }
         }
@@ -174,7 +177,7 @@ public class Dashboard extends View {
      */
     private List<BankTransaction> getTransactions() {
         if (this.sessionKey != null) {
-            return controller.getTransactions(sessionKey, selectedBankAccountNr);
+            return controller.getTransactions(sessionKey, selectedBankAccountNumber);
         }
         return null;
     }
@@ -240,13 +243,13 @@ public class Dashboard extends View {
      * Method to update the fields on de view
      */
     public void updateBankAccount() {
-        IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNr);
+        IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber);
         if (selectedBankaccount != null) {
             long balance = selectedBankaccount.getBalance();
             double balanced = balance / 100.0;
             String balanceText = this.customFormat(balanced);
             this.balanceLabel.setText("€" + balanceText);
-            this.selectedBankNrLabel.setText(selectedBankAccountNr);
+            this.selectedBankNrLabel.setText(selectedBankAccountNumber);
             this.creditLimitTextfield.setText(String.valueOf(selectedBankaccount.getCreditLimit()/100));
             this.setTransactions();
         }
@@ -258,8 +261,8 @@ public class Dashboard extends View {
             this.BankAccountsComboBox.getItems().addAll(this.bankAccounts);
             if (this.bankAccounts.size() > 0) {
                 this.BankAccountsComboBox.setValue(this.bankAccounts.get(0));
-                this.selectedBankAccountNr = this.bankAccounts.get(0);
-                this.selectedBankNrLabel.setText(this.selectedBankAccountNr);
+                this.selectedBankAccountNumber = this.bankAccounts.get(0);
+                this.selectedBankNrLabel.setText(this.selectedBankAccountNumber);
             }
         }
     }
@@ -297,7 +300,7 @@ public class Dashboard extends View {
             cents = !centsString.isEmpty() ? Long.parseLong(centsString) : 0;
 
             amount = (full * 100) + cents;
-            BankTransaction bankTransaction = new BankTransaction(amount, description, selectedBankAccountNr, toBankAccount);
+            BankTransaction bankTransaction = new BankTransaction(amount, description, selectedBankAccountNumber, toBankAccount);
             if (controller.executeTransaction(sessionKey, bankTransaction)) {
                 showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + " is overgemaakt aan : " + toBankAccount);
                 this.clearInputs();
@@ -333,7 +336,7 @@ public class Dashboard extends View {
     }
 
     private void selectedTransactionChanged(ObservableValue<? extends BankTransaction> ov, BankTransaction oldBankTransaction, BankTransaction newBankTransaction) {
-        if (newBankTransaction.getAccountFrom().equals(selectedBankAccountNr)) {
+        if (newBankTransaction.getAccountFrom().equals(selectedBankAccountNumber)) {
             transactionTypeLabel.setText("Uitgaand");
         } else {
             transactionTypeLabel.setText("Inkomend");
@@ -373,7 +376,7 @@ public class Dashboard extends View {
 
     private void doChangeCreditLimit() {
         long newLimit = Long.parseLong(creditLimitTextfield.getText());
-        boolean creditLimitChanged = controller.setCreditLimit(this.sessionKey, this.selectedBankAccountNr, (newLimit * 100));
+        boolean creditLimitChanged = controller.setCreditLimit(this.sessionKey, this.selectedBankAccountNumber, (newLimit * 100));
         if (creditLimitChanged) {
             showInfo("Krediet Limiet aangepast", "Je krediet limiet is aangepast naar €" + customFormat(newLimit / 1.0));
         }

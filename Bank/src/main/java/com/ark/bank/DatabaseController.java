@@ -13,14 +13,13 @@ import java.util.List;
  */
 public final class DatabaseController {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     /**
      * Creates a instance of DatabaseController object
      * @param BankId The bank id of the current bank.
      */
     public DatabaseController(String BankId) {
-        if(BankId == null || BankId.isEmpty()) { return; }
         EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + BankId);
         this.entityManager = entityManagerFactory.createEntityManager();
     }

@@ -15,13 +15,15 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Arthur Doorgeest
  */
-public class Controller {
+public class Controller implements Observer {
     private final Stage stage;
-    private final BankConnector bankConnector;
+    private final IBankConnector bankConnector;
 
     private Scene scene;
     private StartUp startUp;
@@ -30,10 +32,14 @@ public class Controller {
     private final String bankId;
     private String sessionKey;
 
-    public Controller(Stage stage, String bankId) throws RemoteException {
+    public Controller(Stage stage, String bankId, IBankConnector bankConnector) {
         this.stage = stage;
         this.bankId = bankId;
-        this.bankConnector = new BankConnector(this);
+        this.bankConnector = bankConnector;
+
+        if (this.bankConnector != null) {
+            ((Observable)bankConnector).addObserver(this);
+        }
     }
 
     public void start() throws IOException {
@@ -166,9 +172,9 @@ public class Controller {
         return null;
     }
 
-    public IBankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNr) {
+    public IBankAccount getBankAccountInformation(String sessionKey, String selectedBankAccountNumber) {
         try {
-            return this.bankConnector.getBankAccount(sessionKey, selectedBankAccountNr);
+            return this.bankConnector.getBankAccount(sessionKey, selectedBankAccountNumber);
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -210,7 +216,7 @@ public class Controller {
         return this.scene;
     }
 
-    public void transactionExecuted() {
+    private void transactionExecuted() {
         Platform.runLater(() -> dashboard.updateBankAccount());
     }
 
@@ -223,10 +229,8 @@ public class Controller {
         }
     }
 
-    public void sessionTerminated() {
+    private void sessionTerminated() {
         Platform.runLater(() -> dashboard.sessionTerminated());
-
-
     }
 
     public boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit) {
@@ -236,6 +240,38 @@ public class Controller {
             e.printStackTrace();
             return false;
         }
+    }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof String) {
+            String description = (String)arg;
+            switch (description) {
+                case "sessionTerminated":
+                    sessionTerminated();
+                    break;
+                case "transactionExecuted":
+                    transactionExecuted();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void subscribeToTransaction(String bankAccountNumber) {
+        try {
+            this.bankConnector.subscribeToTransaction(bankAccountNumber);
+        } catch (RemoteException e) {
+        }
+    }
+
+    public boolean unsubscribeToTransaction(String bankAccountNumber) {
+        try {
+            this.bankConnector.unsubscribeToTransaction(bankAccountNumber);
+            return true;
+        } catch (RemoteException e) {
+            return false;
+        }
     }
 }

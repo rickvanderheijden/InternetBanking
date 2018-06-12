@@ -40,7 +40,7 @@ public class TestGUIConnector {
     }
 
     @Test
-    public void testLogin() {
+    public void testLogin() throws RemoteException {
         String result = guiConnector.login(Name, Residence, Password);
         assertNotNull(result);
     }
@@ -202,7 +202,7 @@ public class TestGUIConnector {
     }
 
     @Test
-    public void testExecuteTransaction() {
+    public void testExecuteTransaction() throws RemoteException {
         BankTransaction bankTransaction = new BankTransaction(1200, "Description", BankAccountNumber, BankAccountNumber);
         boolean result = guiConnector.executeTransaction(SessionKey, bankTransaction);
         assertTrue(result);
