@@ -37,8 +37,17 @@ public class BankController extends Observable implements Observer, IBankControl
         this.centralBankConnection = centralBankConnection;
     }
 
-    public void connectToBankDatabase(String id){
-        this.databaseController = new DatabaseController(id);
+    @Override
+    public boolean connectToBankDatabase(String bankId){
+        boolean result;
+        if(isNullOrEmpty(bankId)) { result = false; }
+        this.databaseController = new DatabaseController(bankId);
+        if(this.databaseController.equals(null)){
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
     }
 
     @Override

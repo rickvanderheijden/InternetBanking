@@ -13,6 +13,7 @@ import java.util.Observer;
 public interface IBankController {
     String login(String name, String residence, String password);
     boolean logout(String sessionKey);
+    boolean connectToBankDatabase(String bankId);
 
     //TODO: Is name and residence needed? Only sessionKey? Extra security.... ?
     Customer getCustomer(String sessionKey, String name, String residence);

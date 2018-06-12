@@ -17,10 +17,10 @@ public final class DatabaseController {
 
     /**
      * Creates a instance of DatabaseController object
-     * @param BankId The bank id of the current bank.
+     * @param bankId The bank id of the current bank.
      */
-    public DatabaseController(String BankId) {
-        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + BankId);
+    public DatabaseController(String bankId) {
+        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
         this.entityManager = entityManagerFactory.createEntityManager();
     }
 
