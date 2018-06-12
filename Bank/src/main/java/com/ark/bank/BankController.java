@@ -41,11 +41,14 @@ public class BankController extends Observable implements Observer, IBankControl
     @Override
     public boolean connectToBankDatabase(String bankId) {
         boolean result = true;
-        if(isNullOrEmpty(bankId)) { result = false; }
-        try {
-            this.databaseController = new DatabaseController(bankId);
-        } catch (ServiceException e){
+        if(isNullOrEmpty(bankId)) {
             result = false;
+        } else {
+            try {
+                this.databaseController = new DatabaseController(bankId);
+            } catch (ServiceException e) {
+                result = false;
+            }
         }
         return result;
     }
