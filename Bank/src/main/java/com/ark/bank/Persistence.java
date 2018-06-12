@@ -17,9 +17,10 @@ public class Persistence {
 
     /**
      * Creates a instance of Persistence object
+     * @param bankId The bank id of the current bank.
      */
-    public Persistence(){
-        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank2");
+    public Persistence(String bankId){
+        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
         this.entityManager = entityManagerFactory.createEntityManager();
 
     }

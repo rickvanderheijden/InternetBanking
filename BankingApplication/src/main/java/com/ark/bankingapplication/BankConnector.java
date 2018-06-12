@@ -24,6 +24,8 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
 
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
+    private Controller controller;
+    private IRemotePublisherForListener remotePublisherForListener;
 
     public BankConnector() throws RemoteException {
         super();
@@ -41,9 +43,8 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
      */
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
-        IRemotePublisherForListener remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
-        remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted");
-        remotePublisherForListener.subscribeRemoteListener(this, "sessionTerminated");
+        this.remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
+
 
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
         bankForClientSession = (IBankForClientSession) registry.lookup("bank" + bankId);
@@ -63,7 +64,10 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         if (this.bankForClientLogin == null) {
             return null;
         }
-        return this.bankForClientLogin.login(name, residence, password);
+
+        String sessionKey = this.bankForClientLogin.login(name, residence, password);
+        this.subscribeToSession(sessionKey);
+        return sessionKey;
     }
 
     /**
@@ -192,6 +196,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         if (this.bankForClientLogin == null) {
             return false;
         }
+        remotePublisherForListener.unsubscribeRemoteListener(this, "sessionTerminated" + sessionKey);
         return this.bankForClientLogin.logout(sessionKey);
     }
 
@@ -209,5 +214,20 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
             return false;
         }
         return this.bankForClientSession.setCreditLimit(sessionKey, bankAccountNr, limit);
+    }
+
+    private void subscribeToSession(String sessionKey) throws RemoteException {
+        if (this.remotePublisherForListener != null)
+            remotePublisherForListener.subscribeRemoteListener(this, "sessionTerminated" + sessionKey);
+    }
+
+    public void subscribeToTransaction(String bankAccountNr) throws RemoteException {
+        if (this.remotePublisherForListener != null)
+            remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted" + bankAccountNr);
+    }
+
+    public void unsubscribeToTransaction(String bankAccountNr) throws RemoteException {
+        if (this.remotePublisherForListener != null)
+            remotePublisherForListener.unsubscribeRemoteListener(this, "transactionExecuted" + bankAccountNr);
     }
 }

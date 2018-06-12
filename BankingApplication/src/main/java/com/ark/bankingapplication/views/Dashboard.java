@@ -105,6 +105,8 @@ public class Dashboard extends View {
         this.addBankAccountButton.setOnAction(e -> doAddBankAccount());
         this.transactionButton.setOnAction(e -> doTransaction());
         this.BankAccountsComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            controller.unsubscribeToTransaction(oldValue);
+            controller.subscribeToTransaction(newValue);
             this.selectedBankAccountNr = newValue;
             this.setTransactions();
             updateBankAccount();
@@ -162,6 +164,7 @@ public class Dashboard extends View {
             this.bankAccounts = controller.getBankAccounts(this.sessionKey);
             this.setBankAccounts();
             if (selectedBankAccountNr != null) {
+                controller.subscribeToTransaction(selectedBankAccountNr);
                 this.updateBankAccount();
             }
         }
