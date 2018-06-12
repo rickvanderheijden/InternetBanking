@@ -91,6 +91,7 @@ public class TestDatabaseController {
 
         List<BankAccount> bankAccounts = databaseController.getPersistBankaccounts(customer2);
         assertTrue(result2);
+        assertEquals(BankAccount.class, bankAccounts.get(0).getClass());
         assertEquals(1, bankAccounts.size());
         assertEquals(9000, bankAccounts.get(0).getCreditLimit());
 
@@ -152,6 +153,7 @@ public class TestDatabaseController {
 
         List<BankAccount> bankAccounts = databaseController.getPersistBankaccounts(customer1);
 
+        assertEquals(BankAccount.class, bankAccounts.get(0).getClass());
         assertEquals("RABO123456789", bankAccounts.get(0).getNumber());
         assertEquals("RABO987654321", bankAccounts.get(1).getNumber());
 
@@ -222,12 +224,14 @@ public class TestDatabaseController {
         databaseController.persist(transaction2);
 
         List<BankTransaction> transactions1 = databaseController.getPersistTransaction("RABO123456789");
+        assertEquals(BankTransaction.class, transactions1.get(0).getClass());
         assertEquals(1, transactions1.size());
 
         BankTransaction transaction3 = new BankTransaction(amount, description, accountFrom3, accountTo3);
         databaseController.persist(transaction3);
 
         List<BankTransaction> transactions2 = databaseController.getPersistTransaction("RABO123456789");
+        assertEquals(BankTransaction.class, transactions2.get(1).getClass());
         assertEquals(2, transactions2.size());
 
         databaseController.delete(transaction1);
@@ -251,6 +255,7 @@ public class TestDatabaseController {
         databaseController.persist(customer3);
 
         List<Customer> customers = databaseController.getAllCustomers();
+        assertEquals(Customer.class, customers.get(0).getClass());
         assertEquals(3, customers.size());
 
         databaseController.delete(customer1);
@@ -283,6 +288,7 @@ public class TestDatabaseController {
 
         List<BankAccount> bankAccounts = databaseController.getAllBankAccounts();
         assertEquals(4, bankAccounts.size());
+        assertEquals(BankAccount.class, bankAccounts.get(3).getClass());
 
         databaseController.delete(bankAccount1);
         databaseController.delete(bankAccount2);
@@ -308,6 +314,7 @@ public class TestDatabaseController {
 
         List<BankTransaction> bankTransactions = databaseController.getAllBankTransactions();
         assertEquals(5, bankTransactions.size());
+        assertEquals(BankTransaction.class, bankTransactions.get(4).getClass());
 
         databaseController.delete(transaction1);
         databaseController.delete(transaction2);
