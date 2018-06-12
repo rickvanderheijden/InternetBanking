@@ -21,7 +21,7 @@ public class BankController extends Observable implements Observer, IBankControl
     private final Set<BankTransaction> bankTransactions = new HashSet<>();
     private final ICentralBankConnection centralBankConnection;
     private int defaultSessionTime = 900000;
-    private DatabaseController BankDatabaseConnection;
+    private DatabaseController databaseController;
 
     /**
      * Creates an instance of BankController
@@ -38,7 +38,7 @@ public class BankController extends Observable implements Observer, IBankControl
     }
 
     public void connectToBankDatabase(String id){
-        this.BankDatabaseConnection = new DatabaseController(id);
+        this.databaseController = new DatabaseController(id);
     }
 
     @Override
