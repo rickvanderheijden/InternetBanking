@@ -4,9 +4,11 @@ import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
 import com.ark.bank.DatabaseController;
+import org.hibernate.service.spi.ServiceException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLDataException;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -321,5 +323,10 @@ public class TestDatabaseController {
         databaseController.delete(transaction3);
         databaseController.delete(transaction4);
         databaseController.delete(transaction5);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void testNoConnectionToDatabase(){
+        DatabaseController databaseController2 = new DatabaseController("TESTnoConnection");
     }
 }

@@ -3,6 +3,7 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
+import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,7 +20,7 @@ public final class DatabaseController {
      * Creates a instance of DatabaseController object
      * @param bankId The bank id of the current bank.
      */
-    public DatabaseController(String bankId) {
+    public DatabaseController(String bankId) throws ServiceException {
         EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
         this.entityManager = entityManagerFactory.createEntityManager();
     }

@@ -4,6 +4,7 @@ import com.ark.BankAccount;
 import com.ark.BankConnectionInfo;
 import com.ark.BankTransaction;
 import com.ark.Customer;
+import org.hibernate.service.spi.ServiceException;
 
 import java.util.*;
 
@@ -38,15 +39,10 @@ public class BankController extends Observable implements Observer, IBankControl
     }
 
     @Override
-    public boolean connectToBankDatabase(String bankId){
-        boolean result;
+    public boolean connectToBankDatabase(String bankId) throws ServiceException {
+        boolean result = true;
         if(isNullOrEmpty(bankId)) { result = false; }
         this.databaseController = new DatabaseController(bankId);
-        if(this.databaseController.equals(null)){
-            result = false;
-        } else {
-            result = true;
-        }
         return result;
     }
 
