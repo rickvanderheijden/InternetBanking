@@ -2,7 +2,6 @@ package unittest;
 
 import com.ark.Customer;
 import com.ark.bank.BankController;
-import com.ark.bank.DatabaseController;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankController;
 import org.junit.After;
