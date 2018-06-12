@@ -327,6 +327,6 @@ public class TestDatabaseController {
 
     @Test(expected = ServiceException.class)
     public void testNoConnectionToDatabase(){
-        DatabaseController databaseController2 = new DatabaseController("TESTnoConnection");
+        new DatabaseController("TESTnoConnection");
     }
 }
