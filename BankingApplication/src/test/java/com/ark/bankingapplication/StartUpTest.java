@@ -57,7 +57,9 @@ public class StartUpTest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws IOException, NotBoundException {
 
-        Controller controller = new Controller(stage, BankId);
+        //USE STUB!!!
+        IBankConnector bankConnector = new BankConnector();
+        Controller controller = new Controller(stage, BankId, bankConnector);
         controller.start();
 
 
@@ -65,9 +67,9 @@ public class StartUpTest extends ApplicationTest {
         startUp = (StartUp) scene.lookup("#startUp");
         dashboard = (Dashboard) scene.lookup("#dashboard");
 
-        Controller rabo = new Controller(stage, BankRabo);
-        BankConnector bc = new BankConnector(rabo);
-        bc.connect("RABO");
+        BankConnector bankConnectorRABO = new BankConnector();
+        Controller controllerRABO = new Controller(stage, BankRabo, bankConnectorRABO);
+
         Customer rick = new Customer("Rick", "Beek en Donk", "rick123");
         this.RicksAccount = new BankAccount(rick, "RABO2821842127");
     }

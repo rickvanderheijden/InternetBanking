@@ -399,7 +399,7 @@ public class BankController extends Observable implements Observer, IBankControl
             if (bankAccount.getNumber().equals(bankTransaction.getAccountTo())) {
                 bankAccount.increaseBalance(bankTransaction.getAmount());
                 setChanged();
-                notifyObservers(new TransactionExecuted());
+                notifyObservers(new TransactionExecuted(bankTransaction.getAccountTo()));
             }
         }
     }
@@ -410,7 +410,7 @@ public class BankController extends Observable implements Observer, IBankControl
                 boolean result = bankAccount.decreaseBalance(bankTransaction.getAmount());
                 if (result) {
                     setChanged();
-                    notifyObservers(new TransactionExecuted());
+                    notifyObservers(new TransactionExecuted(bankTransaction.getAccountFrom()));
                 }
                 return;
             }

@@ -88,7 +88,7 @@ public interface IBankController {
      * @param o an observer to be added.
      */
 
-    public void addObserver(Observer o);
+    void addObserver(Observer o);
 
     /**
      * Sets the credit limit of the user to the given amount.

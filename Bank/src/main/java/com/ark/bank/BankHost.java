@@ -28,6 +28,6 @@ class BankHost {
         IBankController bankController = new BankController(BankId, centralBankConnection);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
-        Persistence database = new Persistence(BankId);
+//        Persistence database = new Persistence(BankId);
     }
 }

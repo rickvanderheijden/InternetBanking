@@ -13,14 +13,14 @@ import java.util.List;
  */
 public class Persistence {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     /**
      * Creates a instance of Persistence object
-     * @param BankId The bank id of the current bank.
+     * @param bankId The bank id of the current bank.
      */
-    public Persistence(String BankId){
-        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + BankId);
+    public Persistence(String bankId){
+        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
         this.entityManager = entityManagerFactory.createEntityManager();
 
     }
