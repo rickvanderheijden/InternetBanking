@@ -120,15 +120,24 @@ public class Dashboard extends View {
                 if (empty || bankTransaction == null) {
                     setText(null);
                 } else {
-                    String text = convertStringToDate(bankTransaction.getDate());
-                    text += " | €" + customFormat(bankTransaction.getAmount() / 100.0)  + " " +
-                            bankTransaction.getAccountFrom() + " --> " + bankTransaction.getAccountTo();
-
-                    setText(text);
-                    if(bankTransaction.getAccountFrom() != null && selectedBankAccountNumber != null){
-                        if(bankTransaction.getAccountFrom().equals(selectedBankAccountNumber)){
+                    if (bankTransaction.getAccountFrom() != null && selectedBankAccountNumber != null) {
+                        if (bankTransaction.getAccountFrom().equals(selectedBankAccountNumber)) {
+                            System.out.println(selectedBankAccountNumber + "selected");
+                            System.out.println(bankTransaction.getAccountFrom() + "account from");
+                            String text = convertStringToDate(bankTransaction.getDate());
+                            text += " | AF: | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
+                            text += bankTransaction.getAccountTo();
+                            setText(text);
                             getStyleClass().add("outgoing");
+
+
                         }else{
+                            System.out.println(selectedBankAccountNumber + "selected");
+                            System.out.println(bankTransaction.getAccountTo() + "account to");
+                            String text = convertStringToDate(bankTransaction.getDate());
+                            text += " | BIJ : | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
+                            text += bankTransaction.getAccountFrom();
+                            setText(text);
                             getStyleClass().add("incoming");
                         }
                     }
