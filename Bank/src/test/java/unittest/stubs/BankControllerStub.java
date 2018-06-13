@@ -32,9 +32,6 @@ public class BankControllerStub implements IBankController {
     }
 
     @Override
-    public boolean connectToBankDatabase(String bankID) { return true; }
-
-    @Override
     public Customer getCustomer(String sessionKey, String name, String residence) {
         return new Customer(Name, Residence, Password);
     }

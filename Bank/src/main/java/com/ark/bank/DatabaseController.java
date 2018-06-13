@@ -3,26 +3,42 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
+import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.net.ConnectException;
+import java.sql.SQLNonTransientConnectionException;
 import java.util.List;
 
 /**
  * @author Koen Sengers
  */
-public final class DatabaseController {
-
-    private final EntityManager entityManager;
+public final class DatabaseController implements IDatabaseController {
+    private EntityManager entityManager;
+    private String bankId;
 
     /**
      * Creates a instance of DatabaseController object
      * @param bankId The bank id of the current bank.
      */
     public DatabaseController(String bankId) throws ServiceException {
-        EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
-        this.entityManager = entityManagerFactory.createEntityManager();
+        this.bankId = bankId;
+    }
+
+    @Override
+    public boolean connectToDatabase() {
+        boolean result = false;
+        try {
+            EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
+            this.entityManager = entityManagerFactory.createEntityManager();
+            result = true;
+        } catch (Exception exception) {
+            System.out.println("Could not connect to database");
+            this.entityManager = null;
+        }
+        return result;
     }
 
     /**
@@ -34,11 +50,7 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Persist a object to the database
-     * @param object any object that is a entity. Can not be null.
-     * @return boolean true if succesfull else false
-     */
+    @Override
     public boolean persist(Object object) {
         if (object == null) { return false; }
         boolean result = false;
@@ -56,12 +68,7 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Retreives the customer from the database.
-     * @param name The name of the customer. Can not be null.
-     * @param residence The residence of the customer. Can not be null.
-     * @return The customer if found, else null
-     */
+    @Override
     public Customer getPersistCustomer(String name, String residence) {
         if (name == null || residence == null){ return null; }
         beginTransaction();
@@ -74,10 +81,7 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Get all customers in db
-     * @return A list of customers.
-     */
+    @Override
     public List<Customer> getAllCustomers(){
         beginTransaction();
         try {
@@ -89,10 +93,7 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Get all bankaccounts in db
-     * @return A list of bankaccounts.
-     */
+    @Override
     public List<BankAccount> getAllBankAccounts(){
         beginTransaction();
         try {
@@ -104,10 +105,7 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Get all banktransactions in db
-     * @return A list of banktransactions.
-     */
+    @Override
     public List<BankTransaction> getAllBankTransactions(){
         beginTransaction();
         try {
@@ -119,16 +117,12 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Retreives the transactions of a customer.
-     * @param c The customer from whom the bankaccounts will be retreived. Can not be null.
-     * @return A list of bankaccounts if present, else null.
-     */
-    public List<BankAccount> getPersistBankaccounts(Customer c) {
-        if (c == null) { return null; }
+    @Override
+    public List<BankAccount> getPersistBankaccounts(Customer customer) {
+        if (customer == null) { return null; }
         beginTransaction();
         try {
-            return (List<BankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", c).getResultList();
+            return (List<BankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", customer).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -136,16 +130,12 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Retreives a bankaccount
-     * @param nr The account number of the bankaccount. Can not be null.
-     * @return The bankaccount if present, else null.
-     */
-    public BankAccount getPersistBankaccount(String nr) {
-        if (nr.isEmpty()) { return null; }
+    @Override
+    public BankAccount getPersistBankaccount(String bankAccountNumber) {
+        if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
-            return (BankAccount) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.number = :value").setParameter("value", nr).getSingleResult();
+            return (BankAccount) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.number = :value").setParameter("value", bankAccountNumber).getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -153,16 +143,12 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Retreiver all transactions of bankaccount
-     * @param nr The account number of the bankaccount. Can not be null.
-     * @return A list of bankTransactions. Can be empty.
-     */
-    public List<BankTransaction> getPersistTransaction(String nr){
-        if (nr.isEmpty()) { return null; }
+    @Override
+    public List<BankTransaction> getPersistTransaction(String bankAccountNumber){
+        if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
-            return (List<BankTransaction>) entityManager.createQuery("SELECT t FROM BankTransaction t WHERE t.accountFrom = :value or t.accountTo = :value").setParameter("value", nr).getResultList();
+            return (List<BankTransaction>) entityManager.createQuery("SELECT t FROM BankTransaction t WHERE t.accountFrom = :value or t.accountTo = :value").setParameter("value", bankAccountNumber).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -170,11 +156,7 @@ public final class DatabaseController {
         }
     }
 
-    /**
-     * Deletes an object from the database
-     * @param object Any object that is an entity. Can not be null.
-     * @return Boolean true if successfull, else false.
-     */
+    @Override
     public boolean delete(Object object) {
         if (object == null) { return false; }
         if(object instanceof Customer) {
@@ -291,5 +273,4 @@ public final class DatabaseController {
             return result;
         }
     }
-
 }

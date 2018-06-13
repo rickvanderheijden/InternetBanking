@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
+import unittest.stubs.DatabaseControllerStub;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -28,7 +29,7 @@ public class TestBankControllerSession implements Observer {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseControllerStub());
         bankController.setSessionTime(100);
         bankController.addObserver(this);
 
