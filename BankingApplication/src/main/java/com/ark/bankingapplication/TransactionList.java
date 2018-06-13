@@ -5,6 +5,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 @SuppressWarnings("ALL")
 public class TransactionList {
 
@@ -32,6 +35,7 @@ public class TransactionList {
 
         try {
             bankTransactions.add(object);
+            bankTransactions.sort(new TransactionComparator().reversed());
         } catch (Exception e) {
         }
     }
@@ -66,5 +70,9 @@ public class TransactionList {
 
     public ObservableList<BankTransaction> getReadOnlyList() {
         return this.readOnly;
+    }
+
+    public void sort(Comparator comp) {
+        Collections.sort(bankTransactions, comp);
     }
 }
