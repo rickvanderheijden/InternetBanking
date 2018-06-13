@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="derbyclient1">
+  <library name="derbyclient">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/derbyclient1.jar!/" />
     </CLASSES>

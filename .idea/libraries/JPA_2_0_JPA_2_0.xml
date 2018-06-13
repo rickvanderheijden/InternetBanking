@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="FontysPublisher">
+  <library name="JPA 2.0-JPA 2.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libraries/FontysPublisher.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.persistence.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

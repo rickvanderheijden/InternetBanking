@@ -3,6 +3,7 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
+import org.hibernate.service.spi.ServiceException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,18 +12,17 @@ import java.util.List;
 /**
  * @author Koen Sengers
  */
-public class Persistence {
+public final class DatabaseController {
 
     private final EntityManager entityManager;
 
     /**
-     * Creates a instance of Persistence object
+     * Creates a instance of DatabaseController object
      * @param bankId The bank id of the current bank.
      */
-    public Persistence(String bankId){
+    public DatabaseController(String bankId) throws ServiceException {
         EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
         this.entityManager = entityManagerFactory.createEntityManager();
-
     }
 
     /**
@@ -67,6 +67,51 @@ public class Persistence {
         beginTransaction();
         try {
             return (Customer) entityManager.createQuery("SELECT c FROM Customer c WHERE c.name = :value1 AND c.residence = :value2").setParameter("value1", name).setParameter("value2", residence).getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            return null;
+        }
+    }
+
+    /**
+     * Get all customers in db
+     * @return A list of customers.
+     */
+    public List<Customer> getAllCustomers(){
+        beginTransaction();
+        try {
+            return (List<Customer>) entityManager.createQuery("SELECT c FROM Customer c").getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            return null;
+        }
+    }
+
+    /**
+     * Get all bankaccounts in db
+     * @return A list of bankaccounts.
+     */
+    public List<BankAccount> getAllBankAccounts(){
+        beginTransaction();
+        try {
+            return (List<BankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b").getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            return null;
+        }
+    }
+
+    /**
+     * Get all banktransactions in db
+     * @return A list of banktransactions.
+     */
+    public List<BankTransaction> getAllBankTransactions(){
+        beginTransaction();
+        try {
+            return (List<BankTransaction>) entityManager.createQuery("SELECT b FROM BankTransaction b").getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -132,6 +177,46 @@ public class Persistence {
      */
     public boolean delete(Object object) {
         if (object == null) { return false; }
+        if(object instanceof Customer) {
+            return deleteCustomer((Customer) object);
+        } else if(object instanceof BankAccount) {
+            return deleteBankAccount((BankAccount) object);
+        } else {
+            return deleteBase(object);
+        }
+    }
+
+    /**
+     * Deletes all associated objects of customer and customer.
+     * @param object The customer instance.
+     * @return Boolean true if successfull, else false.
+     */
+    private boolean deleteCustomer(Customer object) {
+        List<BankAccount> l = this.getPersistBankaccounts(object);
+        if(l.size() >= 1){
+            for (int i = 0; i < l.size(); i++){
+                this.deleteBase(getPersistBankaccount((l.get(i)).getNumber()));
+            }
+        }
+        return deleteBase(getPersistCustomer(object.getName(), object.getResidence()));
+    }
+
+    /**
+     * Deletes BankAccount
+     * @param object The bankaccount instance.
+     * @return Boolean true if successfull, else false.
+     */
+    private boolean deleteBankAccount(BankAccount object) {
+
+        return deleteBase(getPersistBankaccount(object.getNumber()));
+    }
+
+    /**
+     * Base delete method with duplicated code
+     * @param object Any object that is an entity. Can not be null.
+     * @return Boolean true if successfull, else false.
+     */
+    private boolean deleteBase(Object object){
         boolean result = false;
         beginTransaction();
         try {

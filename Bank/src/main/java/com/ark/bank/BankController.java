@@ -4,6 +4,7 @@ import com.ark.BankAccount;
 import com.ark.BankConnectionInfo;
 import com.ark.BankTransaction;
 import com.ark.Customer;
+import org.hibernate.service.spi.ServiceException;
 
 import java.util.*;
 
@@ -21,6 +22,7 @@ public class BankController extends Observable implements Observer, IBankControl
     private final Set<BankTransaction> bankTransactions = new HashSet<>();
     private final ICentralBankConnection centralBankConnection;
     private int defaultSessionTime = 900000;
+    private DatabaseController databaseController;
 
     /**
      * Creates an instance of BankController
@@ -34,6 +36,15 @@ public class BankController extends Observable implements Observer, IBankControl
 
         this.bankId = bankId;
         this.centralBankConnection = centralBankConnection;
+    }
+
+    @Override
+    public boolean connectToBankDatabase(String bankId) throws ServiceException {
+        boolean result = true;
+        if(isNullOrEmpty(bankId)) { result = false; }
+        this.databaseController = new DatabaseController(bankId);
+        
+        return result;
     }
 
     @Override

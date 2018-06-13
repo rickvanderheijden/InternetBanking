@@ -1,5 +1,7 @@
 package com.ark.bank;
 
+import org.hibernate.service.spi.ServiceException;
+
 import java.rmi.RemoteException;
 
 /**
@@ -28,6 +30,10 @@ class BankHost {
         IBankController bankController = new BankController(BankId, centralBankConnection);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
-//        Persistence database = new Persistence(BankId);
+        try {
+            bankController.connectToBankDatabase(BankId);
+        } catch (Exception e){
+            System.out.println("Could not connect to database");
+        }
     }
 }
