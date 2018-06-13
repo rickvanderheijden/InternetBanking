@@ -26,6 +26,8 @@ public class TestDatabaseController {
     @Before
     public void setUp() {
         databaseController = new DatabaseController("TEST");
+        databaseController.connectToDatabase();
+
         databaseController.deleteALL();
         customer1 = new Customer("John", "Winterfell", "Ghost");
     }
@@ -278,10 +280,5 @@ public class TestDatabaseController {
         List<BankTransaction> bankTransactions = databaseController.getAllBankTransactions();
         assertEquals(5, bankTransactions.size());
         assertEquals(BankTransaction.class, bankTransactions.get(4).getClass());
-    }
-
-    @Test(expected = ServiceException.class)
-    public void testNoConnectionToDatabase(){
-        new DatabaseController("TESTnoConnection");
     }
 }
