@@ -231,4 +231,65 @@ public final class DatabaseController {
         }
     }
 
+    public boolean deleteALL(){
+        boolean result = false;
+        beginTransaction();
+        try {
+            deleteALLBankAccounts();
+            deleteALLBankTransactions();
+            deleteALLCustomers();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+        } finally {
+            return result;
+        }
+    }
+
+    private boolean deleteALLBankAccounts(){
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.createQuery("DELETE FROM BankAccount b").executeUpdate();
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+        } finally {
+            return result;
+        }
+    }
+
+    private boolean deleteALLBankTransactions(){
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.createQuery("DELETE FROM BankTransaction b").executeUpdate();
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+        } finally {
+            return result;
+        }
+    }
+
+    private boolean deleteALLCustomers(){
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.createQuery("DELETE FROM Customer c").executeUpdate();
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+        } finally {
+            return result;
+        }
+    }
+
 }

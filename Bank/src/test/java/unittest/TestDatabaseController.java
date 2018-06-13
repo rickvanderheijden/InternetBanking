@@ -5,6 +5,7 @@ import com.ark.BankTransaction;
 import com.ark.Customer;
 import com.ark.bank.DatabaseController;
 import org.hibernate.service.spi.ServiceException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +26,7 @@ public class TestDatabaseController {
     @Before
     public void setUp() {
         databaseController = new DatabaseController("TEST");
+        databaseController.deleteALL();
         customer1 = new Customer("John", "Winterfell", "Ghost");
     }
 
@@ -37,8 +39,6 @@ public class TestDatabaseController {
         Customer result_get = databaseController.getPersistCustomer("John", "Winterfell");
         assertEquals("John", result_get.getName());
         assertEquals("Winterfell", result_get.getResidence());
-
-        databaseController.delete(result_get);
     }
 
     @Test
@@ -51,9 +51,6 @@ public class TestDatabaseController {
         boolean result = databaseController.persist(transaction1);
 
         assertTrue(result);
-
-        databaseController.delete(transaction1);
-        databaseController.delete(customer2);
     }
 
     @Test
@@ -66,8 +63,6 @@ public class TestDatabaseController {
         BankTransaction transaction1 = new BankTransaction(amount, description, accountFrom, accountTo);
         boolean result = databaseController.persist(transaction1);
         assertTrue(result);
-
-        databaseController.delete(transaction1);
     }
 
     @Test
@@ -96,9 +91,6 @@ public class TestDatabaseController {
         assertEquals(BankAccount.class, bankAccounts.get(0).getClass());
         assertEquals(1, bankAccounts.size());
         assertEquals(9000, bankAccounts.get(0).getCreditLimit());
-
-        databaseController.delete(transaction1);
-        databaseController.delete(customer2);
     }
 
     @Test
@@ -130,9 +122,6 @@ public class TestDatabaseController {
 
         assertEquals("John", customer_get1.getName());
         assertEquals("Winterfell", customer_get1.getResidence());
-
-        databaseController.delete(customer_get1);
-        databaseController.delete(customer_get2);
     }
 
     @Test
@@ -158,10 +147,6 @@ public class TestDatabaseController {
         assertEquals(BankAccount.class, bankAccounts.get(0).getClass());
         assertEquals("RABO123456789", bankAccounts.get(0).getNumber());
         assertEquals("RABO987654321", bankAccounts.get(1).getNumber());
-
-        databaseController.delete(transaction1);
-        databaseController.delete(transaction2);
-        databaseController.delete(customer1);
     }
 
     @Test
@@ -180,10 +165,6 @@ public class TestDatabaseController {
         BankAccount result1 = databaseController.getPersistBankaccount("RABO123456789");
 
         assertEquals(100, result1.getBalance());
-
-        databaseController.delete(transaction1);
-        databaseController.delete(transaction2);
-        databaseController.delete(customer1);
     }
 
     @Test
@@ -192,8 +173,6 @@ public class TestDatabaseController {
 
         List<BankAccount> bankAccounts = databaseController.getPersistBankaccounts(customer1);
         assertEquals(0, bankAccounts.size());
-
-        databaseController.delete(customer1);
     }
 
     @Test
@@ -202,8 +181,6 @@ public class TestDatabaseController {
 
         BankAccount bankAccount1 = databaseController.getPersistBankaccount("RABO123456789");
         assertNull(bankAccount1);
-
-        databaseController.delete(customer1);
     }
 
     @Test
@@ -235,10 +212,6 @@ public class TestDatabaseController {
         List<BankTransaction> transactions2 = databaseController.getPersistTransaction("RABO123456789");
         assertEquals(BankTransaction.class, transactions2.get(1).getClass());
         assertEquals(2, transactions2.size());
-
-        databaseController.delete(transaction1);
-        databaseController.delete(transaction2);
-        databaseController.delete(transaction3);
     }
 
     @Test
@@ -259,10 +232,6 @@ public class TestDatabaseController {
         List<Customer> customers = databaseController.getAllCustomers();
         assertEquals(Customer.class, customers.get(0).getClass());
         assertEquals(3, customers.size());
-
-        databaseController.delete(customer1);
-        databaseController.delete(customer2);
-        databaseController.delete(customer3);
     }
 
     @Test
@@ -291,14 +260,6 @@ public class TestDatabaseController {
         List<BankAccount> bankAccounts = databaseController.getAllBankAccounts();
         assertEquals(4, bankAccounts.size());
         assertEquals(BankAccount.class, bankAccounts.get(3).getClass());
-
-        databaseController.delete(bankAccount1);
-        databaseController.delete(bankAccount2);
-        databaseController.delete(bankAccount3);
-        databaseController.delete(bankAccount4);
-        databaseController.delete(customer1);
-        databaseController.delete(customer2);
-        databaseController.delete(customer3);
     }
 
     @Test
@@ -317,12 +278,6 @@ public class TestDatabaseController {
         List<BankTransaction> bankTransactions = databaseController.getAllBankTransactions();
         assertEquals(5, bankTransactions.size());
         assertEquals(BankTransaction.class, bankTransactions.get(4).getClass());
-
-        databaseController.delete(transaction1);
-        databaseController.delete(transaction2);
-        databaseController.delete(transaction3);
-        databaseController.delete(transaction4);
-        databaseController.delete(transaction5);
     }
 
     @Test(expected = ServiceException.class)
