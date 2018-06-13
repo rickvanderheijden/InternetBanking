@@ -27,7 +27,7 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 @SuppressWarnings("unused")
 public class
-StartUpTest extends ApplicationTest {
+GUITest extends ApplicationTest {
 
     private static final String Name = "TestName";
     private static final String Password = "TestPassword";

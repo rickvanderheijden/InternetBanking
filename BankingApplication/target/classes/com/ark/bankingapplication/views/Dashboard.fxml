@@ -99,7 +99,7 @@
     </AnchorPane>
     <AnchorPane fx:id="TrasactionPopupAnchorPane" layoutX="480.0" layoutY="500.0" maxHeight="-Infinity"
                 maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="350.0"
-                styleClass="bankTransaction-anchorpane" visible="false" xmlns="http://javafx.com/javafx/9"
+                styleClass="transaction-anchorpane" visible="false" xmlns="http://javafx.com/javafx/9"
                 xmlns:fx="http://javafx.com/fxml/1">
         <GridPane layoutY="70.0" prefHeight="224.0" prefWidth="350.0">
             <columnConstraints>

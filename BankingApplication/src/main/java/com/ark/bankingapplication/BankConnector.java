@@ -31,15 +31,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         UnicastRemoteObject.exportObject(this, 0);
     }
 
-    /**
-     * Method to connect to the Remote BankHost
-     *
-     * @param bankId String of the Bank
-     * @return Returns a True when the the connection to the bank is succesfull, Otherwise a False is returned.
-     * @throws RemoteException   Thrown when remote method call fails.
-     * @throws NotBoundException is thrown if an attempt is made to lookup or unbind in the registry a name that has
-     *                           * no associated binding.
-     */
+    @Override
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("localhost", 1099);
         this.remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
@@ -49,14 +41,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return ((bankForClientLogin != null) && (bankForClientSession != null));
     }
 
-    /**
-     * Method to login to the bank
-     * @param name String
-     * @param residence String
-     * @param password String
-     * @return SessionKey when login is succesfull, otherwise Null
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public String login(String name, String residence, String password) throws RemoteException {
         if (this.bankForClientLogin == null) {
             return null;
@@ -67,14 +52,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return sessionKey;
     }
 
-    /**
-     * Method to create a new customer
-     * @param name String
-     * @param residence String
-     * @param password String
-     * @return Customer when succesfull, otherwise Null
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public Customer createCustomer(String name, String residence, String password) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
@@ -82,13 +60,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientSession.createCustomer(name, residence, password);
     }
 
-    /**
-     * Method to create a new BankAccount
-     * @param sessionKey to verify that the customer is logged in.
-     * @param customer to connect BankAccount to
-     * @return IBankAccount of the just created bankAccount
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public IBankAccount createBankAccount(String sessionKey, Customer customer) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
@@ -96,13 +68,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientSession.createBankAccount(sessionKey, customer);
     }
 
-    /**
-     * Method to get all the transactions connected to a bankaccount with the given bankaccountNR
-     * @param sessionKey to verify that the customer is logged in.
-     * @param bankNumber of the bankAccount
-     * @return a List op Transactions
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public List<BankTransaction> getTransactions(String sessionKey, String bankNumber) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
@@ -111,12 +77,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientSession.getTransactions(sessionKey, bankNumber);
     }
 
-    /**
-     *  Method to get all bankAccount Numbers of the logged in customer by SessionKey
-     * @param sessionKey to verify that the customer is logged in.
-     * @return List of BankAccount numbers
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public List<String> getBankAccountNumbers(String sessionKey) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
@@ -125,13 +86,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientSession.getBankAccountNumbers(sessionKey);
     }
 
-    /**
-     *  Method to execute a bankTransaction
-     * @param sessionKey to verify that the customer is logged in.
-     * @param bankTransaction that needs to be executed
-     * @return True if the BankTransaction is succesfull, otherswise false
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public boolean executeTransaction(String sessionKey, BankTransaction bankTransaction) throws RemoteException {
         if (this.bankForClientSession == null) {
             return false;
@@ -139,14 +94,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientSession.executeTransaction(sessionKey, bankTransaction);
     }
 
-    /**
-     *  Method to get the Customer by SessionKey, Name and Residence
-     * @param sessionKey to verify that the customer is logged in.
-     * @param name of the Customer
-     * @param residence of the Customer
-     * @return Customer when found, otherwise null
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public Customer getCustomer(String sessionKey, String name, String residence) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
@@ -154,13 +102,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientSession.getCustomer(sessionKey, name, residence);
     }
 
-    /**
-     * Method to get a bankAccount by its number
-     * @param sessionKey to verify that the customer is logged in.
-     * @param bankAccountNr used to search by
-     * @return IBankAccount if found, otherwise null
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public IBankAccount getBankAccount(String sessionKey, String bankAccountNr) throws RemoteException {
         if (this.bankForClientSession == null) {
             return null;
@@ -183,12 +125,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         }
     }
 
-    /**
-     *  Logout from the bankingApplication, used to terminate the session
-     * @param sessionKey to verify that the customer is logged in.
-     * @return True if logout is succesfull, False is session was not found, Same result
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public boolean logout(String sessionKey) throws RemoteException {
         if (this.bankForClientLogin == null) {
             return false;
@@ -197,15 +134,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         return this.bankForClientLogin.logout(sessionKey);
     }
 
-    /**
-     * Method to change the Credit Limit of a BankAccount.
-     *
-     * @param sessionKey    to verify that the customer is logged in.
-     * @param bankAccountNr of which the Credit limit has to change
-     * @param limit         the new Credit limit
-     * @return True if the Credit Limit was changed succesfull, otherwise false
-     * @throws RemoteException Thrown when remote method call fails.
-     */
+    @Override
     public boolean setCreditLimit(String sessionKey, String bankAccountNr, long limit) throws RemoteException {
         if (this.bankForClientSession == null) {
             return false;
@@ -218,11 +147,13 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
             remotePublisherForListener.subscribeRemoteListener(this, "sessionTerminated" + sessionKey);
     }
 
+    @Override
     public void subscribeToTransaction(String bankAccountNumber) throws RemoteException {
         if (this.remotePublisherForListener != null)
             remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted" + bankAccountNumber);
     }
 
+    @Override
     public void unsubscribeToTransaction(String bankAccountNumber) throws RemoteException {
         if (this.remotePublisherForListener != null)
             remotePublisherForListener.unsubscribeRemoteListener(this, "transactionExecuted" + bankAccountNumber);
