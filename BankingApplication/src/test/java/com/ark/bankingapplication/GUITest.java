@@ -59,7 +59,7 @@ GUITest extends ApplicationTest {
     @Override
     public void start(Stage stage) throws IOException {
         sleep(5000);
-        IBankConnector bankConnector = new BankConnector();
+        IBankConnector bankConnector = new BankConnector("localhost");
         Controller controller = new Controller(stage, BankId, bankConnector);
         controller.start();
 
@@ -67,7 +67,7 @@ GUITest extends ApplicationTest {
         startUp = (StartUp) scene.lookup("#startUp");
         dashboard = (Dashboard) scene.lookup("#dashboard");
 
-        BankConnector bankConnectorRABO = new BankConnector();
+        BankConnector bankConnectorRABO = new BankConnector("localhost");
         Controller controllerRABO = new Controller(stage, BankRabo, bankConnectorRABO);
 
         Customer rick = new Customer("Rick", "Beek en Donk", "rick123");

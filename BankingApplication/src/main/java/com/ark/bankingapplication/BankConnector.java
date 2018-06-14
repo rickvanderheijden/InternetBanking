@@ -25,15 +25,17 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
     private IRemotePublisherForListener remotePublisherForListener;
+    private String hostIpAddress;
 
-    public BankConnector() throws RemoteException {
+    public BankConnector(String hostIpAddress) throws RemoteException {
         super();
+        this.hostIpAddress = hostIpAddress;
         UnicastRemoteObject.exportObject(this, 0);
     }
 
     @Override
     public boolean connect(String bankId) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+        Registry registry = LocateRegistry.getRegistry(hostIpAddress, 1099);
         this.remotePublisherForListener = (IRemotePublisherForListener) registry.lookup("bankPublisher" + bankId);
         bankForClientLogin = (IBankForClientLogin) registry.lookup("bank" + bankId);
         bankForClientSession = (IBankForClientSession) registry.lookup("bank" + bankId);
