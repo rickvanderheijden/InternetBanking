@@ -10,6 +10,7 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLOutput;
 
 public class CentralBankConnection implements ICentralBankConnection {
 
@@ -45,7 +46,9 @@ public class CentralBankConnection implements ICentralBankConnection {
 
     @Override
     public boolean registerBank(BankConnectionInfo bankConnectionInfo) {
+        System.out.println("registerBank");
         if (centralBankRegister == null) {
+            System.out.println("registerBank failed");
             return false;
         }
 
@@ -53,6 +56,7 @@ public class CentralBankConnection implements ICentralBankConnection {
     }
 
     private boolean createCentralBankConnection() {
+        System.out.println("createCentralBankConnection");
         URL wsdlURL;
         try {
             wsdlURL = new URL("http://" + centralBankIpAddress + ":8080/CentralBank?wsdl");
@@ -61,6 +65,7 @@ public class CentralBankConnection implements ICentralBankConnection {
             qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
             return true;
         } catch (MalformedURLException | WebServiceException e) {
+            System.out.println("Error creating Central Bank Connection");
             return false;
         }
     }

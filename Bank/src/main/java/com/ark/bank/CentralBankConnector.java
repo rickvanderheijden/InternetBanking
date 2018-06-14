@@ -38,7 +38,8 @@ public class CentralBankConnector implements IBankForCentralBank {
         if (bankController != null) {
 
             BankConnectionInfo bankConnectionInfo = new BankConnectionInfo(bankId, URLBase + bankId);
-            bankController.registerBank(bankConnectionInfo);
+            boolean result = bankController.registerBank(bankConnectionInfo);
+            System.out.println("Register bank " + (result ? "passed" : "failed"));
         }
     }
 
@@ -61,9 +62,11 @@ public class CentralBankConnector implements IBankForCentralBank {
     }
 
     private boolean createBankConnection() {
+        System.out.println("createBankConnection");
         try {
             Endpoint.publish(URLBase + bankId, this);
         } catch (IllegalArgumentException | ServerRtException e) {
+            System.out.println("createBankConnection failed. URLBase: " + URLBase + ", bankId: " + bankId);
             return false;
         }
 

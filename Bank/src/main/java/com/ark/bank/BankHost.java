@@ -26,6 +26,8 @@ class BankHost {
 
         // Welcome message
         System.out.println("Bank is running: " + BankId);
+        System.out.println("URL Base: " + URLBase);
+        System.out.println("CentralBankIpAddress: " + CentralBankIpAddress);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection(CentralBankIpAddress);
         //IDatabaseController databaseController = new DatabaseController(BankId);
