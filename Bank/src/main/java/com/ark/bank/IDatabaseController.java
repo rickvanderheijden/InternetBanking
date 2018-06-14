@@ -66,7 +66,14 @@ public interface IDatabaseController {
      * @param bankAccountNumber The account number of the bankaccount. Can not be null.
      * @return A list of bankTransactions. Can be empty.
      */
-    List<BankTransaction> getTransaction(String bankAccountNumber);
+    List<BankTransaction> getBankTransactions(String bankAccountNumber);
+
+    /**
+     * Returns the banktransaction if exists
+     * @param bankTransaction The banktransaction. Can not be null.
+     * @return A bankTransaciton. Can be null.
+     */
+    boolean transactionExists(BankTransaction bankTransaction);
 
     /**
      * Deletes an object from the database

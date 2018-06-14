@@ -187,7 +187,7 @@ public class TestDatabaseController {
     }
 
     @Test
-    public void testGetTransaction(){
+    public void testGetBankTransaction(){
         long amount = 15;
         String description = "Test transaction";
         String accountTo1 = "RABO987654321";
@@ -200,7 +200,7 @@ public class TestDatabaseController {
         databaseController.persist(transaction1);
         databaseController.persist(transaction2);
 
-        List<BankTransaction> transactions1 = databaseController.getTransaction(BankAccountNumberRABO);
+        List<BankTransaction> transactions1 = databaseController.getBankTransactions(BankAccountNumberRABO);
         assertNotNull(transactions1);
         assertEquals(1, transactions1.size());
         assertEquals(transaction1, transactions1.get(0));
@@ -209,7 +209,7 @@ public class TestDatabaseController {
         BankTransaction transaction3 = new BankTransaction(amount, description, BankAccountNumberSNSB, BankAccountNumberRABO);
         databaseController.persist(transaction3);
 
-        List<BankTransaction> transactions2 = databaseController.getTransaction(BankAccountNumberRABO);
+        List<BankTransaction> transactions2 = databaseController.getBankTransactions(BankAccountNumberRABO);
         assertNotNull(transactions2);
         assertEquals(2, transactions2.size());
         assertEquals(transaction1, transactions2.get(0));
@@ -217,10 +217,28 @@ public class TestDatabaseController {
     }
 
     @Test
-    public void testGetTransactionsNotExists(){
-        List<BankTransaction> transactions = databaseController.getTransaction(BankAccountNumberRABO);
+    public void testGetBankTransactionsNotExists(){
+        List<BankTransaction> transactions = databaseController.getBankTransactions(BankAccountNumberRABO);
         assertNotNull(transactions);
         assertEquals(0, transactions.size());
+    }
+
+    @Test
+    public void testTransactionExists(){
+        long amount = 15;
+        String description = "Test transaction";
+        String accountTo1 = "RABO987654321";
+
+        BankTransaction transaction1 = new BankTransaction(amount, description, BankAccountNumberRABO, accountTo1);
+        databaseController.persist(transaction1);
+
+        boolean result = databaseController.transactionExists(transaction1);
+        assertTrue(result);
+
+        databaseController.delete(transaction1);
+
+        result = databaseController.transactionExists(transaction1);
+        assertFalse(result);
     }
 
     @Test

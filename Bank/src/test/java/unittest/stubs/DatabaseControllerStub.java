@@ -50,7 +50,7 @@ public class DatabaseControllerStub implements IDatabaseController {
     }
 
     @Override
-    public List<BankTransaction> getTransaction(String bankAccountNumber) {
+    public List<BankTransaction> getBankTransactions(String bankAccountNumber) {
         return null;
     }
 
@@ -58,6 +58,9 @@ public class DatabaseControllerStub implements IDatabaseController {
     public boolean delete(Object object) {
         return false;
     }
+
+    @Override
+    public boolean transactionExists(BankTransaction bankTransaction) { return false; }
 
     @Override
     public boolean deleteCustomerByNameAndResidence(String name, String residence) { return false; }
