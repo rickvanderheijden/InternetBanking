@@ -106,7 +106,7 @@ public class TestGUIConnector {
     }
 
     @Test
-    public void testCreateBankAccount() {
+    public void testCreateBankAccount() throws RemoteException {
         IBankAccount bankAccount = guiConnector.createBankAccount(SessionKey, new Customer(Name, Residence, Password));
         assertNotNull(bankAccount);
     }

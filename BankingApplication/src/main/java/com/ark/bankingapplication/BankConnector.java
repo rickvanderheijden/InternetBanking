@@ -144,19 +144,25 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
     }
 
     private void subscribeToSession(String sessionKey) throws RemoteException {
-        if (this.remotePublisherForListener != null)
+        if ((this.remotePublisherForListener != null)
+                && (sessionKey != null) && !sessionKey.isEmpty()) {
             remotePublisherForListener.subscribeRemoteListener(this, "sessionTerminated" + sessionKey);
+        }
     }
 
     @Override
     public void subscribeToTransaction(String bankAccountNumber) throws RemoteException {
-        if (this.remotePublisherForListener != null)
+        if ((this.remotePublisherForListener != null)
+                && (bankAccountNumber != null) && !bankAccountNumber.isEmpty()) {
             remotePublisherForListener.subscribeRemoteListener(this, "transactionExecuted" + bankAccountNumber);
+        }
     }
 
     @Override
     public void unsubscribeToTransaction(String bankAccountNumber) throws RemoteException {
-        if (this.remotePublisherForListener != null)
+        if ((this.remotePublisherForListener != null)
+                && (bankAccountNumber != null) && !bankAccountNumber.isEmpty()) {
             remotePublisherForListener.unsubscribeRemoteListener(this, "transactionExecuted" + bankAccountNumber);
+        }
     }
 }

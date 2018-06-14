@@ -3,12 +3,13 @@ package com.ark;
 import com.ark.bank.IBankAccount;
 
 import javax.persistence.*;
+import java.util.Observable;
 
 /**
  * @author Rick van der Heijden
  */
 @Entity
-public class BankAccount implements IBankAccount {
+public class BankAccount extends Observable implements IBankAccount {
 
     private String number;
     private long balance = 0;
@@ -64,6 +65,8 @@ public class BankAccount implements IBankAccount {
         }
 
         this.creditLimit = creditLimit;
+        setChanged();
+        notifyObservers();
 
         return true;
     }
@@ -75,6 +78,8 @@ public class BankAccount implements IBankAccount {
         }
 
         balance += amount;
+        setChanged();
+        notifyObservers();
 
         return true;
     }
@@ -91,6 +96,8 @@ public class BankAccount implements IBankAccount {
         }
 
         balance -= amount;
+        setChanged();
+        notifyObservers();
 
         return true;
     }

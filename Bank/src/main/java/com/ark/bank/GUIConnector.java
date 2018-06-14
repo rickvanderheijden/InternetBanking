@@ -77,12 +77,18 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
     }
 
     @Override
-    public IBankAccount createBankAccount(String sessionKey, Customer owner) {
+    public IBankAccount createBankAccount(String sessionKey, Customer owner) throws RemoteException {
         if (bankController == null) {
             return null;
         }
 
-        return bankController.createBankAccount(sessionKey, owner);
+        IBankAccount bankAccount = bankController.createBankAccount(sessionKey, owner);
+
+        if (bankAccount != null) {
+            registerRemoteProperty("transactionExecuted" + bankAccount.getNumber());
+        }
+
+        return bankAccount;
     }
 
     @Override
@@ -164,8 +170,9 @@ public class GUIConnector extends UnicastRemoteObject implements IBankForClientS
 
         if (sessionKey != null) {
             registerRemoteProperty("sessionTerminated" + sessionKey);
-            for (String bankAccountNumber : bankController.getBankAccountNumbers(sessionKey))
-            registerRemoteProperty("transactionExecuted" + bankAccountNumber);
+            for (String bankAccountNumber : bankController.getBankAccountNumbers(sessionKey)) {
+                registerRemoteProperty("transactionExecuted" + bankAccountNumber);
+            }
         }
         return sessionKey;
     }
