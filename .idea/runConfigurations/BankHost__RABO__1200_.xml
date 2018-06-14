@@ -2,7 +2,7 @@
   <configuration default="false" name="BankHost (RABO, 1200)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.ark.bank.BankHost" />
     <module name="Bank" />
-    <option name="PROGRAM_PARAMETERS" value="&quot;RABO&quot; &quot;http://localhost:1200/&quot;" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;RABO&quot; &quot;http://localhost:1200/&quot; &quot;localhost&quot;" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <method />
   </configuration>
