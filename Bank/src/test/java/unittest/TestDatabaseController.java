@@ -4,6 +4,9 @@ import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
 import com.ark.bank.DatabaseController;
+import com.ark.bank.DatabaseControllerStub;
+import com.ark.bank.IBankAccount;
+import com.ark.bank.IDatabaseController;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,12 +28,12 @@ public class TestDatabaseController {
     static private final String BankAccountNumberRABO = "RABO1234567890";
     static private final String BankAccountNumberSNSB = "SNSB1234567890";
 
-    private DatabaseController databaseController;
+    private IDatabaseController databaseController;
     private Customer customer;
 
     @Before
     public void setUp() {
-        databaseController = new DatabaseController("TEST");
+        databaseController = new DatabaseControllerStub();
         databaseController.connectToDatabase();
 
         assertTrue(databaseController.deleteAll());
@@ -85,14 +88,18 @@ public class TestDatabaseController {
 
     @Test
     public void testUpdateBankAccount(){
-        BankAccount transaction = new BankAccount(customer, BankAccountNumberRABO);
-        long creditLimit = transaction.getCreditLimit() + 1000;
-        boolean result = databaseController.persist(transaction);
+        BankAccount bankAccount = new BankAccount(customer, BankAccountNumberRABO);
+        BankAccount bankAccount2 = new BankAccount(customer, BankAccountNumberRABO);
+        long creditLimit = bankAccount.getCreditLimit() + 1000;
+        boolean result = databaseController.persist(bankAccount);
         assertTrue(result);
 
-        transaction.setCreditLimit(creditLimit);
-        result = databaseController.persist(transaction);
-        List<BankAccount> bankAccounts = databaseController.getBankAccounts(customer);
+        result = databaseController.persist(bankAccount2);
+        assertTrue(result);
+
+        bankAccount.setCreditLimit(creditLimit);
+        result = databaseController.persist(bankAccount);
+        List<IBankAccount> bankAccounts = databaseController.getBankAccounts(customer);
 
         assertTrue(result);
         assertEquals(1, bankAccounts.size());
@@ -151,7 +158,7 @@ public class TestDatabaseController {
         databaseController.persist(bankAccount1);
         databaseController.persist(bankAccount2);
 
-        List<BankAccount> bankAccounts = databaseController.getBankAccounts(customer);
+        List<IBankAccount> bankAccounts = databaseController.getBankAccounts(customer);
 
         assertEquals(bankAccount1, bankAccounts.get(0));
         assertEquals(bankAccount2, bankAccounts.get(1));
@@ -167,7 +174,7 @@ public class TestDatabaseController {
         databaseController.persist(bankAccount1);
         databaseController.persist(bankAccount2);
 
-        BankAccount result = databaseController.getBankAccount(BankAccountNumberRABO);
+        IBankAccount result = databaseController.getBankAccount(BankAccountNumberRABO);
 
         assertEquals(bankAccount1, result);
         assertThat(bankAccount2, not(result));
@@ -176,13 +183,13 @@ public class TestDatabaseController {
     @Test
     public void testGetBankAccountsNotExistsForCustomer(){
         databaseController.persist(customer);
-        List<BankAccount> bankAccounts = databaseController.getBankAccounts(customer);
+        List<IBankAccount> bankAccounts = databaseController.getBankAccounts(customer);
         assertEquals(0, bankAccounts.size());
     }
 
     @Test
     public void testGetBankAccountNotExists(){
-        BankAccount bankAccount = databaseController.getBankAccount(BankAccountNumberRABO);
+        IBankAccount bankAccount = databaseController.getBankAccount(BankAccountNumberRABO);
         assertNull(bankAccount);
     }
 
@@ -269,17 +276,17 @@ public class TestDatabaseController {
         String bankId3 = "RABO5647382910";
         String bankId4 = "RABO1029384756";
 
-        BankAccount bankAccount1 = new BankAccount(customer, BankAccountNumberRABO);
-        BankAccount bankAccount2 = new BankAccount(customer2, bankId2);
-        BankAccount bankAccount3 = new BankAccount(customer3, bankId3);
-        BankAccount bankAccount4 = new BankAccount(customer, bankId4);
+        IBankAccount bankAccount1 = new BankAccount(customer, BankAccountNumberRABO);
+        IBankAccount bankAccount2 = new BankAccount(customer2, bankId2);
+        IBankAccount bankAccount3 = new BankAccount(customer3, bankId3);
+        IBankAccount bankAccount4 = new BankAccount(customer, bankId4);
 
         databaseController.persist(bankAccount1);
         databaseController.persist(bankAccount2);
         databaseController.persist(bankAccount3);
         databaseController.persist(bankAccount4);
 
-        List<BankAccount> bankAccounts = databaseController.getAllBankAccounts();
+        List<IBankAccount> bankAccounts = databaseController.getAllBankAccounts();
         assertNotNull(bankAccounts);
         assertEquals(4, bankAccounts.size());
         assertEquals(bankAccount1, bankAccounts.get(0));

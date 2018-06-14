@@ -3,10 +3,13 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
+import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
 import org.hibernate.service.spi.ServiceException;
+import org.jboss.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +34,11 @@ public final class DatabaseController implements IDatabaseController {
         try {
             EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
             this.entityManager = entityManagerFactory.createEntityManager();
+
             result = true;
         } catch (Exception exception) {
             System.out.println("Could not connect to database");
+            exception.printStackTrace();
             this.entityManager = null;
         }
         return result;
@@ -110,10 +115,10 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankAccount> getAllBankAccounts(){
+    public List<IBankAccount> getAllBankAccounts(){
         beginTransaction();
         try {
-            return (List<BankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b").getResultList();
+            return (List<IBankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b").getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -134,10 +139,10 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankAccount> getBankAccounts(Customer customer) {
-        if (customer == null) { return null; }
+    public List<IBankAccount> getBankAccounts(Customer customer) {
+        List<IBankAccount> bankAccounts = new ArrayList<>();
 
-        List<BankAccount> bankAccounts;
+        if (customer == null) { return bankAccounts; }
 
         beginTransaction();
         try {
@@ -146,12 +151,12 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
-            return null;
+            return bankAccounts;
         }
     }
 
     @Override
-    public BankAccount getBankAccount(String bankAccountNumber) {
+    public IBankAccount getBankAccount(String bankAccountNumber) {
         if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
@@ -217,9 +222,9 @@ public final class DatabaseController implements IDatabaseController {
      * @return Boolean true if successfull, else false.
      */
     private boolean deleteCustomer(Customer customer) {
-        List<BankAccount> bankAccounts = this.getBankAccounts(customer);
+        List<IBankAccount> bankAccounts = this.getBankAccounts(customer);
         if(bankAccounts.size() >= 1){
-            for (BankAccount bankAccount : bankAccounts) {
+            for (IBankAccount bankAccount : bankAccounts) {
                 this.deleteBase(getBankAccount(bankAccount.getNumber()));
             }
         }

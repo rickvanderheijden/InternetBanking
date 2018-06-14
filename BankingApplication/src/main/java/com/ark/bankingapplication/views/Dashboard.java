@@ -109,7 +109,7 @@ public class Dashboard extends View {
             controller.subscribeToTransaction(newValue);
             this.selectedBankAccountNumber = newValue;
             this.setTransactions();
-            updateBankAccount();
+            updateBankAccount(controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber));
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
         this.transactionsListView.setCellFactory(param -> new ListCell<BankTransaction>() {
@@ -122,8 +122,8 @@ public class Dashboard extends View {
                 } else {
                     if (bankTransaction.getAccountFrom() != null && selectedBankAccountNumber != null) {
                         if (bankTransaction.getAccountFrom().equals(selectedBankAccountNumber)) {
-                            System.out.println(selectedBankAccountNumber + "selected");
-                            System.out.println(bankTransaction.getAccountFrom() + "account from");
+                            //System.out.println(selectedBankAccountNumber + "selected");
+                            //System.out.println(bankTransaction.getAccountFrom() + "account from");
                             String text = convertStringToDate(bankTransaction.getDate());
                             text += " | AF: | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
                             text += bankTransaction.getAccountTo();
@@ -132,8 +132,8 @@ public class Dashboard extends View {
 
 
                         }else{
-                            System.out.println(selectedBankAccountNumber + "selected");
-                            System.out.println(bankTransaction.getAccountTo() + "account to");
+                            //System.out.println(selectedBankAccountNumber + "selected");
+                            //System.out.println(bankTransaction.getAccountTo() + "account to");
                             String text = convertStringToDate(bankTransaction.getDate());
                             text += " | BIJ : | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
                             text += bankTransaction.getAccountFrom();
@@ -174,7 +174,7 @@ public class Dashboard extends View {
             this.setBankAccounts();
             if (selectedBankAccountNumber != null) {
                 controller.subscribeToTransaction(selectedBankAccountNumber);
-                this.updateBankAccount();
+                this.updateBankAccount(controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber));
             }
         }
 
@@ -251,8 +251,12 @@ public class Dashboard extends View {
     /**
      * Method to update the fields on de view
      */
-    public void updateBankAccount() {
-        IBankAccount selectedBankaccount = controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber);
+    public void updateBankAccount(IBankAccount bankAccount) {
+        System.out.println("Dashboard Update Bank Account");
+
+        selectedBankaccount = bankAccount;
+
+        //selectedBankaccount =  controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber);
         if (selectedBankaccount != null) {
             long balance = selectedBankaccount.getBalance();
             double balanced = balance / 100.0;
@@ -262,6 +266,10 @@ public class Dashboard extends View {
             this.creditLimitTextfield.setText(String.valueOf(selectedBankaccount.getCreditLimit()/100));
             this.setTransactions();
         }
+    }
+
+    public String getSelectedBankAccountNumber() {
+        return selectedBankAccountNumber;
     }
 
     private void setBankAccounts() {
@@ -313,7 +321,7 @@ public class Dashboard extends View {
             if (controller.executeTransaction(sessionKey, bankTransaction)) {
                 showInfo("Transactie geslaagd", "Een bedrag van €" + (amount / 100.0) + " is overgemaakt aan : " + toBankAccount);
                 this.clearInputs();
-                this.updateBankAccount();
+                this.updateBankAccount(controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber));
             } else {
                 showWarning("Transactie mislukt", "Er is een fout opgetreden bij het verwerken van de transactie, probeer het op een later moment nog eens!");
             }

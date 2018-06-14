@@ -4,7 +4,6 @@ import com.ark.BankAccount;
 import com.ark.BankConnectionInfo;
 import com.ark.BankTransaction;
 import com.ark.Customer;
-import org.hibernate.service.spi.ServiceException;
 
 import java.util.*;
 
@@ -17,9 +16,7 @@ public class BankController extends Observable implements Observer, IBankControl
     private final Random random = new Random();
     private final String bankId;
     private final Set<IBankAccount> bankAccounts = new HashSet<>();
-    private final Set<Customer> customers = new HashSet<>();
     private final Set<Session> sessions = new HashSet<>();
-    private final Set<BankTransaction> bankTransactions = new HashSet<>();
     private final ICentralBankConnection centralBankConnection;
     private final IDatabaseController databaseController;
     private int defaultSessionTime = 900000;
@@ -68,7 +65,7 @@ public class BankController extends Observable implements Observer, IBankControl
                 || (bankTransaction.getDate() == null)
                 || (bankTransaction.getDescription() == null)
                 || bankTransaction.getAccountFrom().equals(bankTransaction.getAccountTo())
-                || bankTransactions.contains(bankTransaction)) {
+                || databaseController.transactionExists(bankTransaction)) {
             return false;
         }
 
@@ -137,7 +134,6 @@ public class BankController extends Observable implements Observer, IBankControl
         return false;
     }
 
-    //TODO: Do not use Customer?
     @Override
     public IBankAccount createBankAccount(String sessionKey, Customer owner) {
 
@@ -152,7 +148,14 @@ public class BankController extends Observable implements Observer, IBankControl
         }
 
         IBankAccount bankAccount = new BankAccount(owner, getUnusedBankAccountNumber());
-        bankAccounts.add(bankAccount);
+
+        if (bankAccounts.add(bankAccount)) {
+
+            System.out.println("Create BankAccount: Added observer for: " + bankAccount.getNumber());
+            ((BankAccount) bankAccount).addObserver(this);
+        }
+
+        databaseController.persist(bankAccount);
         return bankAccount;
     }
 
@@ -170,12 +173,18 @@ public class BankController extends Observable implements Observer, IBankControl
 
         Session session = getSession(sessionKey);
         if  (session != null) {
-            for (IBankAccount bankAccount : bankAccounts) {
-                if (bankAccount.getNumber().equals(bankAccountNumber)
-                        && bankAccount.getOwner().getName().equals(session.getCustomerName())
-                        && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
-                    return bankAccount;
+            IBankAccount bankAccount = databaseController.getBankAccount(bankAccountNumber);
+
+            if ((bankAccount != null)
+                    && bankAccount.getOwner().getName().equals(session.getCustomerName())
+                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+
+                if (bankAccounts.add(bankAccount)) {
+                    System.out.println("Get BankAccount: Added observer for: " + bankAccount.getNumber());
+                    ((BankAccount) bankAccount).addObserver(this);
                 }
+
+                return bankAccount;
             }
         }
 
@@ -192,12 +201,11 @@ public class BankController extends Observable implements Observer, IBankControl
         }
 
         Session session = getSession(sessionKey);
+        Customer customer = databaseController.getCustomer(session.getCustomerName(), session.getCustomerResidence());
+        List<IBankAccount> bankAccounts = databaseController.getBankAccounts(customer);
 
         for (IBankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getOwner().getName().equals(session.getCustomerName())
-                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
                 bankAccountsToReturn.add(bankAccount.getNumber());
-            }
         }
 
         return bankAccountsToReturn;
@@ -211,27 +219,22 @@ public class BankController extends Observable implements Observer, IBankControl
             return null;
         }
 
-        return getCustomer(name, residence);
+        return databaseController.getCustomer(name, residence);
     }
 
     @Override
     public Customer createCustomer(String name, String residence, String password) {
-        //TODO: Override equals
         if (isNullOrEmpty(name) || isNullOrEmpty(password) || isNullOrEmpty(residence)) {
             return null;
         }
 
-        for (Customer customer : customers) {
-            if ((customer.getName().equals(name))
-                    && customer.getResidence().equals(residence)) {
-                return null;
-            }
+        if (databaseController.getCustomer(name, residence) == null) {
+            Customer customer = new Customer(name, residence, password);
+            databaseController.persist(customer);
+            return customer;
         }
 
-        Customer customer = new Customer(name, residence, password);
-        customers.add(customer);
-
-        return customer;
+        return null;
     }
 
     public boolean removeCustomer(String sessionKey, String name, String residence) {
@@ -240,22 +243,21 @@ public class BankController extends Observable implements Observer, IBankControl
         }
 
         Session session = getSession(sessionKey);
+        boolean result = false;
+
         if (session.getCustomerName().equals(name) && session.getCustomerResidence().equals(residence)) {
-            for (Customer customer : customers) {
-                if ((customer.getName().equals(name))
-                        && customer.getResidence().equals(residence)) {
-                    customers.remove(customer);
-                    return true;
-                }
+            Customer customer = databaseController.getCustomer(name, residence);
+            if (customer != null) {
+                return databaseController.delete(customer);
             }
         }
 
-        return false;
+        return result;
     }
 
     @Override
     public String login(String name, String residence, String password) {
-        Customer customer = getCustomer(name, residence);
+        Customer customer = databaseController.getCustomer(name, residence);
 
         if (customer == null || !customer.isPasswordValid(password)) {
             return null;
@@ -312,12 +314,7 @@ public class BankController extends Observable implements Observer, IBankControl
         List<BankTransaction> transactionsToReturn = new ArrayList<>();
 
         if (isSessionActive(sessionKey) && isBankAccountNumberInUse(bankAccountNumber)) {
-            for (BankTransaction bankTransaction : bankTransactions) {
-                if (bankTransaction.getAccountFrom().equals(bankAccountNumber)
-                        || bankTransaction.getAccountTo().equals(bankAccountNumber)) {
-                    transactionsToReturn.add(bankTransaction);
-                }
-            }
+            transactionsToReturn = databaseController.getBankTransactions(bankAccountNumber);
         }
 
         return transactionsToReturn;
@@ -340,16 +337,6 @@ public class BankController extends Observable implements Observer, IBankControl
         return bankAccountNumber;
     }
 
-    private Customer getCustomer(String name, String residence) {
-        for (Customer customer : customers) {
-            if ((customer.getName().equals(name))
-                    && customer.getResidence().equals(residence)) {
-                return customer;
-            }
-        }
-        return null;
-    }
-
     private String getRandomBankAccountNumber() {
         long range = EndBankAccountNumber - StartBankAccountNumber + 1;
         long fraction = (long)(range * random.nextDouble());
@@ -362,13 +349,7 @@ public class BankController extends Observable implements Observer, IBankControl
             return false;
         }
 
-        for (IBankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getNumber().equals(bankAccountNumber)) {
-                return true;
-            }
-        }
-
-        return false;
+        return (databaseController.getBankAccount(bankAccountNumber) != null);
     }
 
     private boolean isBankAccountBalanceSufficient(String bankAccountNumber, long amount) {
@@ -376,11 +357,10 @@ public class BankController extends Observable implements Observer, IBankControl
             return false;
         }
 
-        for (IBankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getNumber().equals(bankAccountNumber)) {
-                long available = bankAccount.getBalance() + bankAccount.getCreditLimit();
-                return (amount <= available);
-            }
+        IBankAccount bankAccount = databaseController.getBankAccount(bankAccountNumber);
+        if (bankAccount != null) {
+            long available = bankAccount.getBalance() + bankAccount.getCreditLimit();
+            return (amount <= available);
         }
 
         return false;
@@ -401,24 +381,21 @@ public class BankController extends Observable implements Observer, IBankControl
     }
 
     private void executeTransactionLocalTo(BankTransaction bankTransaction) {
-        for (IBankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getNumber().equals(bankTransaction.getAccountTo())) {
-                bankAccount.increaseBalance(bankTransaction.getAmount());
-                setChanged();
-                notifyObservers(new TransactionExecuted(bankTransaction.getAccountTo()));
-            }
+        IBankAccount bankAccount = databaseController.getBankAccount(bankTransaction.getAccountTo());
+        if (bankAccount != null) {
+            bankAccount.increaseBalance(bankTransaction.getAmount());
+            setChanged();
+            notifyObservers(new TransactionExecuted(bankAccount.getNumber()));
         }
     }
 
     private void executeTransactionLocalFrom(BankTransaction bankTransaction) {
-        for (IBankAccount bankAccount : bankAccounts) {
-            if (bankAccount.getNumber().equals(bankTransaction.getAccountFrom())) {
-                boolean result = bankAccount.decreaseBalance(bankTransaction.getAmount());
-                if (result) {
-                    setChanged();
-                    notifyObservers(new TransactionExecuted(bankTransaction.getAccountFrom()));
-                }
-                return;
+        IBankAccount bankAccount = databaseController.getBankAccount(bankTransaction.getAccountFrom());
+        if (bankAccount != null) {
+            boolean result = bankAccount.decreaseBalance(bankTransaction.getAmount());
+            if (result) {
+                setChanged();
+                notifyObservers(new TransactionExecuted(bankAccount.getNumber()));
             }
         }
     }
@@ -429,7 +406,7 @@ public class BankController extends Observable implements Observer, IBankControl
                 && isBankAccountBalanceSufficient(bankTransaction.getAccountFrom(), bankTransaction.getAmount())) {
             executeTransactionLocalTo(bankTransaction);
             executeTransactionLocalFrom(bankTransaction);
-            bankTransactions.add(bankTransaction);
+            databaseController.persist(bankTransaction);
             return true;
         }
 
@@ -443,7 +420,7 @@ public class BankController extends Observable implements Observer, IBankControl
             executeTransactionLocalFrom(bankTransaction);
 
             if (centralBankConnection.executeTransaction(bankTransaction)) {
-                bankTransactions.add(bankTransaction);
+                databaseController.persist(bankTransaction);
                 return true;
             }
         }
@@ -455,7 +432,7 @@ public class BankController extends Observable implements Observer, IBankControl
         if (isBankAccountNumberInUse(bankTransaction.getAccountTo())
                 && centralBankConnection.isValidBankAccountNumber(bankTransaction.getAccountFrom())) {
             executeTransactionLocalTo(bankTransaction);
-            bankTransactions.add(bankTransaction);
+            databaseController.persist(bankTransaction);
             return true;
         }
 
@@ -476,6 +453,10 @@ public class BankController extends Observable implements Observer, IBankControl
         if (o instanceof Session) {
             setChanged();
             notifyObservers(arg);
+        }
+        if (o instanceof BankAccount) {
+            System.out.println("Update: " + ((BankAccount) o).getNumber());
+            databaseController.persist(o);
         }
     }
 

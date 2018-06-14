@@ -39,7 +39,7 @@ public interface IDatabaseController {
      * Get all bankaccounts in db
      * @return A list of bankaccounts.
      */
-    List<BankAccount> getAllBankAccounts();
+    List<IBankAccount> getAllBankAccounts();
 
     /**
      * Get all banktransactions in db
@@ -52,14 +52,14 @@ public interface IDatabaseController {
      * @param customer customer from whom the bankaccounts will be retreived. Can not be null.
      * @return A list of bankaccounts if present, else null.
      */
-    List<BankAccount> getBankAccounts(Customer customer);
+    List<IBankAccount> getBankAccounts(Customer customer);
 
     /**
      * Retreives a bankaccount
      * @param bankAccountNumber The account number of the bankaccount. Can not be null.
      * @return The bankaccount if present, else null.
      */
-    BankAccount getBankAccount(String bankAccountNumber);
+    IBankAccount getBankAccount(String bankAccountNumber);
 
     /**
      * Retreives all transactions of bankaccount
@@ -89,4 +89,10 @@ public interface IDatabaseController {
      * @return boolean true if success, else false
      */
     boolean deleteCustomerByNameAndResidence(String name, String residence);
+
+    /**
+     * Deletes all entries in the database
+     * @return boolean if success, else false
+     */
+    boolean deleteAll();
 }
