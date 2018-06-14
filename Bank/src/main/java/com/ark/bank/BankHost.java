@@ -10,21 +10,24 @@ class BankHost {
 
     private static String BankId = "RABO";
     private static String URLBase = "http://localhost:1200/";
+    private static String CentralBankIpAddress = "localhost";
 
     public static void main(String[] args) throws RemoteException {
 
-        if ((args.length >= 2)
+        if ((args.length >= 3)
             && (args[0] != null) && (!args[0].isEmpty())
-            && (args[1] != null) && (!args[1].isEmpty()))
+            && (args[1] != null) && (!args[1].isEmpty())
+            && (args[2] != null) && (!args[2].isEmpty()))
         {
             BankId = args[0];
             URLBase = args[1];
+            CentralBankIpAddress = args[2];
         }
 
         // Welcome message
         System.out.println("Bank is running: " + BankId);
 
-        ICentralBankConnection centralBankConnection = new CentralBankConnection();
+        ICentralBankConnection centralBankConnection = new CentralBankConnection(CentralBankIpAddress);
         //IDatabaseController databaseController = new DatabaseController(BankId);
         IDatabaseController databaseController = new DatabaseControllerStub();
 

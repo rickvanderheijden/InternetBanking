@@ -17,8 +17,10 @@ public class CentralBankConnection implements ICentralBankConnection {
     private final ICentralBankRegister centralBankRegister;
     private Service service;
     private QName qnamePort;
+    private final String centralBankIpAddress;
 
-    public CentralBankConnection()  {
+    public CentralBankConnection(String centralBankIpAddress)  {
+        this.centralBankIpAddress = centralBankIpAddress;
         this.centralBankTransaction = getCentralBankTransaction();
         this.centralBankRegister = getCentralBankRegister();
     }
@@ -53,7 +55,7 @@ public class CentralBankConnection implements ICentralBankConnection {
     private boolean createCentralBankConnection() {
         URL wsdlURL;
         try {
-            wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
+            wsdlURL = new URL("http://" + centralBankIpAddress + ":8080/CentralBank?wsdl");
             QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
             service = Service.create(wsdlURL, qname);
             qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
