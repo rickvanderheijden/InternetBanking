@@ -21,11 +21,13 @@ import testutilities.BankUtilities;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 
+import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 @SuppressWarnings("unused")
-public class StartUpTest extends ApplicationTest {
+public class
+GUITest extends ApplicationTest {
 
     private static final String Name = "TestName";
     private static final String Password = "TestPassword";
@@ -318,4 +320,16 @@ public class StartUpTest extends ApplicationTest {
         verifyThat(startUp, isVisible());
     }
 
+    @Test
+    public void TestsetCreditLimit() {
+        clickOn("#loginButton");
+        sleep(500);
+        clickOn("OK");
+        sleep(500);
+        verifyThat(dashboard, isVisible());
+        sleep(1000);
+        clickOn("#creditLimitTextfield").type(BACK_SPACE, BACK_SPACE, BACK_SPACE).write("200");
+        clickOn("#creditLimitButton");
+        clickOn("OK");
+    }
 }
