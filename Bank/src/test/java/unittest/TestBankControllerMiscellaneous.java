@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
+import unittest.stubs.DatabaseControllerStub;
 
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +19,7 @@ public class TestBankControllerMiscellaneous {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseControllerStub());
     }
 
     @After
@@ -28,22 +29,27 @@ public class TestBankControllerMiscellaneous {
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorAllNull() {
-        bankController = new BankController(null, null);
+        bankController = new BankController(null, null, null);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorBankIdNull() {
-        bankController = new BankController(null, new CentralBankConnectionStub());
+        bankController = new BankController(null, new CentralBankConnectionStub(), new DatabaseControllerStub());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorBankIdEmpty() {
-        bankController = new BankController("", new CentralBankConnectionStub());
+        bankController = new BankController("", new CentralBankConnectionStub(), new DatabaseControllerStub());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testBankControllerConstructorCentralBankConnectionNull() {
-        bankController = new BankController(BankIdInternal, null);
+        bankController = new BankController(BankIdInternal, null, new DatabaseControllerStub());
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testBankControllerConstructorDatabaseControllerNull() {
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), null);
     }
 
     @Test

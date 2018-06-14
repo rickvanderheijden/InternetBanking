@@ -21,30 +21,26 @@ public class BankController extends Observable implements Observer, IBankControl
     private final Set<Session> sessions = new HashSet<>();
     private final Set<BankTransaction> bankTransactions = new HashSet<>();
     private final ICentralBankConnection centralBankConnection;
+    private final IDatabaseController databaseController;
     private int defaultSessionTime = 900000;
-    private DatabaseController databaseController;
+
 
     /**
      * Creates an instance of BankController
      * @param bankId The id of the bank. Can not be null or empty.
      * @param centralBankConnection Connection to the central bank. Can not be null.
      */
-    public BankController(String bankId, ICentralBankConnection centralBankConnection) throws IllegalArgumentException {
-        if (isNullOrEmpty(bankId) || (centralBankConnection == null)) {
+    public BankController(String bankId, ICentralBankConnection centralBankConnection, IDatabaseController databaseController) throws IllegalArgumentException {
+        if (isNullOrEmpty(bankId) || (centralBankConnection == null || (databaseController == null))) {
             throw new IllegalArgumentException();
         }
 
         this.bankId = bankId;
         this.centralBankConnection = centralBankConnection;
-    }
+        this.databaseController = databaseController;
 
-    @Override
-    public boolean connectToBankDatabase(String bankId) throws ServiceException {
-        boolean result = true;
-        if(isNullOrEmpty(bankId)) { result = false; }
-        this.databaseController = new DatabaseController(bankId);
-        
-        return result;
+        //TODO: Add result check
+        databaseController.connectToDatabase();
     }
 
     @Override
@@ -322,7 +318,6 @@ public class BankController extends Observable implements Observer, IBankControl
                     transactionsToReturn.add(bankTransaction);
                 }
             }
-
         }
 
         return transactionsToReturn;

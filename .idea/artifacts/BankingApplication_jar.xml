@@ -6,6 +6,8 @@
         <element id="file-copy" path="$PROJECT_DIR$/BankingApplication/src/main/resources/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="BankingApplication" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libraries/FontysPublisher.jar" path-in-jar="/" />
+      <element id="module-output" name="Interfaces" />
     </root>
   </artifact>
 </component>

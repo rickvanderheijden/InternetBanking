@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
+import unittest.stubs.DatabaseControllerStub;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -25,7 +26,7 @@ public class TestBankControllerCustomer {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub());
+        bankController = new BankController(BankIdInternal, new CentralBankConnectionStub(), new DatabaseControllerStub());
     }
 
     @After
