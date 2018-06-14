@@ -12,9 +12,10 @@ import java.util.List;
 /**
  * @author Koen Sengers
  */
+@SuppressWarnings("unchecked")
 public final class DatabaseController implements IDatabaseController {
     private EntityManager entityManager;
-    private String bankId;
+    private final String bankId;
 
     /**
      * Creates a instance of DatabaseController object
@@ -69,14 +70,14 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             entityManager.getTransaction().rollback();
-        } finally {
-            return result;
         }
+
+        return result;
     }
 
     private boolean persistBankAccount(BankAccount bankAccount) {
         if (bankAccount.getOwner() == null) { return false; }
-        Customer customer = getPersistCustomer(bankAccount.getOwner().getName(), bankAccount.getOwner().getResidence());
+        Customer customer = getCustomer(bankAccount.getOwner().getName(), bankAccount.getOwner().getResidence());
         if(customer == null) {
             persistBase(bankAccount.getOwner());
         }
@@ -135,9 +136,13 @@ public final class DatabaseController implements IDatabaseController {
     @Override
     public List<BankAccount> getBankAccounts(Customer customer) {
         if (customer == null) { return null; }
+
+        List<BankAccount> bankAccounts;
+
         beginTransaction();
         try {
-            return (List<BankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", customer).getResultList();
+            bankAccounts = entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.owner = :value").setParameter("value", customer).getResultList();
+            return bankAccounts;
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -224,9 +229,8 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
-        } finally {
-            return result;
         }
+        return result;
     }
 
     public boolean deleteAll(){
@@ -239,9 +243,10 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
-        } finally {
-            return result;
+            result = false;
         }
+
+        return result;
     }
 
     private boolean deleteAllBankAccounts(){
@@ -254,9 +259,9 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
-        } finally {
-            return result;
         }
+
+        return result;
     }
 
     private boolean deleteAllBankTransactions(){
@@ -269,9 +274,9 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
-        } finally {
-            return result;
         }
+
+        return result;
     }
 
     private boolean deleteAllCustomers(){
@@ -284,8 +289,8 @@ public final class DatabaseController implements IDatabaseController {
         } catch (Exception e){
             e.printStackTrace();
             entityManager.getTransaction().rollback();
-        } finally {
-            return result;
         }
+
+        return result;
     }
 }

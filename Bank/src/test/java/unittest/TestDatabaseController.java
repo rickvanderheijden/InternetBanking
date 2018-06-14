@@ -4,15 +4,14 @@ import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
 import com.ark.bank.DatabaseController;
-import org.hibernate.service.spi.ServiceException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.SQLDataException;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 
 /**
@@ -20,8 +19,14 @@ import static junit.framework.TestCase.*;
  */
 public class TestDatabaseController {
 
-    DatabaseController databaseController;
-    Customer customer1;
+    static private final String Name = "John";
+    static private final String Residence = "Winterfell";
+    static private final String Password = "Ghost";
+    static private final String BankAccountNumberRABO = "RABO1234567890";
+    static private final String BankAccountNumberSNSB = "SNSB1234567890";
+
+    private DatabaseController databaseController;
+    private Customer customer;
 
     @Before
     public void setUp() {
@@ -73,38 +78,30 @@ public class TestDatabaseController {
         String description = "Test transaction";
         String accountTo = "RABO987654321";
 
-        BankTransaction transaction1 = new BankTransaction(amount, description, accountFrom, accountTo);
-        boolean result = databaseController.persist(transaction1);
+        BankTransaction transaction = new BankTransaction(amount, description, BankAccountNumberRABO, accountTo);
+        boolean result = databaseController.persist(transaction);
         assertTrue(result);
     }
 
     @Test
     public void testUpdateBankAccount(){
-        databaseController.persist(customer1);
-        String bankId = "RABO123456789";
-        Customer customer2 = databaseController.getPersistCustomer("John", "Winterfell");
+        BankAccount transaction = new BankAccount(customer, BankAccountNumberRABO);
+        long creditLimit = transaction.getCreditLimit() + 1000;
+        boolean result = databaseController.persist(transaction);
+        assertTrue(result);
 
-        BankAccount transaction1 = new BankAccount(customer2, bankId);
+        transaction.setCreditLimit(creditLimit);
+        result = databaseController.persist(transaction);
+        List<BankAccount> bankAccounts = databaseController.getBankAccounts(customer);
 
-        assertEquals(10000, transaction1.getCreditLimit());
-
-        boolean result1 = databaseController.persist(transaction1);
-        assertTrue(result1);
-
-        transaction1.setCreditLimit(9000);
-        boolean result2 = databaseController.persist(transaction1);
-
-        List<BankAccount> bankAccounts = databaseController.getPersistBankaccounts(customer2);
-        assertTrue(result2);
-        assertEquals(BankAccount.class, bankAccounts.get(0).getClass());
+        assertTrue(result);
         assertEquals(1, bankAccounts.size());
-        assertEquals(9000, bankAccounts.get(0).getCreditLimit());
+        assertEquals(creditLimit, bankAccounts.get(0).getCreditLimit());
     }
 
     @Test
     public void testDelete() {
-        boolean result = databaseController.persist(customer1);
-
+        boolean result = databaseController.persist(customer);
         assertTrue(result);
 
         result = databaseController.delete(customer);
@@ -115,13 +112,10 @@ public class TestDatabaseController {
     }
 
     @Test
-    public void testGetPersistCustomer(){
-        Customer customer2 = new Customer("Ned", "Winterfell", "Catlyn");
-        boolean result1 = databaseController.persist(customer1);
-        boolean result2 = databaseController.persist(customer2);
-
-        assertTrue(result1);
-        assertTrue(result2);
+    public void testGetCustomer(){
+        Customer customer2 = new Customer("Ned", Residence, "Catlyn");
+        databaseController.persist(customer);
+        databaseController.persist(customer2);
 
         customer = databaseController.getCustomer(Name, Residence);
         customer2 = databaseController.getCustomer("Ned", Residence);
@@ -147,14 +141,13 @@ public class TestDatabaseController {
         BankAccount bankAccount1 = new BankAccount(customer, BankAccountNumberRABO);
         BankAccount bankAccount2 = new BankAccount(customer, bankAccountNumber2);
 
-        databaseController.persist(transaction1);
-        databaseController.persist(transaction2);
+        databaseController.persist(bankAccount1);
+        databaseController.persist(bankAccount2);
 
-        List<BankAccount> bankAccounts = databaseController.getPersistBankaccounts(customer1);
+        List<BankAccount> bankAccounts = databaseController.getBankAccounts(customer);
 
-        assertEquals(BankAccount.class, bankAccounts.get(0).getClass());
-        assertEquals("RABO123456789", bankAccounts.get(0).getNumber());
-        assertEquals("RABO987654321", bankAccounts.get(1).getNumber());
+        assertEquals(bankAccount1, bankAccounts.get(0));
+        assertEquals(bankAccount2, bankAccounts.get(1));
     }
 
     @Test
@@ -164,12 +157,13 @@ public class TestDatabaseController {
         BankAccount bankAccount2 = new BankAccount(customer, bankAccountNumber2);
         bankAccount1.increaseBalance(100);
 
-        databaseController.persist(transaction1);
-        databaseController.persist(transaction2);
+        databaseController.persist(bankAccount1);
+        databaseController.persist(bankAccount2);
 
         BankAccount result = databaseController.getBankAccount(BankAccountNumberRABO);
 
-        assertEquals(100, result1.getBalance());
+        assertEquals(bankAccount1, result);
+        assertThat(bankAccount2, not(result));
     }
 
     @Test
@@ -186,7 +180,7 @@ public class TestDatabaseController {
     }
 
     @Test
-    public void testGetPersistTransaction(){
+    public void testGetTransaction(){
         long amount = 15;
         String description = "Test transaction";
         String accountTo1 = "RABO987654321";
@@ -205,12 +199,14 @@ public class TestDatabaseController {
         assertEquals(transaction1, transactions1.get(0));
 
 
-        BankTransaction transaction3 = new BankTransaction(amount, description, accountFrom3, accountTo3);
+        BankTransaction transaction3 = new BankTransaction(amount, description, BankAccountNumberSNSB, BankAccountNumberRABO);
         databaseController.persist(transaction3);
 
-        List<BankTransaction> transactions2 = databaseController.getPersistTransaction("RABO123456789");
-        assertEquals(BankTransaction.class, transactions2.get(1).getClass());
+        List<BankTransaction> transactions2 = databaseController.getTransaction(BankAccountNumberRABO);
+        assertNotNull(transactions2);
         assertEquals(2, transactions2.size());
+        assertEquals(transaction1, transactions2.get(0));
+        assertEquals(transaction3, transactions2.get(1));
     }
 
     @Test
@@ -224,20 +220,23 @@ public class TestDatabaseController {
     public void testGetAllCustomers(){
         Customer customer2 = new Customer("Rick", "Beek en Donk", "Hates Mac");
         Customer customer3 = new Customer("Arthur", "Zaltbommel", "Also hates Mac");
-        databaseController.persist(customer1);
+        databaseController.persist(customer);
         databaseController.persist(customer2);
         databaseController.persist(customer3);
 
         List<Customer> customers = databaseController.getAllCustomers();
-        assertEquals(Customer.class, customers.get(0).getClass());
+        assertNotNull(customers);
         assertEquals(3, customers.size());
+        assertEquals(customer, customers.get(0));
+        assertEquals(customer2, customers.get(1));
+        assertEquals(customer3, customers.get(2));
     }
 
     @Test
     public void testGetAllBankAccounts(){
         Customer customer2 = new Customer("Rick", "Beek en Donk", "Hates Mac");
         Customer customer3 = new Customer("Arthur", "Zaltbommel", "Also hates Mac");
-        databaseController.persist(customer1);
+        databaseController.persist(customer);
         databaseController.persist(customer2);
         databaseController.persist(customer3);
 
@@ -245,10 +244,10 @@ public class TestDatabaseController {
         String bankId3 = "RABO5647382910";
         String bankId4 = "RABO1029384756";
 
-        BankAccount bankAccount1 = new BankAccount(customer1, bankId1);
+        BankAccount bankAccount1 = new BankAccount(customer, BankAccountNumberRABO);
         BankAccount bankAccount2 = new BankAccount(customer2, bankId2);
         BankAccount bankAccount3 = new BankAccount(customer3, bankId3);
-        BankAccount bankAccount4 = new BankAccount(customer1, bankId4);
+        BankAccount bankAccount4 = new BankAccount(customer, bankId4);
 
         databaseController.persist(bankAccount1);
         databaseController.persist(bankAccount2);
@@ -256,8 +255,12 @@ public class TestDatabaseController {
         databaseController.persist(bankAccount4);
 
         List<BankAccount> bankAccounts = databaseController.getAllBankAccounts();
+        assertNotNull(bankAccounts);
         assertEquals(4, bankAccounts.size());
-        assertEquals(BankAccount.class, bankAccounts.get(3).getClass());
+        assertEquals(bankAccount1, bankAccounts.get(0));
+        assertEquals(bankAccount2, bankAccounts.get(1));
+        assertEquals(bankAccount3, bankAccounts.get(2));
+        assertEquals(bankAccount4, bankAccounts.get(3));
     }
 
     @Test
@@ -276,7 +279,12 @@ public class TestDatabaseController {
         databaseController.persist(transaction5);
 
         List<BankTransaction> bankTransactions = databaseController.getAllBankTransactions();
+        assertNotNull(bankTransactions);
         assertEquals(5, bankTransactions.size());
-        assertEquals(BankTransaction.class, bankTransactions.get(4).getClass());
+        assertEquals(transaction1, bankTransactions.get(0));
+        assertEquals(transaction2, bankTransactions.get(1));
+        assertEquals(transaction3, bankTransactions.get(2));
+        assertEquals(transaction4, bankTransactions.get(3));
+        assertEquals(transaction5, bankTransactions.get(4));
     }
 }
