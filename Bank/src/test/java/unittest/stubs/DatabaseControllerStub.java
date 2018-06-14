@@ -58,4 +58,7 @@ public class DatabaseControllerStub implements IDatabaseController {
     public boolean delete(Object object) {
         return false;
     }
+
+    @Override
+    public boolean deleteCustomerByNameAndResidence(String name, String residence) { return false; }
 }

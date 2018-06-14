@@ -74,4 +74,12 @@ public interface IDatabaseController {
      * @return Boolean true if successfull, else false.
      */
     boolean delete(Object object);
+
+    /**
+     * Deletes a customer object by name and residence
+     * @param name The string name of the customer
+     * @param residence The string residence of the customer
+     * @return boolean true if success, else false
+     */
+    boolean deleteCustomerByNameAndResidence(String name, String residence);
 }
