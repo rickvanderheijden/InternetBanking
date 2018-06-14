@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
+import unittest.stubs.DatabaseControllerStub;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class TestBankControllerExecuteBankTransaction {
     private static final String Residence = "Residence";
     private static final String BankIdInternal = "TEST";
     private final CentralBankConnectionStub centralBankConnectionStub = new CentralBankConnectionStub();
+    private final DatabaseControllerStub databaseControllerStub = new DatabaseControllerStub();
     private IBankController bankController;
     private String sessionKeyOne;
     private String sessionKeyTwo;
@@ -34,7 +36,7 @@ public class TestBankControllerExecuteBankTransaction {
 
     @Before
     public void setUp() {
-        bankController = new BankController(BankIdInternal, centralBankConnectionStub);
+        bankController = new BankController(BankIdInternal, centralBankConnectionStub, databaseControllerStub);
         sessionKeyOne = "";
         sessionKeyTwo = "";
         sessionKeyThree = "";

@@ -45,9 +45,9 @@ public class Controller implements Observer {
     public void start() throws IOException {
         connectToBank(bankId);
 
-        Parent root = FXMLLoader.load(getClass().getResource("views/Root.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/views/Root.fxml"));
         this.scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("views/" + this.bankId + ".css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/views/" + this.bankId + ".css").toExternalForm());
 
         stage.setScene(scene);
         stage.show();
@@ -91,7 +91,7 @@ public class Controller implements Observer {
     }
 
     private void changeStyleSheet(String stylesheet){
-        this.scene.getStylesheets().add(getClass().getResource("views/"+stylesheet).toExternalForm());
+        this.scene.getStylesheets().add(getClass().getResource("/views/"+stylesheet).toExternalForm());
     }
 
     public ReturnObject login(String name, String residence, String password) {

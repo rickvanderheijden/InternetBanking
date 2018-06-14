@@ -27,13 +27,9 @@ class BankHost {
         System.out.println("Bank is running: " + BankId);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection();
-        IBankController bankController = new BankController(BankId, centralBankConnection);
+        IDatabaseController databaseController = new DatabaseController(BankId);
+        IBankController bankController = new BankController(BankId, centralBankConnection, databaseController);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
-        try {
-            bankController.connectToBankDatabase(BankId);
-        } catch (Exception e){
-            System.out.println("Could not connect to database");
-        }
     }
 }

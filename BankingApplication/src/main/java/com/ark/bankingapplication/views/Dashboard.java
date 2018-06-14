@@ -77,7 +77,7 @@ public class Dashboard extends View {
 
 
     public Dashboard() throws ControlNotLoadedException {
-        super("Dashboard.fxml");
+        super("/views/Dashboard.fxml");
         toBankAccountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(this.selectedBankAccountNumber)) {
                 this.transactionButton.setDisable(true);
@@ -221,7 +221,7 @@ public class Dashboard extends View {
      * Method to set the logo of the bank
      */
     public void setLogo() {
-        URL iconUrl = this.getClass().getResource("images/" + this.bankId + "-ICON.png");
+        URL iconUrl = this.getClass().getResource("/images/" + this.bankId + "-ICON.png");
         Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(this.bankId);

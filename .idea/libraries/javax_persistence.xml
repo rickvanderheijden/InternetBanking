@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="JPA 2.0-JPA 2.0">
+  <library name="javax.persistence">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/javax.persistence.jar!/" />
     </CLASSES>

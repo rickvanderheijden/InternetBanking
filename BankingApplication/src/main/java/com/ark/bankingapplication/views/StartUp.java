@@ -40,7 +40,7 @@ public class StartUp extends View {
     @FXML private ImageView bankLogo;
 
     public StartUp() throws ControlNotLoadedException {
-        super("StartUp.fxml");
+        super("/views/StartUp.fxml");
 
         this.loginButton.setOnAction(event -> doLogin());
         this.registerButton.setOnAction(e -> doRegister());
@@ -209,8 +209,7 @@ public class StartUp extends View {
     }
 
     public void setLogo(String bankId) {
-        URL iconUrl = this.getClass().getResource("images/" + bankId + "-ICON.png");
-//        File file = new File("BankingApplication/src/main/java/com/ark/bankingapplication/views/images/" + bankId + "-ICON.png");
+        URL iconUrl = this.getClass().getResource("/images/" + bankId + "-ICON.png");
         Image image = new Image(iconUrl.toString());
         this.bankLogo.setImage(image);
         this.setBankNameLabel(bankId);
