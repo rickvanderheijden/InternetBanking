@@ -61,4 +61,7 @@ public class DatabaseControllerStub implements IDatabaseController {
 
     @Override
     public boolean transactionExists(BankTransaction bankTransaction) { return false; }
+
+    @Override
+    public boolean deleteCustomerByNameAndResidence(String name, String residence) { return false; }
 }

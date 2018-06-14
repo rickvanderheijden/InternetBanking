@@ -204,6 +204,13 @@ public final class DatabaseController implements IDatabaseController {
         }
     }
 
+    @Override
+    public boolean deleteCustomerByNameAndResidence(String name, String residence){
+        if(name.isEmpty() || residence.isEmpty()) { return false; }
+        Customer customer = getCustomer(name, residence);
+        return delete(customer);
+    }
+
     /**
      * Deletes all associated objects of customer and customer.
      * @param customer The customer instance.
