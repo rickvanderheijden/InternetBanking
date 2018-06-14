@@ -53,6 +53,16 @@ public final class DatabaseController implements IDatabaseController {
     @Override
     public boolean persist(Object object) {
         if (object == null) { return false; }
+        boolean result;
+        if (object instanceof BankAccount) {
+            result = persistBankAccount((BankAccount) object);
+        } else {
+            result = persistBase(object);
+        }
+        return result;
+    }
+
+    private boolean persistBase(Object object) {
         boolean result = false;
         beginTransaction();
         try {
@@ -66,6 +76,15 @@ public final class DatabaseController implements IDatabaseController {
         } finally {
             return result;
         }
+    }
+
+    private boolean persistBankAccount(BankAccount bankAccount) {
+        if (bankAccount.getOwner() == null) { return false; }
+        Customer customer = getPersistCustomer(bankAccount.getOwner().getName(), bankAccount.getOwner().getResidence());
+        if(customer == null) {
+            persistBase(bankAccount.getOwner());
+        }
+        return persistBase(bankAccount);
     }
 
     @Override
