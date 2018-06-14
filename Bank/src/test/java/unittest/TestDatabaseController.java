@@ -25,12 +25,12 @@ public class TestDatabaseController {
     static private final String BankAccountNumberRABO = "RABO1234567890";
     static private final String BankAccountNumberSNSB = "SNSB1234567890";
 
-    private DatabaseController databaseController;
+    private IDatabaseController databaseController;
     private Customer customer;
 
     @Before
     public void setUp() {
-        databaseController = new DatabaseController("TEST");
+        databaseController = new DatabaseControllerStub();
         databaseController.connectToDatabase();
 
         assertTrue(databaseController.deleteAll());

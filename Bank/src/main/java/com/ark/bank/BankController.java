@@ -170,12 +170,18 @@ public class BankController extends Observable implements Observer, IBankControl
 
         Session session = getSession(sessionKey);
         if  (session != null) {
-            for (IBankAccount bankAccount : bankAccounts) {
-                if (bankAccount.getNumber().equals(bankAccountNumber)
-                        && bankAccount.getOwner().getName().equals(session.getCustomerName())
-                        && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
-                    return bankAccount;
+            IBankAccount bankAccount = databaseController.getBankAccount(bankAccountNumber);
+
+            if ((bankAccount != null)
+                    && bankAccount.getOwner().getName().equals(session.getCustomerName())
+                    && bankAccount.getOwner().getResidence().equals(session.getCustomerResidence())) {
+
+                if (bankAccounts.add(bankAccount)) {
+                    System.out.println("Get BankAccount: Added observer for: " + bankAccount.getNumber());
+                    ((BankAccount) bankAccount).addObserver(this);
                 }
+
+                return bankAccount;
             }
         }
 

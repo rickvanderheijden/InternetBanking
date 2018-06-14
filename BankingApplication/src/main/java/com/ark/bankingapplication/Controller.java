@@ -216,8 +216,12 @@ public class Controller implements Observer {
         return this.scene;
     }
 
-    private void transactionExecuted() {
-        Platform.runLater(() -> dashboard.updateBankAccount());
+    private void transactionExecuted() throws RemoteException {
+        System.out.println("Controller: TransactionExecuted");
+
+        String selectedBankAccountNumber = dashboard.getSelectedBankAccountNumber();
+        IBankAccount bankAccount = bankConnector.getBankAccount(sessionKey, selectedBankAccountNumber);
+        Platform.runLater(() -> dashboard.updateBankAccount(bankAccount));
     }
 
     public boolean logout(String sessionKey) {
@@ -251,7 +255,11 @@ public class Controller implements Observer {
                     sessionTerminated();
                     break;
                 case "transactionExecuted":
-                    transactionExecuted();
+                    try {
+                        transactionExecuted();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 default:
                     break;

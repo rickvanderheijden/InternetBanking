@@ -48,11 +48,4 @@ public abstract class View extends AnchorPane {
         alert.setContentText(text);
         alert.show();
     }
-
-// --Commented out by Inspection START (1-6-2018 12:11):
-//    public void setBank(String bank) {
-//
-//    }
-// --Commented out by Inspection STOP (1-6-2018 12:11)
-
 }

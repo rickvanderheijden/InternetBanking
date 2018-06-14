@@ -2,13 +2,13 @@ package unittest;
 
 import com.ark.Customer;
 import com.ark.bank.BankController;
+import com.ark.bank.DatabaseControllerStub;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IBankController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
-import unittest.stubs.DatabaseControllerStub;
 
 import java.util.List;
 

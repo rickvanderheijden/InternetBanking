@@ -3,7 +3,9 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
+import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
 import org.hibernate.service.spi.ServiceException;
+import org.jboss.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,9 +33,11 @@ public final class DatabaseController implements IDatabaseController {
         try {
             EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("bank" + bankId);
             this.entityManager = entityManagerFactory.createEntityManager();
+
             result = true;
         } catch (Exception exception) {
             System.out.println("Could not connect to database");
+            exception.printStackTrace();
             this.entityManager = null;
         }
         return result;

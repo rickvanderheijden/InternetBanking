@@ -119,6 +119,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
         if (propertyChangeEvent.getPropertyName().contains("transactionExecuted")) {
             setChanged();
             notifyObservers("transactionExecuted");
+            System.out.println("PropertyChange Transaction: " + propertyChangeEvent.getPropertyName());
         } else if (propertyChangeEvent.getPropertyName().contains("sessionTerminated")) {
             setChanged();
             notifyObservers("sessionTerminated");

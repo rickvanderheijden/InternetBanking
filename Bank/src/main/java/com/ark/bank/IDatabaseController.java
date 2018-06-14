@@ -89,4 +89,10 @@ public interface IDatabaseController {
      * @return boolean true if success, else false
      */
     boolean deleteCustomerByNameAndResidence(String name, String residence);
+
+    /**
+     * Deletes all entries in the database
+     * @return boolean if success, else false
+     */
+    boolean deleteAll();
 }

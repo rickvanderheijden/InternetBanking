@@ -1,12 +1,12 @@
 package unittest;
 
 import com.ark.bank.BankController;
+import com.ark.bank.DatabaseControllerStub;
 import com.ark.bank.IBankController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import unittest.stubs.CentralBankConnectionStub;
-import unittest.stubs.DatabaseControllerStub;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;

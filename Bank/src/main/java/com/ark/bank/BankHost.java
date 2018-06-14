@@ -1,7 +1,5 @@
 package com.ark.bank;
 
-import org.hibernate.service.spi.ServiceException;
-
 import java.rmi.RemoteException;
 
 /**
@@ -27,7 +25,9 @@ class BankHost {
         System.out.println("Bank is running: " + BankId);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection();
-        IDatabaseController databaseController = new DatabaseController(BankId);
+        //IDatabaseController databaseController = new DatabaseController(BankId);
+        IDatabaseController databaseController = new DatabaseControllerStub();
+
         IBankController bankController = new BankController(BankId, centralBankConnection, databaseController);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);
         GUIConnector guiConnector = new GUIConnector(bankController);
