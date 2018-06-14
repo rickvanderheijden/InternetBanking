@@ -38,9 +38,11 @@ public class BankConnection implements IBankConnection {
 
     @Override
     public boolean registerBank(BankConnectionInfo bankConnectionInfo) {
+        System.out.println("registerBank");
         IBankForCentralBank bankForCentralBank = getBankConnection(bankConnectionInfo.getURL());
         if (bankForCentralBank != null) {
             bankForCentralBanks.put(bankConnectionInfo.getBankId(), bankForCentralBank);
+            System.out.println("Bank registered: " + bankConnectionInfo.getBankId());
             return true;
         }
 
