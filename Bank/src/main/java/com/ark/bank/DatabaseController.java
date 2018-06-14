@@ -164,7 +164,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankTransaction> getTransaction(String bankAccountNumber){
+    public List<BankTransaction> getBankTransactions(String bankAccountNumber){
         if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
@@ -173,6 +173,22 @@ public final class DatabaseController implements IDatabaseController {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
             return null;
+        }
+    }
+
+    @Override
+    public boolean transactionExists(BankTransaction bankTransaction){
+        if (bankTransaction == null ) { return false; }
+        BankTransaction transaction;
+        beginTransaction();
+        try {
+            transaction = (BankTransaction) entityManager.createQuery("SELECT t FROM BankTransaction t WHERE t.accountTo = :value1 and t.accountFrom = :value2 and t.transactionDate = :value3 and t.amount = :value4").setParameter("value1", bankTransaction.getAccountTo()).setParameter("value2", bankTransaction.getAccountFrom()).setParameter("value3", bankTransaction.getDate()).setParameter("value4", bankTransaction.getAmount()).getSingleResult();
+            if (transaction == null) { return false; }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            return false;
         }
     }
 
