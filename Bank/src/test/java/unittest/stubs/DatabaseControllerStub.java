@@ -20,7 +20,7 @@ public class DatabaseControllerStub implements IDatabaseController {
     }
 
     @Override
-    public Customer getPersistCustomer(String name, String residence) {
+    public Customer getCustomer(String name, String residence) {
         return null;
     }
 
@@ -40,17 +40,17 @@ public class DatabaseControllerStub implements IDatabaseController {
     }
 
     @Override
-    public List<BankAccount> getPersistBankaccounts(Customer customer) {
+    public List<BankAccount> getBankAccounts(Customer customer) {
         return null;
     }
 
     @Override
-    public BankAccount getPersistBankaccount(String bankAccountNumber) {
+    public BankAccount getBankAccount(String bankAccountNumber) {
         return null;
     }
 
     @Override
-    public List<BankTransaction> getPersistTransaction(String bankAccountNumber) {
+    public List<BankTransaction> getTransaction(String bankAccountNumber) {
         return null;
     }
 

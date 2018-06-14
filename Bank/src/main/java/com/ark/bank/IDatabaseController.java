@@ -27,7 +27,7 @@ public interface IDatabaseController {
      * @param residence The residence of the customer. Can not be null.
      * @return The customer if found, else null
      */
-    Customer getPersistCustomer(String name, String residence);
+    Customer getCustomer(String name, String residence);
 
     /**
      * Get all customers in db
@@ -52,21 +52,21 @@ public interface IDatabaseController {
      * @param customer customer from whom the bankaccounts will be retreived. Can not be null.
      * @return A list of bankaccounts if present, else null.
      */
-    List<BankAccount> getPersistBankaccounts(Customer customer);
+    List<BankAccount> getBankAccounts(Customer customer);
 
     /**
      * Retreives a bankaccount
      * @param bankAccountNumber The account number of the bankaccount. Can not be null.
      * @return The bankaccount if present, else null.
      */
-    BankAccount getPersistBankaccount(String bankAccountNumber);
+    BankAccount getBankAccount(String bankAccountNumber);
 
     /**
      * Retreives all transactions of bankaccount
      * @param bankAccountNumber The account number of the bankaccount. Can not be null.
      * @return A list of bankTransactions. Can be empty.
      */
-    List<BankTransaction> getPersistTransaction(String bankAccountNumber);
+    List<BankTransaction> getTransaction(String bankAccountNumber);
 
     /**
      * Deletes an object from the database
