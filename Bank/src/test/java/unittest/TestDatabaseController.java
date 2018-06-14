@@ -112,6 +112,13 @@ public class TestDatabaseController {
     }
 
     @Test
+    public void testDeleteCustomer(){
+        databaseController.persist(customer);
+        boolean result = databaseController.deleteCustomerByNameAndResidence(customer.getName(), customer.getResidence());
+        assertTrue(result);
+    }
+
+    @Test
     public void testGetCustomer(){
         Customer customer2 = new Customer("Ned", Residence, "Catlyn");
         databaseController.persist(customer);
