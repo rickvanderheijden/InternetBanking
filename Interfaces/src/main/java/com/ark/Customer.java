@@ -2,9 +2,11 @@ package com.ark;
 
 import com.sun.istack.internal.NotNull;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Base64;
 
 /**
  * @author Rick van der Heijden
@@ -27,9 +29,9 @@ public class Customer implements Serializable {
             || (password == null) || password.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
+        String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
         this.name = name;
-        this.password = passwordEncode(password);
+        this.password = generatedSecuredPasswordHash;
         this.residence = residence;
     }
 
@@ -58,30 +60,6 @@ public class Customer implements Serializable {
      * @return True if password is correct, false otherwise.
      */
     public boolean isPasswordValid(String password) {
-        return passwordDecode(this.password).equals(password);
-    }
-
-    private String passwordEncode(String password){
-        String b64encoded = Base64.getEncoder().encodeToString(password.getBytes());
-
-        String reverse = new StringBuffer(b64encoded).reverse().toString();
-
-        StringBuilder tmp = new StringBuilder();
-        final int offset = 4;
-        for (int i = 0; i < reverse.length(); i++) {
-            tmp.append((char)(reverse.charAt(i) + offset));
-        }
-        return tmp.toString();
-    }
-
-    private String passwordDecode(String secret){
-        StringBuilder tmp = new StringBuilder();
-        final int offset = 4;
-        for (int i = 0; i < secret.length(); i++){
-            tmp.append((char)(secret.charAt(i) - offset));
-        }
-
-        String reversed = new StringBuffer(tmp.toString()).reverse().toString();
-        return new String(Base64.getDecoder().decode(reversed));
+        return BCrypt.checkpw(password, this.password);
     }
 }
