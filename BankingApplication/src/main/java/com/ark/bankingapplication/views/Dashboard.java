@@ -109,6 +109,7 @@ public class Dashboard extends View {
             controller.subscribeToTransaction(newValue);
             this.selectedBankAccountNumber = newValue;
             this.setTransactions();
+            this.clearInputs();
             updateBankAccount(controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber));
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
@@ -312,6 +313,8 @@ public class Dashboard extends View {
 
         } else if (fullString.isEmpty() && centsString.isEmpty()) {
             showWarning("Transactie fout", "Vul een geldig bedrag in.");
+        } else if (description.isEmpty()) {
+            showWarning("Transactie fout", "Vul een omschrijving van je transactie in.");
         } else {
             full = !fullString.isEmpty() ? Long.parseLong(fullString) : 0;
             cents = !centsString.isEmpty() ? Long.parseLong(centsString) : 0;
@@ -384,6 +387,7 @@ public class Dashboard extends View {
      */
     private void closeTransactionPopup() {
         this.TrasactionPopupAnchorPane.setVisible(false);
+        this.transactionsListView.getSelectionModel().clearSelection();
     }
 
     public void sessionTerminated() {
