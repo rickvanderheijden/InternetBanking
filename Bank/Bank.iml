@@ -7,6 +7,11 @@
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
           <factory-entry name="Entities" />
+          <factory-entry name="bankABNA" />
+          <factory-entry name="bankRABO" />
+          <factory-entry name="bankSNSB" />
+          <factory-entry name="bankTEST" />
+          <factory-entry name="bankTESTnoConnection" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
