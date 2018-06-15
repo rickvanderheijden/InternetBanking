@@ -30,6 +30,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
     public BankConnector(String hostIpAddress) throws RemoteException {
         super();
         this.hostIpAddress = hostIpAddress;
+//        this.hostIpAddress = "localhost";
         UnicastRemoteObject.exportObject(this, 0);
     }
 

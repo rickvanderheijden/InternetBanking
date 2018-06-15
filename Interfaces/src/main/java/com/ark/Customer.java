@@ -2,7 +2,10 @@ package com.ark;
 
 import com.sun.istack.internal.NotNull;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -26,9 +29,9 @@ public class Customer implements Serializable {
             || (password == null) || password.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
+        String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
         this.name = name;
-        this.password = password;
+        this.password = generatedSecuredPasswordHash;
         this.residence = residence;
     }
 
@@ -57,6 +60,6 @@ public class Customer implements Serializable {
      * @return True if password is correct, false otherwise.
      */
     public boolean isPasswordValid(String password) {
-        return this.password.equals(password);
+        return BCrypt.checkpw(password, this.password);
     }
 }
