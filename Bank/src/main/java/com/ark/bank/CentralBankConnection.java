@@ -1,16 +1,15 @@
 package com.ark.bank;
 
 import com.ark.BankConnectionInfo;
+import com.ark.BankTransaction;
 import com.ark.centralbank.ICentralBankRegister;
 import com.ark.centralbank.ICentralBankTransaction;
-import com.ark.BankTransaction;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLOutput;
 
 public class CentralBankConnection implements ICentralBankConnection {
 
@@ -60,6 +59,7 @@ public class CentralBankConnection implements ICentralBankConnection {
         URL wsdlURL;
         try {
             wsdlURL = new URL("http://" + centralBankIpAddress + ":8080/CentralBank?wsdl");
+//            wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
             QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
             service = Service.create(wsdlURL, qname);
             qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");
