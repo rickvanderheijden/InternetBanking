@@ -129,7 +129,7 @@ public class Dashboard extends View {
                             text += " | AF: | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
                             text += bankTransaction.getAccountTo();
                             setText(text);
-                            getStyleClass().add("outgoing");
+//                            getStyleClass().add("outgoing");
 
 
                         }else{
@@ -139,7 +139,7 @@ public class Dashboard extends View {
                             text += " | BIJ : | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
                             text += bankTransaction.getAccountFrom();
                             setText(text);
-                            getStyleClass().add("incoming");
+//                            getStyleClass().add("incoming");
                         }
                     }
 
