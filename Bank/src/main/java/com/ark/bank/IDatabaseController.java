@@ -1,6 +1,5 @@
 package com.ark.bank;
 
-import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
 
@@ -9,15 +8,15 @@ import java.util.List;
 public interface IDatabaseController {
 
     /**
-     *
-     * @return
+     * Connect to the database
+     * @return boolean treu if succesful else false
      */
     boolean connectToDatabase();
 
     /**
      * Persist a object to the database
      * @param object any object that is a entity. Can not be null.
-     * @return boolean true if succesfull else false
+     * @return boolean true if succesful else false
      */
     boolean persist(Object object);
 
@@ -30,55 +29,55 @@ public interface IDatabaseController {
     Customer getCustomer(String name, String residence);
 
     /**
-     * Get all customers in db
+     * Get all customers in the database
      * @return A list of customers.
      */
     List<Customer> getAllCustomers();
 
     /**
-     * Get all bankaccounts in db
+     * Get all bankaccounts in the databse
      * @return A list of bankaccounts.
      */
     List<IBankAccount> getAllBankAccounts();
 
     /**
-     * Get all banktransactions in db
-     * @return A list of banktransactions.
+     * Get all banktransactions in the database
+     * @return A list of bank transactions.
      */
     List<BankTransaction> getAllBankTransactions();
 
     /**
      * Retreives the transactions of a customer.
-     * @param customer customer from whom the bankaccounts will be retreived. Can not be null.
+     * @param customer customer from whom the bank accounts will be retreived. Can not be null.
      * @return A list of bankaccounts if present, else null.
      */
     List<IBankAccount> getBankAccounts(Customer customer);
 
     /**
-     * Retreives a bankaccount
+     * Retreives a bank account
      * @param bankAccountNumber The account number of the bankaccount. Can not be null.
-     * @return The bankaccount if present, else null.
+     * @return The bank account if present, else null.
      */
     IBankAccount getBankAccount(String bankAccountNumber);
 
     /**
-     * Retreives all transactions of bankaccount
-     * @param bankAccountNumber The account number of the bankaccount. Can not be null.
-     * @return A list of bankTransactions. Can be empty.
+     * Retreives all transactions of bank account
+     * @param bankAccountNumber The account number of the bank account. Can not be null.
+     * @return A list of bank transactions. Can be empty.
      */
     List<BankTransaction> getBankTransactions(String bankAccountNumber);
 
     /**
      * Returns the banktransaction if exists
-     * @param bankTransaction The banktransaction. Can not be null.
-     * @return A bankTransaciton. Can be null.
+     * @param bankTransaction The bank transaction. Can not be null.
+     * @return A bank transaction. Can be null.
      */
     boolean transactionExists(BankTransaction bankTransaction);
 
     /**
      * Deletes an object from the database
      * @param object Any object that is an entity. Can not be null.
-     * @return Boolean true if successfull, else false.
+     * @return boolean true if successful, else false.
      */
     boolean delete(Object object);
 

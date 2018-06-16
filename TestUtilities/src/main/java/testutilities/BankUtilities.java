@@ -56,7 +56,7 @@ public class BankUtilities {
         }
     }
 
-    public void startBank(String bankId, String URLBase) throws IOException {
+    public void startBank(String bankId, String URLBase, String ipAddressOfCentralBank) throws IOException {
 
         String javaPath;
         String jarPath;
@@ -70,7 +70,7 @@ public class BankUtilities {
             javaPath = jrePath + "//bin//java";
         }
 
-        Process process = new ProcessBuilder(javaPath, "-jar", jarPath + JARFILE, bankId, URLBase).start();
+        Process process = new ProcessBuilder(javaPath, "-jar", jarPath + JARFILE, bankId, URLBase, ipAddressOfCentralBank).start();
         bankProcesses.put(bankId, process);
     }
 

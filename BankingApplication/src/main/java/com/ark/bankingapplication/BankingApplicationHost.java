@@ -1,6 +1,7 @@
 package com.ark.bankingapplication;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -9,28 +10,33 @@ import java.util.List;
 
 public class BankingApplicationHost extends Application {
 
-    String BankId = "RABO";
-    String IpAddress = "localhost";
+    private static String BankId = "RABO";
+    private static String IpAddress = "localhost";
 
     @Override
     public void start(Stage stage) throws Exception {
         List<String> parameters = getParameters().getRaw();
 
-        if (parameters.size() >= 2) {
+        if (parameters.size() < 2) {
+            System.out.println("Not enough parameters used.\n");
+            System.out.println("Usage:    BankingApplication.jar \"BankID\" \"IP address of bank\"");
+            System.out.println("Example:  BankingApplication.jar \"ABNA\" \"192.168.0.10\"");
+            Platform.exit();
+        } else {
             if ((parameters.get(0) != null) && (!parameters.get(0).isEmpty())) {
                 BankId = parameters.get(0);
             }
             if ((parameters.get(1) != null) && !parameters.get(1).isEmpty()) {
                 IpAddress = parameters.get(1);
             }
-        }
 
-        IBankConnector bankConnector = new BankConnector(IpAddress);
-        Controller controller = new Controller(stage, BankId, bankConnector);
-        URL iconUrl = getClass().getResource("/images/" + BankId + "-ICON.png");
-        Image image = new Image(iconUrl.toString());
-        stage.getIcons().add(image);
-        controller.start();
+            IBankConnector bankConnector = new BankConnector(IpAddress);
+            Controller controller = new Controller(stage, BankId, bankConnector);
+            URL iconUrl = getClass().getResource("/images/" + BankId + "-ICON.png");
+            Image image = new Image(iconUrl.toString());
+            stage.getIcons().add(image);
+            controller.start();
+        }
     }
 
     /**

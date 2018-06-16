@@ -9,9 +9,9 @@ import java.util.List;
 
 public class DatabaseControllerStub implements IDatabaseController {
 
-    List<BankTransaction> transactions = new ArrayList<>();
-    List<IBankAccount> bankAccounts = new ArrayList<>();
-    List<Customer> customers = new ArrayList<>();
+    private final List<BankTransaction> transactions = new ArrayList<>();
+    private final List<IBankAccount> bankAccounts = new ArrayList<>();
+    private final List<Customer> customers = new ArrayList<>();
 
     @Override
     public boolean connectToDatabase() {

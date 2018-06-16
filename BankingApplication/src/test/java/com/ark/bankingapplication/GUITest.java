@@ -1,14 +1,10 @@
 package com.ark.bankingapplication;
 
-import com.ark.BankAccount;
-import com.ark.Customer;
-import com.ark.bank.IBankAccount;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.AfterClass;
@@ -19,7 +15,6 @@ import org.testfx.framework.junit.ApplicationTest;
 import testutilities.BankUtilities;
 
 import java.io.IOException;
-import java.rmi.NotBoundException;
 
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -36,18 +31,17 @@ GUITest extends ApplicationTest {
     private static final String URLBase = "http://localhost:1205/";
     private static final String BankRabo = "RABO";
     private static final String RABOUrl = "http://localhost:1200/";
+    private static final String IPAddressCentralBank = "localhost";
     private static BankUtilities utilities;
     private Scene scene;
     private StartUp startUp;
     private Dashboard dashboard;
 
-    private IBankAccount RicksAccount;
-
     @BeforeClass
     public static void setUpClass() throws IOException {
         utilities = new BankUtilities();
-        utilities.startBank(BankId, URLBase);
-        utilities.startBank(BankRabo, RABOUrl);
+        utilities.startBank(BankId, URLBase, IPAddressCentralBank);
+        utilities.startBank(BankRabo, RABOUrl, IPAddressCentralBank);
     }
 
     @AfterClass
@@ -69,9 +63,6 @@ GUITest extends ApplicationTest {
 
         BankConnector bankConnectorRABO = new BankConnector("localhost");
         Controller controllerRABO = new Controller(stage, BankRabo, bankConnectorRABO);
-
-        Customer rick = new Customer("Rick", "Beek en Donk", "rick123");
-        this.RicksAccount = new BankAccount(rick, "RABO2821842127");
     }
 
     @Test
@@ -244,37 +235,6 @@ GUITest extends ApplicationTest {
         System.out.println(newSize);
         Assert.assertEquals("Size of bankAccountsList should be 1 greater then " + StartSize, (StartSize + 1), newSize);
     }
-
-    /*
-    @Test
-    public void ExecuteTransaction() {
-        clickOn("#loginButton");
-        clickOn("OK");
-        verifyThat(dashboard, isVisible());
-
-        //After login set attributes
-        Label selectedBankNr = (Label) scene.lookup("#selectedBankNrLabel");
-        Label balance = (Label) scene.lookup("#balanceLabel");
-        ListView transactionsListView = (ListView) scene.lookup("#transactionsListView");
-
-        int StartSize = transactionsListView.getItems().size();
-        String ToAccount = this.RicksAccount.getNumber();
-        String ammountTo = "10";
-        String Descritpion = "Voor de Biertjes en de Tosti's!";
-
-
-        clickOn("#toBankAccountTextField").write(ToAccount);
-        clickOn("#amountFullTextField").write(ammountTo);
-        clickOn("#transactionDescriptionTextArea").write(Descritpion);
-        clickOn("#transactionButton");
-        clickOn("OK");
-        String newBalance = balance.getText();
-        Assert.assertEquals("Balance should be €-10,00", "€-10,00", newBalance);
-        int newSize = transactionsListView.getItems().size();
-        System.out.println(newSize);
-        Assert.assertEquals("Size of bankAccountsList should be 1 greater then " + StartSize, (StartSize + 1), newSize);
-    }
-    */
 
     @Test
     public void TestLogout() {

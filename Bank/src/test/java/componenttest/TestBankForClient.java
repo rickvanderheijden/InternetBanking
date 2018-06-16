@@ -17,13 +17,14 @@ import static org.junit.Assert.assertFalse;
 public class TestBankForClient {
     private static final String BankId = "RABO";
     private static final String URLBase = "http://localhost:1200/";
+    private static final String IPAddressCentralBank = "localhost";
     private static IBankForClientSession bank;
     private static BankUtilities utilities;
 
     @BeforeClass
     public static void setUpClass() throws IOException, NotBoundException {
         utilities = new BankUtilities();
-        utilities.startBank(BankId, URLBase);
+        utilities.startBank(BankId, URLBase, IPAddressCentralBank);
         bank = utilities.getIBankForClient(BankId);
     }
 

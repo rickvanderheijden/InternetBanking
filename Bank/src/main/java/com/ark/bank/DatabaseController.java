@@ -3,9 +3,7 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
-import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
 import org.hibernate.service.spi.ServiceException;
-import org.jboss.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -188,8 +186,7 @@ public final class DatabaseController implements IDatabaseController {
         beginTransaction();
         try {
             transaction = (BankTransaction) entityManager.createQuery("SELECT t FROM BankTransaction t WHERE t.accountTo = :value1 and t.accountFrom = :value2 and t.transactionDate = :value3 and t.amount = :value4").setParameter("value1", bankTransaction.getAccountTo()).setParameter("value2", bankTransaction.getAccountFrom()).setParameter("value3", bankTransaction.getDate()).setParameter("value4", bankTransaction.getAmount()).getSingleResult();
-            if (transaction == null) { return false; }
-            return true;
+            return transaction != null;
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();

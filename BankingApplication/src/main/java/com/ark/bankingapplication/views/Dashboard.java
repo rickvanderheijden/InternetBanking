@@ -65,7 +65,6 @@ public class Dashboard extends View {
     @FXML private Button closeButton;
 
     private Customer customer = null;
-    private IBankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
     private String selectedBankAccountNumber = null;
@@ -254,16 +253,14 @@ public class Dashboard extends View {
     public void updateBankAccount(IBankAccount bankAccount) {
         System.out.println("Dashboard Update Bank Account");
 
-        selectedBankaccount = bankAccount;
-
         //selectedBankaccount =  controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber);
-        if (selectedBankaccount != null) {
-            long balance = selectedBankaccount.getBalance();
+        if (bankAccount != null) {
+            long balance = bankAccount.getBalance();
             double balanced = balance / 100.0;
             String balanceText = this.customFormat(balanced);
             this.balanceLabel.setText("€" + balanceText);
             this.selectedBankNrLabel.setText(selectedBankAccountNumber);
-            this.creditLimitTextfield.setText(String.valueOf(selectedBankaccount.getCreditLimit()/100));
+            this.creditLimitTextfield.setText(String.valueOf(bankAccount.getCreditLimit()/100));
             this.setTransactions();
         }
     }

@@ -29,6 +29,7 @@ public class TestExecuteBankTransaction {
     private static final String URLBaseRABO = "http://localhost:1200/";
     private static final String BankIdABNA = "ABNA";
     private static final String URLBaseABNA = "http://localhost:1205/";
+    private static final String IPAddressCentralBank = "localhost";
     private static IBankForClientSession bankForClientSessionABNA;
     private static IBankForClientSession bankForClientSessionRABO;
     private static IBankForClientLogin bankForClientLoginABNA;
@@ -44,9 +45,9 @@ public class TestExecuteBankTransaction {
         bankUtilities = new BankUtilities();
         centralBankUtilities = new CentralBankUtilities();
 
-        centralBankUtilities.startCentralBank();
-        bankUtilities.startBank(BankIdABNA, URLBaseABNA);
-        bankUtilities.startBank(BankIdRABO, URLBaseRABO);
+        centralBankUtilities.startCentralBank(IPAddressCentralBank);
+        bankUtilities.startBank(BankIdABNA, URLBaseABNA, IPAddressCentralBank);
+        bankUtilities.startBank(BankIdRABO, URLBaseRABO, IPAddressCentralBank);
 
         bankForClientSessionABNA = bankUtilities.getIBankForClient(BankIdABNA);
         bankForClientSessionRABO = bankUtilities.getIBankForClient(BankIdRABO);

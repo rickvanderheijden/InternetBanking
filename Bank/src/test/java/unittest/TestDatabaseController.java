@@ -3,7 +3,6 @@ package unittest;
 import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.bank.DatabaseController;
 import com.ark.bank.DatabaseControllerStub;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IDatabaseController;

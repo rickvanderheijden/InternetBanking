@@ -36,7 +36,7 @@ public class CentralBankUtilities {
         }
     }
 
-    public void startCentralBank() throws IOException {
+    public void startCentralBank(String ipAddress) throws IOException {
         String javaPath;
         String jarPath;
         String jrePath = System.getProperty("java.home");
@@ -49,7 +49,7 @@ public class CentralBankUtilities {
             javaPath = jrePath + "//bin//java";
         }
 
-        processCentralBank = new ProcessBuilder(javaPath, "-jar", jarPath + JARFILE).start();
+        processCentralBank = new ProcessBuilder(javaPath, "-jar", jarPath + JARFILE, ipAddress).start();
 
         waitForConnection();
 

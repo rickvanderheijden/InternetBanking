@@ -4,7 +4,7 @@ import com.ark.BankTransaction;
 
 import java.util.Comparator;
 
-public class TransactionComparator implements Comparator<BankTransaction> {
+class TransactionComparator implements Comparator<BankTransaction> {
     @Override
     public int compare(BankTransaction bankTransaction1, BankTransaction bankTransaction2) {
         return bankTransaction1.getDate().compareTo(bankTransaction2.getDate());

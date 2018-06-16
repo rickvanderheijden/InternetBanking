@@ -10,6 +10,7 @@ import java.util.*;
 /**
  * @author Rick van der Heijden
  */
+@SuppressWarnings({"BooleanMethodIsAlwaysInverted", "ConstantConditions"})
 public class BankController extends Observable implements Observer, IBankController {
     private static final long StartBankAccountNumber = 1000000000L;
     private static final long EndBankAccountNumber = 9999999999L;
@@ -243,7 +244,6 @@ public class BankController extends Observable implements Observer, IBankControl
         }
 
         Session session = getSession(sessionKey);
-        boolean result = false;
 
         if (session.getCustomerName().equals(name) && session.getCustomerResidence().equals(residence)) {
             Customer customer = databaseController.getCustomer(name, residence);
@@ -252,7 +252,7 @@ public class BankController extends Observable implements Observer, IBankControl
             }
         }
 
-        return result;
+        return false;
     }
 
     @Override

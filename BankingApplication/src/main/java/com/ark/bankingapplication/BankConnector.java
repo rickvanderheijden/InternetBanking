@@ -25,7 +25,7 @@ class BankConnector extends Observable implements IBankConnector, IRemotePropert
     private IBankForClientLogin bankForClientLogin;
     private IBankForClientSession bankForClientSession;
     private IRemotePublisherForListener remotePublisherForListener;
-    private String hostIpAddress;
+    private final String hostIpAddress;
 
     public BankConnector(String hostIpAddress) throws RemoteException {
         super();
