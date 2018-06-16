@@ -52,11 +52,11 @@ public class BankTransaction implements Serializable {
 
     /**
      * Sets the amount of the transaction.
-     * @param amount The amount in cents. Can not be negative.
+     * @param amount The amount in cents. Can not be zero or negative.
      * @return True if the amount has been set succesfully, false otherwise.
      */
-    public boolean setAmount(long amount) {
-        if (amount < 0) {
+    public boolean setAmount(long amount) throws IllegalArgumentException{
+        if (amount <= 0) {
             return false;
         }
 
@@ -67,7 +67,7 @@ public class BankTransaction implements Serializable {
 
     /**
      * Gets the description of the transaction.
-     * @return The desciption of the transaction. This can be null or empty.
+     * @return The desciption of the transaction.
      */
     public String getDescription() {
         return description;
@@ -75,10 +75,16 @@ public class BankTransaction implements Serializable {
 
     /**
      * Sets the description of the transaction.
-     * @param description The desciption of the transaction. This can be null or empty.
+     * @param description The desciption of the transaction. Can not be null or empty.
+     * @return True if set succesfully, false otherwise.
      */
-    public void setDescription(String description) {
+    public boolean setDescription(String description) throws IllegalArgumentException {
+        if ((description == null) || description.isEmpty()) {
+            return false;
+        }
+
         this.description = description;
+        return true;
     }
 
     /**
@@ -91,10 +97,16 @@ public class BankTransaction implements Serializable {
 
     /**
      * Sets the bank account number from which the amount should be deducted.
-     * @param accountFrom The bank account number.
+     * @param accountFrom The bank account number. Can not be null or empty.
+     * @return True if set succesfully, false otherwise.
      */
-    public void setAccountFrom(String accountFrom) {
+    public boolean setAccountFrom(String accountFrom) throws IllegalArgumentException {
+        if ((accountFrom == null) || accountFrom.isEmpty()) {
+            return false;
+        }
+
         this.accountFrom = accountFrom;
+        return true;
     }
 
     /**
@@ -107,10 +119,15 @@ public class BankTransaction implements Serializable {
 
     /**
      * Sets the bank account number to which the amount should be tranfererd.
-     * @param accountTo The bank account number.
+     * @param accountTo The bank account number. Can not be null or empty.
+     * @return True if set succesfully, false otherwise.
      */
-    public void setAccountTo(String accountTo) {
+    public boolean setAccountTo(String accountTo) {
+        if ((accountTo == null) || accountTo.isEmpty()) {
+            return false;
+        }
         this.accountTo = accountTo;
+        return true;
     }
 
     /**

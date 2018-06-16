@@ -59,7 +59,6 @@ public class CentralBankConnection implements ICentralBankConnection {
         URL wsdlURL;
         try {
             wsdlURL = new URL("http://" + centralBankIpAddress + ":8080/CentralBank?wsdl");
-//            wsdlURL = new URL("http://localhost:8080/CentralBank?wsdl");
             QName qname = new QName("http://centralbank.ark.com/", "CentralBankService");
             service = Service.create(wsdlURL, qname);
             qnamePort = new QName("http://centralbank.ark.com/", "CentralBankPort");

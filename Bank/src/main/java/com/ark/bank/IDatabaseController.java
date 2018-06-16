@@ -5,6 +5,9 @@ import com.ark.Customer;
 
 import java.util.List;
 
+/**
+ * @author Rick van der Heijden
+ */
 public interface IDatabaseController {
 
     /**

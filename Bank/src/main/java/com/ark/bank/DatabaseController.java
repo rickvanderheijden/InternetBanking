@@ -63,21 +63,6 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean persistBase(Object object) {
-        boolean result = false;
-        beginTransaction();
-        try {
-            entityManager.persist(object);
-            entityManager.getTransaction().commit();
-            result = true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            entityManager.getTransaction().rollback();
-        }
-
-        return result;
-    }
-
     private boolean persistBankAccount(BankAccount bankAccount) {
         if (bankAccount.getOwner() == null) { return false; }
         Customer customer = getCustomer(bankAccount.getOwner().getName(), bankAccount.getOwner().getResidence());
@@ -213,6 +198,55 @@ public final class DatabaseController implements IDatabaseController {
         return delete(customer);
     }
 
+
+
+    @Override
+    public boolean deleteAll() {
+        boolean result;
+        beginTransaction();
+        try {
+            result = deleteAllBankAccounts();
+            result &= deleteAllBankTransactions();
+            result &= deleteAllCustomers();
+        } catch (Exception e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+            result = false;
+        }
+
+        return result;
+    }
+
+    private boolean persistBase(Object object) {
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.persist(object);
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            entityManager.getTransaction().rollback();
+        }
+
+        return result;
+    }
+
+    private boolean deleteAllBankAccounts(){
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.createQuery("DELETE FROM BankAccount b").executeUpdate();
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e){
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+        }
+
+        return result;
+    }
+
     /**
      * Deletes all associated objects of customer and customer.
      * @param customer The customer instance.
@@ -255,37 +289,6 @@ public final class DatabaseController implements IDatabaseController {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
         }
-        return result;
-    }
-
-    public boolean deleteAll(){
-        boolean result;
-        beginTransaction();
-        try {
-            result = deleteAllBankAccounts();
-            result &= deleteAllBankTransactions();
-            result &= deleteAllCustomers();
-        } catch (Exception e){
-            e.printStackTrace();
-            entityManager.getTransaction().rollback();
-            result = false;
-        }
-
-        return result;
-    }
-
-    private boolean deleteAllBankAccounts(){
-        boolean result = false;
-        beginTransaction();
-        try {
-            entityManager.createQuery("DELETE FROM BankAccount b").executeUpdate();
-            entityManager.getTransaction().commit();
-            result = true;
-        } catch (Exception e){
-            e.printStackTrace();
-            entityManager.getTransaction().rollback();
-        }
-
         return result;
     }
 

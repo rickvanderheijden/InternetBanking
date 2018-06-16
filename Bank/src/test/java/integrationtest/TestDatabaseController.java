@@ -1,4 +1,4 @@
-package unittest;
+package integrationtest;
 
 import com.ark.BankAccount;
 import com.ark.BankTransaction;

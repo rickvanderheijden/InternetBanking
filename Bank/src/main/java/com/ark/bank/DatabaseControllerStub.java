@@ -7,6 +7,9 @@ import com.ark.Customer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class DatabaseControllerStub implements IDatabaseController {
 
     private final List<BankTransaction> transactions = new ArrayList<>();

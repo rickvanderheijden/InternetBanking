@@ -1,16 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TestDatabaseController" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+  <configuration default="false" name="TestBankTransaction" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
     <module name="Bank" />
     <extension name="coverage" runner="jacoco">
       <pattern>
-        <option name="PATTERN" value="com.ark.bank.DatabaseController" />
+        <option name="PATTERN" value="com.ark.BankTransaction" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
-    <option name="PACKAGE_NAME" value="integrationtest" />
-    <option name="MAIN_CLASS_NAME" value="integrationtest.TestDatabaseController" />
+    <option name="PACKAGE_NAME" value="unittest" />
+    <option name="MAIN_CLASS_NAME" value="unittest.TestBankTransaction" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea" />
