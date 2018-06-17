@@ -89,7 +89,7 @@ public class TestDatabaseController {
     @Test
     public void testUpdateBankAccount(){
         BankAccount bankAccount = new BankAccount(customer, BankAccountNumberRABO);
-        BankAccount bankAccount2 = new BankAccount(customer, BankAccountNumberRABO);
+        BankAccount bankAccount2 = new BankAccount(customer, "RABO0987654321");
         long creditLimit = bankAccount.getCreditLimit() + 1000;
         boolean result = databaseController.persist(bankAccount);
         assertTrue(result);
