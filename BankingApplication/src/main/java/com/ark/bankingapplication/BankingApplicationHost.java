@@ -10,8 +10,8 @@ import java.util.List;
 
 public class BankingApplicationHost extends Application {
 
-    private static String BankId = "RABO";
-    private static String IpAddress = "localhost";
+    private static String BankId;
+    private static String IpAddress;
 
     @Override
     public void start(Stage stage) throws Exception {

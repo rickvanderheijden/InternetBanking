@@ -1,8 +1,10 @@
 package com.ark.bankingapplication;
 
+import com.ark.bank.DatabaseController;
 import com.ark.bankingapplication.views.Dashboard;
 import com.ark.bankingapplication.views.StartUp;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -17,6 +19,7 @@ import testutilities.BankUtilities;
 import java.io.IOException;
 
 import static javafx.scene.input.KeyCode.BACK_SPACE;
+import static javafx.scene.input.KeyCode.TAB;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
@@ -25,7 +28,7 @@ public class
 GUITest extends ApplicationTest {
 
     private static final String Name = "TestName";
-    private static final String Password = "TestPassword";
+    private static final String Password = "passWord12";
     private static final String Residence = "TestResidence";
     private static final String BankId = "ABNA";
     private static final String URLBase = "http://localhost:1205/";
@@ -33,12 +36,14 @@ GUITest extends ApplicationTest {
     private static final String RABOUrl = "http://localhost:1200/";
     private static final String IPAddressCentralBank = "localhost";
     private static BankUtilities utilities;
+    private static DatabaseController databaseController;
     private Scene scene;
     private StartUp startUp;
     private Dashboard dashboard;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
+        databaseController = new DatabaseController(BankId);
         utilities = new BankUtilities();
         utilities.startBank(BankId, URLBase, IPAddressCentralBank);
         utilities.startBank(BankRabo, RABOUrl, IPAddressCentralBank);
@@ -46,6 +51,10 @@ GUITest extends ApplicationTest {
 
     @AfterClass
     public static void tearDownClass() {
+//        databaseController.deleteCustomerByNameAndResidence("Testname", "TestResidence");
+//        databaseController.deleteCustomerByNameAndResidence("BestaatNietToch", "TestResidence");
+//        databaseController.deleteCustomerByNameAndResidence("Nico", "Ergens in Nederland");
+        databaseController.deleteAll();
         utilities.stopBank(BankId);
         utilities.stopBank(BankRabo);
     }
@@ -63,6 +72,7 @@ GUITest extends ApplicationTest {
 
         BankConnector bankConnectorRABO = new BankConnector("localhost");
         Controller controllerRABO = new Controller(stage, BankRabo, bankConnectorRABO);
+        controller.registerUser(this.Name, this.Residence, this.Password);
     }
 
     @Test
@@ -78,7 +88,6 @@ GUITest extends ApplicationTest {
         VBox registerVBox = (VBox) scene.lookup("#registerVBox");
 
         if (!registerVBox.isVisible()) {
-            System.out.println("hoi");
             clickOn("#goToRegisterPane");
             verifyThat("#registerVBox", isVisible());
             clickOn("#toLoginPane");
@@ -98,10 +107,10 @@ GUITest extends ApplicationTest {
         clickOn("#goToRegisterPane");
         verifyThat("#registerVBox", isVisible());
 
-        clickOn("#registernameTextField").write(Name);
-        clickOn("#registerResidenceTextField").write(Residence);
-        clickOn("#registerPasswordField").write(Password);
-        clickOn("#registerPasswordCheckPasswordField").write(Password);
+        clickOn("#registernameTextField").write("Nico");
+        clickOn("#registerResidenceTextField").write("Ergens in Nederland");
+        clickOn("#registerPasswordField").write("Nico123");
+        clickOn("#registerPasswordCheckPasswordField").write("Nico123");
         clickOn("#registerButton");
         clickOn("OK");
         Assert.assertTrue(startUp.getRegisterSuccessful());
@@ -116,11 +125,10 @@ GUITest extends ApplicationTest {
         clickOn("#registernameTextField").write("");
         clickOn("#registerResidenceTextField").write("");
         clickOn("#registerPasswordField").write("");
-        clickOn("#registerPasswordCheckPasswordField").write("");
-        clickOn("#registerButton");
-        clickOn("OK");
-        verifyThat("#errorMessageLabel", isVisible());
-        Assert.assertTrue(!startUp.getRegisterSuccessful());
+        clickOn("#registerPasswordCheckPasswordField").write("").type(TAB);
+        Button registerbutton = (Button) scene.lookup("#registerButton");
+        boolean result = registerbutton.isDisabled();
+        Assert.assertTrue(result);
     }
 
     @Test
@@ -132,15 +140,16 @@ GUITest extends ApplicationTest {
         clickOn("#registernameTextField").write(Name);
         clickOn("#registerResidenceTextField").write(Residence);
         clickOn("#registerPasswordField").write(Password);
-        clickOn("#registerPasswordCheckPasswordField").write("FoutWachtwoord");
-        clickOn("#registerButton");
-        clickOn("OK");
-        verifyThat("#errorMessageLabel", isVisible());
-        Assert.assertTrue(!startUp.getRegisterSuccessful());
-        String expected = "Er is iets fout gegaan, Wachtwoorden komen niet overeen";
-        Label errorMessage = (Label) scene.lookup("#errorMessageLabel");
-        String result = errorMessage.getText();
-        Assert.assertEquals("Message should be: " + expected, expected, result);
+        clickOn("#registerPasswordCheckPasswordField").write("FoutWacht").type(TAB);
+        Button registerbutton = (Button) scene.lookup("#registerButton");
+        boolean result = registerbutton.isDisabled();
+        Assert.assertTrue(result);
+//        verifyThat("#errorMessageLabel", isVisible());
+//        Assert.assertTrue(!startUp.getRegisterSuccessful());
+//        String expected = "Er is iets fout gegaan, Wachtwoorden komen niet overeen";
+//        Label errorMessage = (Label) scene.lookup("#errorMessageLabel");
+//        String result = errorMessage.getText();
+//        Assert.assertEquals("Message should be: " + expected, expected, result);
     }
 
     @Test
@@ -148,7 +157,7 @@ GUITest extends ApplicationTest {
         startUp.clearInputs();
         clickOn("#usernameTextField").write("BestaatNiet");
         clickOn("#residenceTextField").write("IsGeenPlaatsInNederland");
-        clickOn("#passwordField").write("WachtwoordIsOokFout");
+        clickOn("#passwordField").write("Foutww123");
         verifyThat("#loginVBox", isVisible());
         clickOn("#loginButton");
         clickOn("OK");
@@ -162,14 +171,10 @@ GUITest extends ApplicationTest {
     @Test
     public void testLoginEmptyFields() {
         startUp.clearInputs();
-        verifyThat("#loginVBox", isVisible());
-        clickOn("#loginButton");
-        clickOn("OK");
-        verifyThat("#errorMessageLabel", isVisible());
-        String expected = "Er is iets fout gegaan, niet alle velden zijn ingevuld";
-        Label errorMessage = (Label) scene.lookup("#errorMessageLabel");
-        String result = errorMessage.getText();
-        Assert.assertEquals("Message should be: " + expected, expected, result);
+        clickOn("#passwordField").type(TAB);
+        Button loginButton = (Button) scene.lookup("#loginButton");
+        boolean result = loginButton.isDisabled();
+        Assert.assertTrue(loginButton.isDisabled());
     }
 
     @Test
@@ -186,7 +191,7 @@ GUITest extends ApplicationTest {
         verifyThat("#loginVBox", isVisible());
         clickOn("#usernameTextField").write("BestaatNietToch");
         clickOn("#residenceTextField").write(Residence);
-        clickOn("#passwordField").write("WachtwoordIsOokFout");
+        clickOn("#passwordField").write("foutje12");
         clickOn("#loginButton");
         clickOn("OK");
         verifyThat("#errorMessageLabel", isVisible());
