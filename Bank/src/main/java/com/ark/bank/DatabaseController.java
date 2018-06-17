@@ -45,14 +45,14 @@ public final class DatabaseController implements IDatabaseController {
     /**
      * opens transaction if not already open
      */
-    private void beginTransaction(){
+    private synchronized void beginTransaction(){
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
         }
     }
 
     @Override
-    public boolean persist(Object object) {
+    public synchronized boolean persist(Object object) {
         if (object == null) { return false; }
         boolean result;
         if (object instanceof BankAccount) {
@@ -63,7 +63,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean persistBankAccount(BankAccount bankAccount) {
+    private synchronized boolean persistBankAccount(BankAccount bankAccount) {
         if (bankAccount.getOwner() == null) { return false; }
         Customer customer = getCustomer(bankAccount.getOwner().getName(), bankAccount.getOwner().getResidence());
         if(customer == null) {
@@ -73,7 +73,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public Customer getCustomer(String name, String residence) {
+    public synchronized Customer getCustomer(String name, String residence) {
         if (name == null || residence == null){ return null; }
         beginTransaction();
         try {
@@ -86,7 +86,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<Customer> getAllCustomers(){
+    public synchronized List<Customer> getAllCustomers(){
         beginTransaction();
         try {
             return (List<Customer>) entityManager.createQuery("SELECT c FROM Customer c").getResultList();
@@ -98,7 +98,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<IBankAccount> getAllBankAccounts(){
+    public synchronized List<IBankAccount> getAllBankAccounts(){
         beginTransaction();
         try {
             return (List<IBankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b").getResultList();
@@ -110,7 +110,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankTransaction> getAllBankTransactions(){
+    public synchronized List<BankTransaction> getAllBankTransactions(){
         beginTransaction();
         try {
             return (List<BankTransaction>) entityManager.createQuery("SELECT b FROM BankTransaction b").getResultList();
@@ -122,7 +122,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<IBankAccount> getBankAccounts(Customer customer) {
+    public synchronized List<IBankAccount> getBankAccounts(Customer customer) {
         List<IBankAccount> bankAccounts = new ArrayList<>();
 
         if (customer == null) { return bankAccounts; }
@@ -139,7 +139,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public IBankAccount getBankAccount(String bankAccountNumber) {
+    public synchronized IBankAccount getBankAccount(String bankAccountNumber) {
         if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
@@ -152,7 +152,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankTransaction> getBankTransactions(String bankAccountNumber){
+    public synchronized List<BankTransaction> getBankTransactions(String bankAccountNumber){
         if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
@@ -165,7 +165,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public boolean transactionExists(BankTransaction bankTransaction){
+    public synchronized boolean transactionExists(BankTransaction bankTransaction){
         if (bankTransaction == null ) { return false; }
         BankTransaction transaction;
         beginTransaction();
@@ -180,7 +180,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public boolean delete(Object object) {
+    public synchronized boolean delete(Object object) {
         if (object == null) { return false; }
         if(object instanceof Customer) {
             return deleteCustomer((Customer) object);
@@ -192,7 +192,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public boolean deleteCustomerByNameAndResidence(String name, String residence){
+    public synchronized boolean deleteCustomerByNameAndResidence(String name, String residence){
         if(name.isEmpty() || residence.isEmpty()) { return false; }
         Customer customer = getCustomer(name, residence);
         return delete(customer);
@@ -201,7 +201,7 @@ public final class DatabaseController implements IDatabaseController {
 
 
     @Override
-    public boolean deleteAll() {
+    public synchronized boolean deleteAll() {
         boolean result;
         beginTransaction();
         try {
@@ -217,7 +217,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean persistBase(Object object) {
+    private synchronized boolean persistBase(Object object) {
         boolean result = false;
         beginTransaction();
         try {
@@ -232,7 +232,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean deleteAllBankAccounts(){
+    private synchronized boolean deleteAllBankAccounts(){
         boolean result = false;
         beginTransaction();
         try {
@@ -252,7 +252,7 @@ public final class DatabaseController implements IDatabaseController {
      * @param customer The customer instance.
      * @return Boolean true if successfull, else false.
      */
-    private boolean deleteCustomer(Customer customer) {
+    private synchronized boolean deleteCustomer(Customer customer) {
         List<IBankAccount> bankAccounts = this.getBankAccounts(customer);
         if(bankAccounts.size() >= 1){
             for (IBankAccount bankAccount : bankAccounts) {
@@ -267,9 +267,7 @@ public final class DatabaseController implements IDatabaseController {
      * @param bankAccount The bankaccount instance.
      * @return Boolean true if successfull, else false.
      */
-    private boolean deleteBankAccount(BankAccount bankAccount) {
-
-        //TODO: ???????
+    private synchronized boolean deleteBankAccount(BankAccount bankAccount) {
         return deleteBase(getBankAccount(bankAccount.getNumber()));
     }
 
@@ -278,7 +276,7 @@ public final class DatabaseController implements IDatabaseController {
      * @param object Any object that is an entity. Can not be null.
      * @return Boolean true if successfull, else false.
      */
-    private boolean deleteBase(Object object){
+    private synchronized boolean deleteBase(Object object){
         boolean result = false;
         beginTransaction();
         try {
@@ -292,7 +290,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean deleteAllBankTransactions(){
+    private synchronized boolean deleteAllBankTransactions(){
         boolean result = false;
         beginTransaction();
         try {
@@ -307,7 +305,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean deleteAllCustomers(){
+    private synchronized boolean deleteAllCustomers(){
         boolean result = false;
         beginTransaction();
         try {

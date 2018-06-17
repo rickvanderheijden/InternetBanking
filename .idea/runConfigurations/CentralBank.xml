@@ -2,6 +2,7 @@
   <configuration default="false" name="CentralBank" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.ark.centralbank.CentralBankHost" />
     <module name="CentralBank" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;localhost&quot;" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <method />
   </configuration>

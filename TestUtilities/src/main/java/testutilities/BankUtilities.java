@@ -24,6 +24,12 @@ public class BankUtilities {
     private static final String JARFILE = "Bank.jar";
     private final Map<String, Process> bankProcesses = new HashMap<>();
 
+    /**
+     * Gets the IBankForCentralBank interface
+     * @param bankId The bank id to connect to
+     * @param URLBase The URL that is used to connect
+     * @return The connection to the interface. Null if not connected.
+     */
     public IBankForCentralBank getIBankForCentralBank(String bankId, String URLBase) {
         URL wsdlURL;
         try {
@@ -41,6 +47,13 @@ public class BankUtilities {
         return service.getPort(qnamePort, IBankForCentralBank.class);
     }
 
+    /**
+     * Gets the IBankForClientSession interface
+     * @param bankId The bank id to connect to
+     * @return The connection to the interface. Null if not connected.
+     * @throws IOException
+     * @throws NotBoundException
+     */
     public IBankForClientSession getIBankForClient(String bankId) throws IOException, NotBoundException {
         waitForConnection();
 
@@ -48,6 +61,10 @@ public class BankUtilities {
         return (IBankForClientSession) registry.lookup("bank" + bankId);
     }
 
+    /**
+     * Stop the bank
+     * @param bankId The id of the bank to stop
+     */
     public void stopBank(String bankId) {
         Process process = bankProcesses.get(bankId);
 
@@ -56,6 +73,13 @@ public class BankUtilities {
         }
     }
 
+    /**
+     * Start the bank
+     * @param bankId The id of the bank to start
+     * @param URLBase The URL where the bank can be found
+     * @param ipAddressOfCentralBank The ip address of the central bank
+     * @throws IOException Thrown when the process can not be started
+     */
     public void startBank(String bankId, String URLBase, String ipAddressOfCentralBank) throws IOException {
 
         String javaPath;

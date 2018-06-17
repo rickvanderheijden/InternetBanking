@@ -2,7 +2,7 @@ package unittest;
 
 import com.ark.BankConnectionInfo;
 import com.ark.bank.BankController;
-import com.ark.bank.DatabaseControllerStub;
+import unittest.stubs.DatabaseControllerStub;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

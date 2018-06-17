@@ -37,8 +37,7 @@ class BankHost {
         System.out.println("CentralBankIpAddress: " + CentralBankIpAddress);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection(CentralBankIpAddress);
-        //IDatabaseController databaseController = new DatabaseController(BankId);
-        IDatabaseController databaseController = new DatabaseControllerStub();
+        IDatabaseController databaseController = new DatabaseController(BankId);
 
         IBankController bankController = new BankController(BankId, centralBankConnection, databaseController);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);

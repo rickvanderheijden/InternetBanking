@@ -1,7 +1,7 @@
 package unittest;
 
 import com.ark.bank.BankController;
-import com.ark.bank.DatabaseControllerStub;
+import unittest.stubs.DatabaseControllerStub;
 import com.ark.bank.IBankController;
 import com.ark.bank.SessionTerminated;
 import org.junit.After;

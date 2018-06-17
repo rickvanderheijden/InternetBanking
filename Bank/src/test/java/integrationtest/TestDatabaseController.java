@@ -3,7 +3,7 @@ package integrationtest;
 import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
-import com.ark.bank.DatabaseControllerStub;
+import com.ark.bank.DatabaseController;
 import com.ark.bank.IBankAccount;
 import com.ark.bank.IDatabaseController;
 import org.junit.Before;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.*;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 
@@ -32,7 +33,7 @@ public class TestDatabaseController {
 
     @Before
     public void setUp() {
-        databaseController = new DatabaseControllerStub();
+        databaseController = new DatabaseController("TEST");
         databaseController.connectToDatabase();
 
         assertTrue(databaseController.deleteAll());
@@ -101,7 +102,7 @@ public class TestDatabaseController {
         List<IBankAccount> bankAccounts = databaseController.getBankAccounts(customer);
 
         assertTrue(result);
-        assertEquals(1, bankAccounts.size());
+        assertEquals(2, bankAccounts.size());
         assertEquals(creditLimit, bankAccounts.get(0).getCreditLimit());
     }
 
@@ -317,5 +318,51 @@ public class TestDatabaseController {
         assertEquals(transaction3, bankTransactions.get(2));
         assertEquals(transaction4, bankTransactions.get(3));
         assertEquals(transaction5, bankTransactions.get(4));
+    }
+
+    @Test
+    public void testMultiThreading() throws InterruptedException {
+        String description = "Test1";
+        String accountTo = "RABO987654321";
+
+        Thread threadOne = new Thread(() -> {
+            long amount = 1;
+            for (int i = 0; i < 1000; i++) {
+                BankTransaction transaction1 = new BankTransaction(amount, description, BankAccountNumberRABO, accountTo);
+                amount++;
+                databaseController.persist(transaction1);
+            }
+        });
+
+        Thread threadTwo = new Thread(() -> {
+            long amount = 1;
+            for (int i = 0; i < 1000; i++) {
+                BankTransaction transaction2 = new BankTransaction(amount, description, BankAccountNumberRABO, accountTo);
+                amount++;
+                databaseController.persist(transaction2);
+            }
+        });
+
+        Thread threadThree = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                databaseController.getBankTransactions(accountTo);
+            }
+        });
+
+        Thread threadFour = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                databaseController.getBankTransactions(BankAccountNumberRABO);
+            }
+        });
+
+        threadOne.start();
+        threadTwo.start();
+        threadThree.start();
+        threadFour.start();
+
+        threadOne.join();
+        threadTwo.join();
+        threadThree.join();
+        threadFour.join();
     }
 }

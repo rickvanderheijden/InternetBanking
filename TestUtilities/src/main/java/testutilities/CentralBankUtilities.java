@@ -20,22 +20,24 @@ public class CentralBankUtilities {
     private Service service;
     private QName qnamePort;
 
-    //TODO: Make shared CentralBankConnection??
     public ICentralBankTransaction getCentralBankTransaction() {
         return service.getPort(qnamePort, ICentralBankTransaction.class);
     }
 
-    //TODO: REMOVE. This won't work. See CentralBankConnection.
-    public ICentralBankRegister getCentralBankRegister() {
-        return service.getPort(qnamePort, ICentralBankRegister.class);
-    }
-
+    /**
+     * Stop the central bank
+     */
     public void stopCentralBank() {
         if (processCentralBank != null) {
             processCentralBank.destroy();
         }
     }
 
+    /**
+     * Start the central bank
+     * @param ipAddress The ip address of the central bank
+     * @throws IOException Thrown when the process can not be started
+     */
     public void startCentralBank(String ipAddress) throws IOException {
         String javaPath;
         String jarPath;
@@ -73,6 +75,5 @@ public class CentralBankUtilities {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 }
