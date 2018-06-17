@@ -8,9 +8,9 @@ import java.rmi.RemoteException;
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
 class BankHost {
 
-    private static String BankId = "RABO";
-    private static String URLBase = "http://localhost:1200/";
-    private static String CentralBankIpAddress = "localhost";
+    private static String BankId;
+    private static String URLBase;
+    private static String CentralBankIpAddress;
 
     public static void main(String[] args) throws RemoteException {
 

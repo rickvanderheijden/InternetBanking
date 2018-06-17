@@ -7,8 +7,8 @@ import javax.xml.ws.Endpoint;
  */
 @SuppressWarnings("FieldCanBeLocal")
 class CentralBankHost {
-    
-    private static String URL = "http://localhost:8080/CentralBank";
+
+    private static String URL;
     
     public static void main(String[] args) {
 

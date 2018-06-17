@@ -27,30 +27,45 @@ public class TransactionList {
         this.readOnly = FXCollections.unmodifiableObservableList(bankTransactions);
     }
 
-    public void add(BankTransaction object) {
-        if (object == null) {
+    /**
+     * Method to add a transaction to the list, list gets sorted right away by date
+     *
+     * @param bankTransaction to be added to the list
+     */
+    public void add(BankTransaction bankTransaction) {
+        if (bankTransaction == null) {
             return;
         }
 
         try {
-            bankTransactions.add(object);
+            bankTransactions.add(bankTransaction);
             bankTransactions.sort(new TransactionComparator().reversed());
         } catch (Exception e) {
         }
     }
 
-    public boolean remove(BankTransaction object) {
+    /**
+     * Method to remove a bankTransaction from the list
+     *
+     * @param bankTransaction
+     * @return true if the bankTransaction is removed, false otherwise
+     */
+    public boolean remove(BankTransaction bankTransaction) {
         boolean returnValue = false;
-        for (BankTransaction bankTransaction : bankTransactions) {
-            if (bankTransactions.equals(object)) {
-                bankTransactions.remove(object);
-                returnValue = true;
-                break;
-            }
+        if (bankTransactions.contains(bankTransaction)) {
+            bankTransactions.remove(bankTransaction);
+            returnValue = true;
         }
+
         return returnValue;
     }
 
+    /**
+     * Method to get a single bank account from the list by index
+     * @param index of the bankTransaction in the list
+     * @return the found BankTransaction
+     * @throws TransactionListException Thrown if the transactions can't be found
+     */
     public BankTransaction get(int index) throws TransactionListException {
         try {
             return bankTransactions.get(index);
@@ -59,19 +74,35 @@ public class TransactionList {
         }
     }
 
+    /**
+     * Method to get the size of the list
+     * @return int of size of the list
+     */
     public int getSize() {
         return bankTransactions.size();
     }
 
+    /**
+     * Method to clear the list
+     */
     public void clear() {
         bankTransactions.clear();
     }
 
+    /**
+     * Method to return a readOnly list to put int the ListView
+     * @return The Unmoddifyable list
+     */
     public ObservableList<BankTransaction> getReadOnlyList() {
         return this.readOnly;
     }
 
-    public void sort(Comparator comp) {
-        Collections.sort(bankTransactions, comp);
+    /**
+     * Method to sort the list by a comparator
+     *
+     * @param comparator whit the sorting method
+     */
+    public void sort(Comparator comparator) {
+        Collections.sort(bankTransactions, comparator);
     }
 }

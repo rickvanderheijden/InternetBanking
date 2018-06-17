@@ -62,7 +62,6 @@ public class CentralBankConnector implements IBankForCentralBank {
     }
 
     private boolean createBankConnection() {
-        System.out.println("createBankConnection");
         try {
             Endpoint.publish(URLBase + bankId, this);
         } catch (IllegalArgumentException | ServerRtException e) {
