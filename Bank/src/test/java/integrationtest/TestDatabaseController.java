@@ -89,7 +89,7 @@ public class TestDatabaseController {
     @Test
     public void testUpdateBankAccount(){
         BankAccount bankAccount = new BankAccount(customer, BankAccountNumberRABO);
-        BankAccount bankAccount2 = new BankAccount(customer, BankAccountNumberRABO);
+        BankAccount bankAccount2 = new BankAccount(customer, "RABO0987654321");
         long creditLimit = bankAccount.getCreditLimit() + 1000;
         boolean result = databaseController.persist(bankAccount);
         assertTrue(result);
@@ -107,6 +107,17 @@ public class TestDatabaseController {
     }
 
     @Test
+    public void testPersistBankAccountFailure(){
+        BankAccount bankAccount = new BankAccount(customer, BankAccountNumberRABO);
+        BankAccount bankAccount2 = new BankAccount(customer, BankAccountNumberRABO);
+        boolean result = databaseController.persist(bankAccount);
+        assertTrue(result);
+
+        result = databaseController.persist(bankAccount2);
+        assertFalse(result);
+    }
+
+    @Test
     public void testDelete() {
         boolean result = databaseController.persist(customer);
         assertTrue(result);
@@ -121,8 +132,18 @@ public class TestDatabaseController {
     @Test
     public void testDeleteCustomer(){
         databaseController.persist(customer);
+        BankAccount bankAccount1 = new BankAccount(customer, BankAccountNumberRABO);
+        BankAccount bankAccount2 = new BankAccount(customer, "RABO0987654321");
+        databaseController.persist(bankAccount1);
+        databaseController.persist(bankAccount2);
+
+        List<IBankAccount> bankAccounts = databaseController.getBankAccounts(customer);
+        assertEquals(2, bankAccounts.size());
+
         boolean result = databaseController.deleteCustomerByNameAndResidence(customer.getName(), customer.getResidence());
+        bankAccounts = databaseController.getBankAccounts(customer);
         assertTrue(result);
+        assertEquals(0, bankAccounts.size());
     }
 
     @Test

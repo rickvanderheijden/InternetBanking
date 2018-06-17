@@ -195,6 +195,10 @@ public final class DatabaseController implements IDatabaseController {
     public synchronized boolean deleteCustomerByNameAndResidence(String name, String residence){
         if(name.isEmpty() || residence.isEmpty()) { return false; }
         Customer customer = getCustomer(name, residence);
+        List<IBankAccount> bankAccounts = getBankAccounts(customer);
+        if(bankAccounts.size() > 0) {
+            bankAccounts.forEach(bankAccount->delete(bankAccount));
+        }
         return delete(customer);
     }
 
