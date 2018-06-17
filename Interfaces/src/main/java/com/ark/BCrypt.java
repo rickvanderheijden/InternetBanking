@@ -59,6 +59,7 @@ import java.security.SecureRandom;
  * @author Damien Miller
  * @version 0.2
  */
+@SuppressWarnings("ALL")
 public class BCrypt {
     // BCrypt parameters
     private static final int GENSALT_DEFAULT_LOG2_ROUNDS = 10;

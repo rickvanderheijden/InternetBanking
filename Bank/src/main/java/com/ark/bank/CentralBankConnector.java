@@ -34,15 +34,6 @@ public class CentralBankConnector implements IBankForCentralBank {
         }
     }
 
-    private void registerBank() {
-        if (bankController != null) {
-
-            BankConnectionInfo bankConnectionInfo = new BankConnectionInfo(bankId, URLBase + bankId);
-            boolean result = bankController.registerBank(bankConnectionInfo);
-            System.out.println("Register bank " + (result ? "passed" : "failed"));
-        }
-    }
-
     @Override
     public boolean executeTransaction(BankTransaction bankTransaction) {
         if (bankController == null) {
@@ -59,6 +50,15 @@ public class CentralBankConnector implements IBankForCentralBank {
         }
 
         return bankController.isValidBankAccountNumber(bankAccountNumber);
+    }
+
+    private void registerBank() {
+        if (bankController != null) {
+
+            BankConnectionInfo bankConnectionInfo = new BankConnectionInfo(bankId, URLBase + bankId);
+            boolean result = bankController.registerBank(bankConnectionInfo);
+            System.out.println("Register bank " + (result ? "passed" : "failed"));
+        }
     }
 
     private boolean createBankConnection() {

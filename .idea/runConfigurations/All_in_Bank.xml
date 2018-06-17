@@ -3,7 +3,7 @@
     <module name="Bank" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.ark.bank.*" />
+        <option name="PATTERN" value="unittest.stubs.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

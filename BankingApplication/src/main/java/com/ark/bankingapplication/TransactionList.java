@@ -21,7 +21,6 @@ public class TransactionList {
 
             @Override
             public void onChanged(ListChangeListener.Change change) {
-                System.out.println("Detected a change! ");
                 readOnly = FXCollections.unmodifiableObservableList(bankTransactions);
             }
         });

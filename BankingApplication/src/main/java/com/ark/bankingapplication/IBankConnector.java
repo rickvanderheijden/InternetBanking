@@ -8,7 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public interface IBankConnector {
+interface IBankConnector {
     /**
      * Method to connect to the Remote BankHost
      *
@@ -19,7 +19,6 @@ public interface IBankConnector {
      *                           * no associated binding.
      */
     boolean connect(String bankId) throws RemoteException, NotBoundException;
-
 
     /**
      * Method to login to the bank

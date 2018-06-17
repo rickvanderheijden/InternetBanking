@@ -271,15 +271,15 @@ public class Controller implements Observer {
         try {
             this.bankConnector.subscribeToTransaction(bankAccountNumber);
         } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
-    public boolean unsubscribeToTransaction(String bankAccountNumber) {
+    public void unsubscribeToTransaction(String bankAccountNumber) {
         try {
             this.bankConnector.unsubscribeToTransaction(bankAccountNumber);
-            return true;
         } catch (RemoteException e) {
-            return false;
+            e.printStackTrace();
         }
     }
 }

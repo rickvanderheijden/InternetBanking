@@ -3,9 +3,7 @@ package com.ark.bank;
 import com.ark.BankAccount;
 import com.ark.Customer;
 import com.ark.BankTransaction;
-import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
 import org.hibernate.service.spi.ServiceException;
-import org.jboss.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -47,14 +45,14 @@ public final class DatabaseController implements IDatabaseController {
     /**
      * opens transaction if not already open
      */
-    private void beginTransaction(){
+    private synchronized void beginTransaction(){
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
         }
     }
 
     @Override
-    public boolean persist(Object object) {
+    public synchronized boolean persist(Object object) {
         if (object == null) { return false; }
         boolean result;
         if (object instanceof BankAccount) {
@@ -65,22 +63,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean persistBase(Object object) {
-        boolean result = false;
-        beginTransaction();
-        try {
-            entityManager.persist(object);
-            entityManager.getTransaction().commit();
-            result = true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            entityManager.getTransaction().rollback();
-        }
-
-        return result;
-    }
-
-    private boolean persistBankAccount(BankAccount bankAccount) {
+    private synchronized boolean persistBankAccount(BankAccount bankAccount) {
         if (bankAccount.getOwner() == null) { return false; }
         Customer customer = getCustomer(bankAccount.getOwner().getName(), bankAccount.getOwner().getResidence());
         if(customer == null) {
@@ -90,7 +73,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public Customer getCustomer(String name, String residence) {
+    public synchronized Customer getCustomer(String name, String residence) {
         if (name == null || residence == null){ return null; }
         beginTransaction();
         try {
@@ -103,7 +86,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<Customer> getAllCustomers(){
+    public synchronized List<Customer> getAllCustomers(){
         beginTransaction();
         try {
             return (List<Customer>) entityManager.createQuery("SELECT c FROM Customer c").getResultList();
@@ -115,7 +98,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<IBankAccount> getAllBankAccounts(){
+    public synchronized List<IBankAccount> getAllBankAccounts(){
         beginTransaction();
         try {
             return (List<IBankAccount>) entityManager.createQuery("SELECT b FROM BankAccount b").getResultList();
@@ -127,7 +110,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankTransaction> getAllBankTransactions(){
+    public synchronized List<BankTransaction> getAllBankTransactions(){
         beginTransaction();
         try {
             return (List<BankTransaction>) entityManager.createQuery("SELECT b FROM BankTransaction b").getResultList();
@@ -139,7 +122,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<IBankAccount> getBankAccounts(Customer customer) {
+    public synchronized List<IBankAccount> getBankAccounts(Customer customer) {
         List<IBankAccount> bankAccounts = new ArrayList<>();
 
         if (customer == null) { return bankAccounts; }
@@ -156,7 +139,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public IBankAccount getBankAccount(String bankAccountNumber) {
+    public synchronized IBankAccount getBankAccount(String bankAccountNumber) {
         if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
@@ -169,7 +152,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public List<BankTransaction> getBankTransactions(String bankAccountNumber){
+    public synchronized List<BankTransaction> getBankTransactions(String bankAccountNumber){
         if (bankAccountNumber.isEmpty()) { return null; }
         beginTransaction();
         try {
@@ -182,14 +165,13 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public boolean transactionExists(BankTransaction bankTransaction){
+    public synchronized boolean transactionExists(BankTransaction bankTransaction){
         if (bankTransaction == null ) { return false; }
         BankTransaction transaction;
         beginTransaction();
         try {
             transaction = (BankTransaction) entityManager.createQuery("SELECT t FROM BankTransaction t WHERE t.accountTo = :value1 and t.accountFrom = :value2 and t.transactionDate = :value3 and t.amount = :value4").setParameter("value1", bankTransaction.getAccountTo()).setParameter("value2", bankTransaction.getAccountFrom()).setParameter("value3", bankTransaction.getDate()).setParameter("value4", bankTransaction.getAmount()).getSingleResult();
-            if (transaction == null) { return false; }
-            return true;
+            return transaction != null;
         } catch (Exception e) {
             e.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -198,7 +180,7 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public boolean delete(Object object) {
+    public synchronized boolean delete(Object object) {
         if (object == null) { return false; }
         if(object instanceof Customer) {
             return deleteCustomer((Customer) object);
@@ -210,58 +192,16 @@ public final class DatabaseController implements IDatabaseController {
     }
 
     @Override
-    public boolean deleteCustomerByNameAndResidence(String name, String residence){
+    public synchronized boolean deleteCustomerByNameAndResidence(String name, String residence){
         if(name.isEmpty() || residence.isEmpty()) { return false; }
         Customer customer = getCustomer(name, residence);
         return delete(customer);
     }
 
-    /**
-     * Deletes all associated objects of customer and customer.
-     * @param customer The customer instance.
-     * @return Boolean true if successfull, else false.
-     */
-    private boolean deleteCustomer(Customer customer) {
-        List<IBankAccount> bankAccounts = this.getBankAccounts(customer);
-        if(bankAccounts.size() >= 1){
-            for (IBankAccount bankAccount : bankAccounts) {
-                this.deleteBase(getBankAccount(bankAccount.getNumber()));
-            }
-        }
-        return deleteBase(getCustomer(customer.getName(), customer.getResidence()));
-    }
 
-    /**
-     * Deletes BankAccount
-     * @param bankAccount The bankaccount instance.
-     * @return Boolean true if successfull, else false.
-     */
-    private boolean deleteBankAccount(BankAccount bankAccount) {
 
-        //TODO: ???????
-        return deleteBase(getBankAccount(bankAccount.getNumber()));
-    }
-
-    /**
-     * Base delete method with duplicated code
-     * @param object Any object that is an entity. Can not be null.
-     * @return Boolean true if successfull, else false.
-     */
-    private boolean deleteBase(Object object){
-        boolean result = false;
-        beginTransaction();
-        try {
-            entityManager.remove(entityManager.contains(object) ? object : entityManager.merge(object));
-            entityManager.getTransaction().commit();
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            entityManager.getTransaction().rollback();
-        }
-        return result;
-    }
-
-    public boolean deleteAll(){
+    @Override
+    public synchronized boolean deleteAll() {
         boolean result;
         beginTransaction();
         try {
@@ -277,7 +217,22 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean deleteAllBankAccounts(){
+    private synchronized boolean persistBase(Object object) {
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.persist(object);
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            entityManager.getTransaction().rollback();
+        }
+
+        return result;
+    }
+
+    private synchronized boolean deleteAllBankAccounts(){
         boolean result = false;
         beginTransaction();
         try {
@@ -292,7 +247,50 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean deleteAllBankTransactions(){
+    /**
+     * Deletes all associated objects of customer and customer.
+     * @param customer The customer instance.
+     * @return Boolean true if successfull, else false.
+     */
+    private synchronized boolean deleteCustomer(Customer customer) {
+        List<IBankAccount> bankAccounts = this.getBankAccounts(customer);
+        if(bankAccounts.size() >= 1){
+            for (IBankAccount bankAccount : bankAccounts) {
+                this.deleteBase(getBankAccount(bankAccount.getNumber()));
+            }
+        }
+        return deleteBase(getCustomer(customer.getName(), customer.getResidence()));
+    }
+
+    /**
+     * Deletes BankAccount
+     * @param bankAccount The bankaccount instance.
+     * @return Boolean true if successfull, else false.
+     */
+    private synchronized boolean deleteBankAccount(BankAccount bankAccount) {
+        return deleteBase(getBankAccount(bankAccount.getNumber()));
+    }
+
+    /**
+     * Base delete method with duplicated code
+     * @param object Any object that is an entity. Can not be null.
+     * @return Boolean true if successfull, else false.
+     */
+    private synchronized boolean deleteBase(Object object){
+        boolean result = false;
+        beginTransaction();
+        try {
+            entityManager.remove(entityManager.contains(object) ? object : entityManager.merge(object));
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            entityManager.getTransaction().rollback();
+        }
+        return result;
+    }
+
+    private synchronized boolean deleteAllBankTransactions(){
         boolean result = false;
         beginTransaction();
         try {
@@ -307,7 +305,7 @@ public final class DatabaseController implements IDatabaseController {
         return result;
     }
 
-    private boolean deleteAllCustomers(){
+    private synchronized boolean deleteAllCustomers(){
         boolean result = false;
         beginTransaction();
         try {

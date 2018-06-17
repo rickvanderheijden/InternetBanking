@@ -2,7 +2,7 @@
   <configuration default="false" name="BankingApplicationHost (SNS)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.ark.bankingapplication.BankingApplicationHost" />
     <module name="BankingApplication" />
-    <option name="PROGRAM_PARAMETERS" value="SNSB" />
+    <option name="PROGRAM_PARAMETERS" value="&quot;SNSB&quot; &quot;localhost&quot;" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <extension name="coverage">
       <pattern>

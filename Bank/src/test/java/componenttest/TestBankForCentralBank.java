@@ -18,13 +18,14 @@ public class TestBankForCentralBank {
 
     private static final String BankId = "RABO";
     private static final String URLBase = "http://localhost:1200/";
+    private static final String IPAddressCentralBank = "localhost";
     private static IBankForCentralBank bank;
     private static BankUtilities utilities;
 
     @BeforeClass
     public static void setUpClass() throws IOException {
         utilities = new BankUtilities();
-        utilities.startBank(BankId, URLBase);
+        utilities.startBank(BankId, URLBase, IPAddressCentralBank);
         bank = utilities.getIBankForCentralBank(BankId, URLBase);
     }
 

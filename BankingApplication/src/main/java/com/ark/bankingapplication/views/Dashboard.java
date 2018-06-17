@@ -65,7 +65,6 @@ public class Dashboard extends View {
     @FXML private Button closeButton;
 
     private Customer customer = null;
-    private IBankAccount selectedBankaccount = null;
     private String bankId = null;
     private String sessionKey = null;
     private String selectedBankAccountNumber = null;
@@ -182,17 +181,6 @@ public class Dashboard extends View {
     }
 
     /**
-     * Get all  transactions
-     * @return list of transactions
-     */
-    private List<BankTransaction> getTransactions() {
-        if (this.sessionKey != null) {
-            return controller.getTransactions(sessionKey, selectedBankAccountNumber);
-        }
-        return null;
-    }
-
-    /**
      * Method to set the BankId of the bank Application that is started
      *
      * @param bank Strin of BankId
@@ -228,6 +216,39 @@ public class Dashboard extends View {
         this.setBankNameLabel(this.bankId);
     }
 
+    /**
+     * Method to update the fields in the view
+     * @param bankAccount The bank account to use for the update
+     */
+    public void updateBankAccount(IBankAccount bankAccount) {
+        System.out.println("Dashboard Update Bank Account");
+
+        if (bankAccount != null) {
+            long balance = bankAccount.getBalance();
+            double balanced = balance / 100.0;
+            String balanceText = this.customFormat(balanced);
+            this.balanceLabel.setText("€" + balanceText);
+            this.selectedBankNrLabel.setText(selectedBankAccountNumber);
+            this.creditLimitTextfield.setText(String.valueOf(bankAccount.getCreditLimit()/100));
+            this.setTransactions();
+        }
+    }
+
+    /**
+     * Get the bank account number that is currently selected
+     * @return the bank account number
+     */
+    public String getSelectedBankAccountNumber() {
+        return selectedBankAccountNumber;
+    }
+
+    private List<BankTransaction> getTransactions() {
+        if (this.sessionKey != null) {
+            return controller.getTransactions(sessionKey, selectedBankAccountNumber);
+        }
+        return null;
+    }
+
     private void doLogout() {
         try {
             boolean logout = this.controller.logout(this.sessionKey);
@@ -247,30 +268,6 @@ public class Dashboard extends View {
             showWarning("Bank account fout", "Er is een fout opgetreden bij het aanmaken van een nieuw bank account");
         }
 
-    }
-
-    /**
-     * Method to update the fields on de view
-     */
-    public void updateBankAccount(IBankAccount bankAccount) {
-        System.out.println("Dashboard Update Bank Account");
-
-        selectedBankaccount = bankAccount;
-
-        //selectedBankaccount =  controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber);
-        if (selectedBankaccount != null) {
-            long balance = selectedBankaccount.getBalance();
-            double balanced = balance / 100.0;
-            String balanceText = this.customFormat(balanced);
-            this.balanceLabel.setText("€" + balanceText);
-            this.selectedBankNrLabel.setText(selectedBankAccountNumber);
-            this.creditLimitTextfield.setText(String.valueOf(selectedBankaccount.getCreditLimit()/100));
-            this.setTransactions();
-        }
-    }
-
-    public String getSelectedBankAccountNumber() {
-        return selectedBankAccountNumber;
     }
 
     private void setBankAccounts() {
@@ -298,7 +295,6 @@ public class Dashboard extends View {
             this.transactionsListView.setItems(readOnly);
         }
     }
-
 
     private void doTransaction() {
         String toBankAccount = toBankAccountTextField.getText();
@@ -367,8 +363,6 @@ public class Dashboard extends View {
         dateLabel.setText(convertStringToDate(newBankTransaction.getDate()));
         TransactionAmountLabel.setText(customFormat((newBankTransaction.getAmount() / 100)));
         this.TrasactionPopupAnchorPane.setVisible(true);
-
-
     }
 
     /**
@@ -404,7 +398,7 @@ public class Dashboard extends View {
     }
 
     /**
-     * Method to return a propper Date Format
+     * Method to return a proper Date format
      *
      * @param indate Date that needs to be formated
      * @return Propperly formated String of the date

@@ -1,17 +1,22 @@
-package com.ark.bank;
+package unittest.stubs;
 
 import com.ark.BankAccount;
 import com.ark.BankTransaction;
 import com.ark.Customer;
+import com.ark.bank.IBankAccount;
+import com.ark.bank.IDatabaseController;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Rick van der Heijden
+ */
 public class DatabaseControllerStub implements IDatabaseController {
 
-    List<BankTransaction> transactions = new ArrayList<>();
-    List<IBankAccount> bankAccounts = new ArrayList<>();
-    List<Customer> customers = new ArrayList<>();
+    private final List<BankTransaction> transactions = new ArrayList<>();
+    private final List<IBankAccount> bankAccounts = new ArrayList<>();
+    private final List<Customer> customers = new ArrayList<>();
 
     @Override
     public boolean connectToDatabase() {

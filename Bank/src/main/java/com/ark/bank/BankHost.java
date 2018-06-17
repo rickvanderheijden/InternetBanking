@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 /**
  * @author Rick van der Heijden
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 class BankHost {
 
     private static String BankId = "RABO";
@@ -23,6 +23,13 @@ class BankHost {
             URLBase = args[1];
             CentralBankIpAddress = args[2];
         }
+        else
+        {
+            System.out.println("Not enough parameters used.\n");
+            System.out.println("Usage:    Bank.jar \"BankID\" \"IP address and port\" \"Central Bank IP Address\"");
+            System.out.println("Example:  Bank.jar \"ABNA\" \"http://192.168.0.10:1200/\" \"192.168.0.190\"");
+            return;
+        }
 
         // Welcome message
         System.out.println("Bank is running: " + BankId);
@@ -30,8 +37,7 @@ class BankHost {
         System.out.println("CentralBankIpAddress: " + CentralBankIpAddress);
 
         ICentralBankConnection centralBankConnection = new CentralBankConnection(CentralBankIpAddress);
-        //IDatabaseController databaseController = new DatabaseController(BankId);
-        IDatabaseController databaseController = new DatabaseControllerStub();
+        IDatabaseController databaseController = new DatabaseController(BankId);
 
         IBankController bankController = new BankController(BankId, centralBankConnection, databaseController);
         CentralBankConnector centralBankConnector = new CentralBankConnector(bankController, BankId, URLBase);

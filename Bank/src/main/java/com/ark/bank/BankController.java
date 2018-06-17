@@ -10,6 +10,7 @@ import java.util.*;
 /**
  * @author Rick van der Heijden
  */
+@SuppressWarnings({"BooleanMethodIsAlwaysInverted", "ConstantConditions"})
 public class BankController extends Observable implements Observer, IBankController {
     private static final long StartBankAccountNumber = 1000000000L;
     private static final long EndBankAccountNumber = 9999999999L;
@@ -26,6 +27,8 @@ public class BankController extends Observable implements Observer, IBankControl
      * Creates an instance of BankController
      * @param bankId The id of the bank. Can not be null or empty.
      * @param centralBankConnection Connection to the central bank. Can not be null.
+     * @param databaseController Database controller used to persist. Can not be null.
+     * @throws IllegalArgumentException Thrown when one of the arguments does not meet the requirements.
      */
     public BankController(String bankId, ICentralBankConnection centralBankConnection, IDatabaseController databaseController) throws IllegalArgumentException {
         if (isNullOrEmpty(bankId) || (centralBankConnection == null || (databaseController == null))) {
@@ -36,7 +39,6 @@ public class BankController extends Observable implements Observer, IBankControl
         this.centralBankConnection = centralBankConnection;
         this.databaseController = databaseController;
 
-        //TODO: Add result check
         databaseController.connectToDatabase();
     }
 
@@ -243,7 +245,6 @@ public class BankController extends Observable implements Observer, IBankControl
         }
 
         Session session = getSession(sessionKey);
-        boolean result = false;
 
         if (session.getCustomerName().equals(name) && session.getCustomerResidence().equals(residence)) {
             Customer customer = databaseController.getCustomer(name, residence);
@@ -252,7 +253,7 @@ public class BankController extends Observable implements Observer, IBankControl
             }
         }
 
-        return result;
+        return false;
     }
 
     @Override
