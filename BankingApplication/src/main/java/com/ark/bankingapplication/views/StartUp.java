@@ -50,8 +50,10 @@ public class StartUp extends View {
         this.usernameTextField.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
                 if(!this.usernameTextField.getText().isEmpty()){
+                    this.loginButton.setDisable(false);
                     this.usernameTextField.getStyleClass().add("success");
                 }else{
+                    this.loginButton.setDisable(true);
                     this.usernameTextField.getStyleClass().add("error");
                 }
             }else{
@@ -61,8 +63,10 @@ public class StartUp extends View {
         this.residenceTextField.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
                 if(!this.residenceTextField.getText().isEmpty()){
+                    this.loginButton.setDisable(false);
                     this.residenceTextField.getStyleClass().add("success");
                 }else{
+                    this.loginButton.setDisable(true);
                     this.residenceTextField.getStyleClass().add("error");
                 }
             }else{
@@ -71,10 +75,14 @@ public class StartUp extends View {
         });
         this.passwordField.focusedProperty().addListener((arg0, oldValue, newValue)->{
             if(!newValue){
-                if(!this.passwordField.getText().isEmpty() && this.passwordField.getText().length() >= 8){
+                if (!this.passwordField.getText().isEmpty()
+                        && this.passwordField.getText().length() >= 6
+                        && this.passwordField.getText().length() <= 10) {
+                    this.loginButton.setDisable(false);
                     this.passwordField.getStyleClass().add("success");
                 }else{
                     this.passwordField.getStyleClass().add("error");
+                    this.loginButton.setDisable(true);
                 }
             }else{
                 this.passwordField.getStyleClass().removeAll("success", "error");
@@ -85,8 +93,10 @@ public class StartUp extends View {
         this.registernameTextField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
             if (!newValue) {
                 if (!this.registernameTextField.getText().isEmpty()) {
+                    this.registerButton.setDisable(false);
                     this.registernameTextField.getStyleClass().add("success");
                 } else {
+                    this.registerButton.setDisable(true);
                     this.registernameTextField.getStyleClass().add("error");
                 }
             } else {
@@ -96,8 +106,10 @@ public class StartUp extends View {
         this.registerResidenceTextField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
             if (!newValue) {
                 if (!this.registerResidenceTextField.getText().isEmpty()) {
+                    this.registerButton.setDisable(false);
                     this.registerResidenceTextField.getStyleClass().add("success");
                 } else {
+                    this.registerButton.setDisable(true);
                     this.registerResidenceTextField.getStyleClass().add("error");
                 }
             } else {
@@ -106,9 +118,13 @@ public class StartUp extends View {
         });
         this.registerPasswordField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
             if (!newValue) {
-                if (!this.registerPasswordField.getText().isEmpty() && this.registerPasswordField.getText().length() >= 8) {
+                if (!this.registerPasswordField.getText().isEmpty()
+                        && this.registerPasswordField.getText().length() >= 6
+                        && this.registerPasswordField.getText().length() <= 10) {
+                    this.registerButton.setDisable(false);
                     this.registerPasswordField.getStyleClass().add("success");
                 } else {
+                    this.registerButton.setDisable(true);
                     this.registerPasswordField.getStyleClass().add("error");
                 }
             } else {
@@ -118,8 +134,10 @@ public class StartUp extends View {
         this.registerPasswordCheckPasswordField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
             if (!newValue) {
                 if (this.registerPasswordCheckPasswordField.getText().equals(this.registerPasswordField.getText())) {
+                    this.registerButton.setDisable(false);
                     this.registerPasswordCheckPasswordField.getStyleClass().add("success");
                 } else {
+                    this.registerButton.setDisable(true);
                     this.registerPasswordCheckPasswordField.getStyleClass().add("error");
                 }
             } else {

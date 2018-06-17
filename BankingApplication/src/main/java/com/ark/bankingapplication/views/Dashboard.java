@@ -108,6 +108,7 @@ public class Dashboard extends View {
             controller.subscribeToTransaction(newValue);
             this.selectedBankAccountNumber = newValue;
             this.setTransactions();
+            this.clearInputs();
             updateBankAccount(controller.getBankAccountInformation(sessionKey, selectedBankAccountNumber));
         });
         this.closeButton.setOnAction(e -> closeTransactionPopup());
@@ -127,7 +128,7 @@ public class Dashboard extends View {
                             text += " | AF: | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
                             text += bankTransaction.getAccountTo();
                             setText(text);
-                            getStyleClass().add("outgoing");
+//                            getStyleClass().add("outgoing");
 
 
                         }else{
@@ -137,7 +138,7 @@ public class Dashboard extends View {
                             text += " | BIJ : | €" + customFormat(bankTransaction.getAmount() / 100.0) + " ";
                             text += bankTransaction.getAccountFrom();
                             setText(text);
-                            getStyleClass().add("incoming");
+//                            getStyleClass().add("incoming");
                         }
                     }
 
@@ -308,6 +309,8 @@ public class Dashboard extends View {
 
         } else if (fullString.isEmpty() && centsString.isEmpty()) {
             showWarning("Transactie fout", "Vul een geldig bedrag in.");
+        } else if (description.isEmpty()) {
+            showWarning("Transactie fout", "Vul een omschrijving van je transactie in.");
         } else {
             full = !fullString.isEmpty() ? Long.parseLong(fullString) : 0;
             cents = !centsString.isEmpty() ? Long.parseLong(centsString) : 0;
@@ -378,6 +381,7 @@ public class Dashboard extends View {
      */
     private void closeTransactionPopup() {
         this.TrasactionPopupAnchorPane.setVisible(false);
+        this.transactionsListView.getSelectionModel().clearSelection();
     }
 
     public void sessionTerminated() {
