@@ -107,6 +107,17 @@ public class TestDatabaseController {
     }
 
     @Test
+    public void testPersistBankAccountFailure(){
+        BankAccount bankAccount = new BankAccount(customer, BankAccountNumberRABO);
+        BankAccount bankAccount2 = new BankAccount(customer, BankAccountNumberRABO);
+        boolean result = databaseController.persist(bankAccount);
+        assertTrue(result);
+
+        result = databaseController.persist(bankAccount2);
+        assertFalse(result);
+    }
+
+    @Test
     public void testDelete() {
         boolean result = databaseController.persist(customer);
         assertTrue(result);
